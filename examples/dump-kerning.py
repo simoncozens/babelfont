@@ -6,7 +6,7 @@ parser = argparse.ArgumentParser(description = "Dump kern pairs as CSV")
 parser.add_argument("input", metavar="INPUT", help = "font file (OTF/TTF/UFO)")
 options = parser.parse_args()
 
-from fontParts.world import *
+from babelfont import OpenFont
 f = OpenFont(options.input)
 
 for l in string.ascii_letters:
