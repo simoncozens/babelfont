@@ -12,7 +12,7 @@ options = parser.parse_args()
 if not options.output:
     options.output = options.input
 
-from fontParts.world import *
+from babelfont import OpenFont
 
 font = OpenFont(options.input)
 glyph = font.layers[0][options.glyph]
