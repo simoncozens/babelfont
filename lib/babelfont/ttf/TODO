@@ -1,0 +1,18 @@
+TODO
+====
+
+Glyph
+  TTF glyphs
+  Add/remove contours - contourIndex is wrong
+    Test with glyph = f.layers[0]["a"]; c1 = f.layers[0]["a"].contours[1]
+  Add/remove component
+  transformBy/etc.
+  isCompatible
+
+Font
+  Features
+  Kerning (Read done, write TTF needed)
+  unicodeData
+  
+Info
+    Write access to name table
