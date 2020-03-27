@@ -18,7 +18,7 @@ options = parser.parse_args()
 if not options.output:
     options.output = options.input
 
-from fontParts.world import *
+from babelfont import OpenFont
 
 font = OpenFont(options.input)
 font.kerning[(options.left,options.right)] = options.value
