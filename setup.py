@@ -10,7 +10,7 @@ config = {
     'description': 'Interrogate and manipulate UFO, TTF and OTF fonts with a common interface',
     'long_description': open('README.rst', 'r').read(),
     'license': 'MIT',
-    'version': '0.0.1',
+    'version': '0.0.2',
     'install_requires': [
         "defcon",
         "fontparts",
