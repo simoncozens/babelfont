@@ -12,7 +12,9 @@ config = {
     'license': 'MIT',
     'version': '0.0.1',
     'install_requires': [
-        "fontparts", "fonttools"
+        "defcon",
+        "fontparts",
+        "fonttools"
     ],
     'classifiers': [
         "Programming Language :: Python",
@@ -22,8 +24,8 @@ config = {
         "Development Status :: 4 - Beta"
 
     ],
-    'package_dir': {'': 'Lib'},
-    'packages': find_packages("Lib"),
+    'package_dir': {'': 'lib'},
+    'packages': find_packages("lib"),
 }
 
 if __name__ == '__main__':
