@@ -12,7 +12,9 @@ config = {
     'license': 'MIT',
     'version': '0.0.1',
     'install_requires': [
-        "fontparts", "fonttools"
+        "defcon",
+        "fontparts",
+        "fonttools"
     ],
     'classifiers': [
         "Programming Language :: Python",
