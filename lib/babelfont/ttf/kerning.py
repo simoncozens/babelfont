@@ -2,7 +2,7 @@ import defcon
 from fontParts.base import BaseKerning
 from fontParts.fontshell.base import RBaseObject
 from fontTools.ttLib import TTFont
-from fontParts.fontshell.ttf.getKerningPairsFromOTF import OTFKernReader
+from babelfont.ttf.getKerningPairsFromOTF import OTFKernReader
 
 class TTKerning_kernTable(RBaseObject, BaseKerning):
     def _items(self):

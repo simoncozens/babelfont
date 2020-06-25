@@ -1,8 +1,8 @@
 from fontParts.base import BaseGlyph
 from fontParts.base.errors import FontPartsError
 from fontParts.fontshell.base import RBaseObject
-from fontParts.fontshell.ttf.contour import TTContour
-from fontParts.fontshell.ttf.component import TTComponent
+from babelfont.ttf.contour import TTContour
+from babelfont.ttf.component import TTComponent
 # from fontParts.fontshell.point import RPoint
 import defcon
 from fontTools.pens.areaPen import AreaPen

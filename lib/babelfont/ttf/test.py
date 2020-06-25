@@ -1,5 +1,5 @@
-from fontParts.fontshell.ttf.font import TTFont
-from fontParts.fontshell.otf.font import OTFont
+from babelfont.ttf.font import TTFont
+from babelfont.otf.font import OTFont
 import fontTools
 import unittest
 import collections

@@ -2,10 +2,10 @@ from fontTools.misc.py23 import basestring
 from fontParts.base import BaseFont
 import fontTools
 from fontParts.fontshell.base import RBaseObject
-from fontParts.fontshell.ttf.glyph import TTGlyph
-from fontParts.fontshell.ttf.info import TTInfo
-from fontParts.fontshell.ttf.kerning import TTKerning_kernTable
-from fontParts.fontshell.ttf.kerning import TTKerning_GPOSTable
+from babelfont.ttf.glyph import TTGlyph
+from babelfont.ttf.info import TTInfo
+from babelfont.ttf.kerning import TTKerning_kernTable
+from babelfont.ttf.kerning import TTKerning_GPOSTable
 from fontTools.ttLib.tables._g_l_y_f import Glyph
 
 from fontParts.base import BaseLayer

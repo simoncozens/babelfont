@@ -1,10 +1,10 @@
 from fontParts.base import BaseLayer
 from fontParts.fontshell.base import RBaseObject
-from fontParts.fontshell.ttf.glyph import TTGlyph
-import fontParts.fontshell.ttf.font
+from babelfont.ttf.glyph import TTGlyph
+import babelfont.ttf.font
 
 class TTLayer(RBaseObject, BaseLayer):
-    wrapClass = fontParts.fontshell.ttf.font.TTFont
+    wrapClass = babelfont.ttf.font.TTFont
     glyphClass = TTGlyph
 
     # For now only deal with single masters

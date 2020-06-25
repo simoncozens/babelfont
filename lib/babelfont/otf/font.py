@@ -1,5 +1,5 @@
-from fontParts.fontshell.ttf.font import TTFont,TTLayer
-from fontParts.fontshell.otf.glyph import OTGlyph
+from babelfont.ttf.font import TTFont,TTLayer
+from babelfont.otf.glyph import OTGlyph
 
 class OTLayer(TTLayer):
     glyphClass = OTGlyph

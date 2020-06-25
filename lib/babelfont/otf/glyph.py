@@ -6,7 +6,7 @@ import fontTools.ttLib.tables._g_l_y_f
 from fontTools.ttLib.ttFont import _TTGlyph, _TTGlyphCFF
 from fontTools.ttLib.tables._g_l_y_f import GlyphComponent,GlyphCoordinates
 from fontTools.pens.recordingPen import RecordingPen
-from fontParts.fontshell.ttf.glyph import TTGlyph
+from babelfont.ttf.glyph import TTGlyph
 
 class OTGlyph(TTGlyph):
     def _get_bounds(self):
