@@ -127,51 +127,9 @@ class TTGlyph(RBaseObject, BaseGlyph):
         return startPt, endPt
 
     def _lenContours(self, **kwargs):
-        if isinstance(self.naked(), _TTGlyphCFF):
-            self._build_CFF_contour_list()
-            return len(self._contourlist)
-
         return max(self.naked()._glyph.numberOfContours,0)
 
-    def _build_CFF_contour_list(self):
-        if self._contourlist is None:
-            pen = RecordingPen()
-            self.naked().draw(pen)
-            contours = pen.value
-            lastcontour = []
-            self._contourlist = []
-            startPt = (0,0)
-            lastPt = (0,0)
-            index = 0
-            for c in contours:
-                if c[0] == "moveTo":
-                    startPt = c[1][0]
-                elif c[0] == "closePath":
-                    if startPt != lastPt:
-                        lastcontour.append(defcon.Point(startPt,segmentType = "line"))
-                    contour = self.contourClass(wrap=lastcontour, index=index)
-                    self._contourlist.append(contour)
-                    index = index + 1
-                    lastcontour = []
-                elif c[0] == "curveTo":
-                    lastcontour.append(defcon.Point(c[1][0],segmentType = "offcurve"))
-                    lastcontour.append(defcon.Point(c[1][1],segmentType = "offcurve"))
-                    lastcontour.append(defcon.Point(c[1][2],segmentType = "curve"))
-                    lastPt = c[1][2]
-                elif c[0] == "lineTo":
-                    lastcontour.append(defcon.Point(c[1][0],segmentType = "line"))
-                    lastPt = c[1][0]
-                elif c[0] == "qCurveTo":
-                    self.raiseNotImplementedError()
-
-    def _getContour_CFF(self, index, **kwargs):
-        self._build_CFF_contour_list()
-        return self._contourlist[index]
-
     def _getContour(self, index, **kwargs):
-        if isinstance(self.naked(), _TTGlyphCFF):
-            return self._getContour_CFF(index)
-
         glyph = self.naked()._glyph
         startPt, endPt = self._contourStartAndEnd(index)
         contour = []
