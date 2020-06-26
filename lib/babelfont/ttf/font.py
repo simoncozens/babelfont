@@ -6,8 +6,7 @@ from babelfont.ttf.glyph import TTGlyph
 from babelfont.ttf.info import TTInfo
 from babelfont.ttf.kerning import TTKerning_kernTable
 from babelfont.ttf.kerning import TTKerning_GPOSTable
-from fontTools.ttLib.tables._g_l_y_f import Glyph
-
+from fontTools.ttLib.tables._g_l_y_f import Glyph,GlyphCoordinates, ttProgram
 from fontParts.base import BaseLayer
 
 class TTLayer(RBaseObject, BaseLayer):
@@ -146,11 +145,23 @@ class TTFont(RBaseObject, BaseFont):
 
 
     def _newGlyph(self, name, **kwargs):
+        import array
         layer = self.naked()
         layer["hmtx"][name] = (0,0)
         layer.glyphOrder.append(name)
         # newId = layer["maxp"].numGlyphs
         # layer["maxp"].numGlyphs = newId + 1
+        if "hdmx" in layer:
+            del(layer["hdmx"]) # Obviously this is wrong. XXX
         layer["glyf"][name] = Glyph() # XXX Only TTF
         layer["glyf"][name].numberOfContours = -1 # Only components right now
+        layer["glyf"][name].flags = array.array("B",[])
+        layer["glyf"][name].coordinates = GlyphCoordinates([])
+        layer["glyf"][name].endPtsOfContours = []
+        layer["glyf"][name].program = ttProgram.Program()
+        layer["glyf"][name].program.fromBytecode([])
+        layer["glyf"][name].xMin = 0
+        layer["glyf"][name].yMin = 0
+        layer["glyf"][name].xMax = 0
+        layer["glyf"][name].yMax = 0
         return self[name]
