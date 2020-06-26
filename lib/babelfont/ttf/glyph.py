@@ -285,6 +285,8 @@ class TTGlyph(RBaseObject, BaseGlyph):
         glyph.flags = glyph.flags + flags
         glyph.coordinates = GlyphCoordinates(list(glyph.coordinates) + coords)
         glyph.endPtsOfContours.append(len(glyph.coordinates)-1)
+        glyph.numberOfContours = len(glyph.endPtsOfContours)
+        glyph.recalcBounds(self.font.naked()["glyf"])
     # Components
 
     def _lenComponents(self, **kwargs):
