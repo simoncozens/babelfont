@@ -1,6 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from setuptools import setup, find_packages
+import os
+
+thelibFolder = os.path.dirname(os.path.realpath(__file__))
+requirementPath = thelibFolder + '/requirements.txt'
+install_requires = []
+if os.path.isfile(requirementPath):
+    with open(requirementPath) as f:
+        install_requires = f.read().splitlines()
 
 config = {
     'name': 'babelfont',
@@ -11,11 +19,7 @@ config = {
     'long_description': open('README.rst', 'r').read(),
     'license': 'MIT',
     'version': '0.0.2',
-    'install_requires': [
-        "defcon",
-        "fontparts",
-        "fonttools"
-    ],
+    'install_requires': install_requires,
     'classifiers': [
         "Programming Language :: Python",
         "Programming Language :: Python :: 2",

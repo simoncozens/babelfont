@@ -1,0 +1,3 @@
+fontParts>=0.9
+FontTools[lxml,unicode,ufo]==4.0.0
+defcon[pens]==0.6.0
