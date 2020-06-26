@@ -8,6 +8,7 @@ from babelfont.ttf.kerning import TTKerning_kernTable
 from babelfont.ttf.kerning import TTKerning_GPOSTable
 from fontTools.ttLib.tables._g_l_y_f import Glyph,GlyphCoordinates, ttProgram
 from fontParts.base import BaseLayer
+from fontTools.ttLib import newTable
 
 class TTLayer(RBaseObject, BaseLayer):
     glyphClass = TTGlyph
@@ -147,6 +148,8 @@ class TTFont(RBaseObject, BaseFont):
     def _newGlyph(self, name, **kwargs):
         import array
         layer = self.naked()
+        self._trashPost(layer)
+
         layer["hmtx"][name] = (0,0)
         layer.glyphOrder.append(name)
         # newId = layer["maxp"].numGlyphs
@@ -165,3 +168,19 @@ class TTFont(RBaseObject, BaseFont):
         layer["glyf"][name].xMax = 0
         layer["glyf"][name].yMax = 0
         return self[name]
+
+    def _trashPost(self, layer):
+        # Trash the post table, it's wrong now
+        oldPost = layer["post"]
+        postTable = layer["post"] = newTable("post")
+        postTable.formatType = 2.0 # Naughty
+        postTable.mapping = {}
+        postTable.extraNames = []
+        postTable.italicAngle = oldPost.italicAngle
+        postTable.underlinePosition = oldPost.underlinePosition
+        postTable.underlineThickness = oldPost.underlineThickness
+        postTable.isFixedPitch = oldPost.isFixedPitch
+        postTable.minMemType42 = oldPost.minMemType42
+        postTable.maxMemType42 = oldPost.maxMemType42
+        postTable.minMemType1 = oldPost.minMemType1
+        postTable.maxMemType1 = oldPost.maxMemType1
