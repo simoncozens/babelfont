@@ -32,6 +32,10 @@ class TTLayer(RBaseObject, BaseLayer):
     def _keys(self, **kwargs):
         return self.naked().getGlyphSet().keys()
 
+    def _newGlyph(self, name, **kwargs):
+        return self.font._newGlyph(name, **kwargs)
+
+
 class TTFont(RBaseObject, BaseFont):
     wrapClass = fontTools.ttLib.TTFont
 
