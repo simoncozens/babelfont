@@ -119,7 +119,7 @@ class TTInfo_nameTable(WrappedTTTable, BaseInfo):
     def _get_versionMajor(self):
       v = self.get_name_table_id(["VERSION_STRING"])
       if v is None: return 0
-      m = re.search('^Version (\d+)\.(\d+)', v)
+      m = re.search(r'^Version (\d+)\.(\d+)', v)
       if m is None: return 0
       return int(m[1])
 
@@ -130,7 +130,7 @@ class TTInfo_nameTable(WrappedTTTable, BaseInfo):
     def _get_versionMinor(self):
       v = self.get_name_table_id(["VERSION_STRING"])
       if v is None: return 0
-      m = re.search('^Version (\d+)\.(\d+)', v)
+      m = re.search(r'^Version (\d+)\.(\d+)', v)
       if m is None: return 0
       return int(m[2])
 
