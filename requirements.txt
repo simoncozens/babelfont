@@ -1,2 +1,2 @@
 fontParts>=0.9.2
-booleanOperations==0.8.2
+booleanOperations>=0.8.2
