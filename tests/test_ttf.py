@@ -106,10 +106,6 @@ class TestTTFont(unittest.TestCase):
     f = TTFont("test-fonts/OpenSans-Regular.ttf")
     self.assertEqual(f.kerning[("A","V")],-82)
 
-  def test_kern_otf(self):
-    f = OTFont("test-fonts/OpenSans-Regular.otf")
-    self.assertEqual(f.kerning[("A","V")],-82)
-
   def test_write_kern_ttf(self):
     f = TTFont("test-fonts/OpenSans-Regular.ttf")
     f.kerning[("A","V")] = -100
@@ -149,16 +145,6 @@ class TestTTFont(unittest.TestCase):
     self.assertEqual(f.info.versionMinor, 9)
     self.assertEqual(f.info.versionMajor, 2)
     self.assertEqual(f.info.familyName, "Renamed Open Sans")
-
-  def test_contours_otf(self):
-    f = OTFont("test-fonts/OpenSans-Regular.otf")
-    a = f.layers[0]["a"]
-    self.assertEqual(len(a.contours), 2)
-    self.assertEqual(len(a.contours[0].points),28)
-    self.assertEqual(a.contours[0].points[0].x, 973)
-    self.assertEqual(a.contours[0].points[0].y, 0)
-    self.assertEqual(a.contours[0].points[-1].x, 850)
-    self.assertEqual(a.contours[0].points[-1].y, 0)
 
 if __name__ == '__main__':
     unittest.main()
