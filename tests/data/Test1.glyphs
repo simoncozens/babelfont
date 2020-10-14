@@ -1,0 +1,118 @@
+{
+.appVersion = "1342";
+DisplayStrings = (
+ABBA
+);
+date = "2020-10-13 08:27:59 +0000";
+familyName = "New Font";
+fontMaster = (
+{
+ascender = 800;
+capHeight = 700;
+descender = -200;
+id = "08BA8065-12E2-4DC0-8840-1E4ED448363F";
+xHeight = 500;
+}
+);
+glyphs = (
+{
+glyphname = A;
+lastChange = "2020-10-13 08:38:47 +0000";
+layers = (
+{
+layerId = "08BA8065-12E2-4DC0-8840-1E4ED448363F";
+paths = (
+{
+closed = 1;
+nodes = (
+"345 700 LINE",
+"185 700 LINE",
+"25 0 LINE",
+"172 0 LINE",
+"206 218 LINE",
+"323 218 LINE",
+"355 0 LINE",
+"505 0 LINE"
+);
+},
+{
+closed = 1;
+nodes = (
+"275 527 LINE",
+"298 354 LINE",
+"233 354 LINE",
+"265 527 LINE"
+);
+}
+);
+width = 530;
+}
+);
+unicode = 0041;
+},
+{
+glyphname = B;
+lastChange = "2020-10-13 08:38:19 +0000";
+layers = (
+{
+layerId = "08BA8065-12E2-4DC0-8840-1E4ED448363F";
+paths = (
+{
+closed = 1;
+nodes = (
+"421 418 OFFCURVE",
+"469 449 OFFCURVE",
+"469 550 CURVE SMOOTH",
+"469 635 OFFCURVE",
+"426 700 OFFCURVE",
+"282 700 CURVE SMOOTH",
+"65 700 LINE",
+"65 0 LINE",
+"266 0 LINE SMOOTH",
+"370 0 OFFCURVE",
+"543 0 OFFCURVE",
+"543 195 CURVE SMOOTH",
+"543 329 OFFCURVE",
+"449 383 OFFCURVE",
+"390 393 CURVE"
+);
+},
+{
+closed = 1;
+nodes = (
+"337 611 OFFCURVE",
+"337 567 OFFCURVE",
+"337 533 CURVE SMOOTH",
+"337 454 OFFCURVE",
+"292 443 OFFCURVE",
+"262 443 CURVE SMOOTH",
+"196 443 LINE",
+"192 613 LINE",
+"273 612 LINE SMOOTH"
+);
+},
+{
+closed = 1;
+nodes = (
+"192 308 LINE",
+"285 307 LINE SMOOTH",
+"367 306 OFFCURVE",
+"416 260 OFFCURVE",
+"416 202 CURVE SMOOTH",
+"416 106 OFFCURVE",
+"316 106 OFFCURVE",
+"270 106 CURVE SMOOTH",
+"192 106 LINE"
+);
+}
+);
+width = 578;
+}
+);
+unicode = 0042;
+}
+);
+unitsPerEm = 1000;
+versionMajor = 1;
+versionMinor = 0;
+}
