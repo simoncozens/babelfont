@@ -1,5 +1,6 @@
 from fontParts.base.glyph import BaseGlyph
 from babelfont import addUnderscoreProperty
+from babelfont.lib import Lib
 
 
 # @addUnderscoreProperty(["name", "unicodes", "width", "height", "lib"])
@@ -9,10 +10,15 @@ from babelfont import addUnderscoreProperty
 @addUnderscoreProperty("height")
 @addUnderscoreProperty("lib")
 class Glyph(BaseGlyph):
+    def _init(self, *args, **kwargs):
+        self._lib = Lib()
 
     def _autoUnicodes(self):
         # Maybe someday
         self.raiseNotImplementedError()
+
+    def _get_lib(self):
+        return self._lib
 
     def _lenContours(self):
         return len(self._contours)

@@ -2,7 +2,7 @@ from fontParts.base.font import BaseFont
 from fontParts.base.groups import BaseGroups
 from fontParts.base.kerning import BaseKerning
 from fontParts.base.features import BaseFeatures
-from fontParts.base.lib import BaseLib
+from babelfont.lib import Lib
 from babelfont import addUnderscoreProperty
 from babelfont.glyph import Glyph
 from babelfont.info import Info
@@ -27,7 +27,7 @@ class Font(BaseFont):
         self._groups = BaseGroups()
         self._kerning = BaseKerning()
         self._features = BaseFeatures()
-        self._lib = BaseLib()
+        self._lib = Lib()
 
     def __eq__(self, other):
         return NotImplemented

@@ -19,6 +19,7 @@ def test_gslayer_load():
   assert(a_layer.leftMargin == 25)
   assert(a_layer.rightMargin == 25)
   assert(a_layer.bounds == (25, 0, 505, 700))
+  assert(a_layer.width == 530)
 
   b = testfile.glyphs[1].layers[0]
   b_layer = glyphs._load_gslayer(b, None)

@@ -8,4 +8,7 @@ from babelfont.glyph import Glyph
 class Layer(BaseLayer):
     def keys(self):
         return self._glyphs.keys()
+
+    def _getItem(self,name):
+        return self._glyphs[name]
     pass
