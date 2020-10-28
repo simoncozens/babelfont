@@ -66,6 +66,7 @@ def _load_dcglyph(dcglyph, layer):
     # components, anchors, guidelines, image
     # glyph._components = [_load_dccomponent(c, glyph) for c in dclayer.components]
     glyph._contours = [_load_dccontour(p, glyph) for p in dcglyph]
+    glyph._anchors = [_load_dcanchor(a, glyph) for a in dcglyph.anchors]
     return glyph
 
 
@@ -84,11 +85,14 @@ def _load_dccontour(dccontour, glyph):
 #     return component
 
 
-# def _load_dcanchor(dcanchor, glyph):
-#     anchor = Anchor()
-#     anchor._glyph = glyph
-#     # XXX
-#     return anchor
+def _load_dcanchor(dcanchor, glyph):
+    anchor = Anchor()
+    anchor._glyph = glyph
+    anchor.name = dcanchor.name
+    anchor.color = dcanchor.color
+    anchor.x = dcanchor.x
+    anchor.y = dcanchor.y
+    return anchor
 
 
 def _load_dcpoint(dcpoint, contour):
@@ -128,6 +132,14 @@ def _save_contour(contour):
 #     # XXX
 #     return c
 
+def _save_anchor(anchor):
+    dcanchor = defcon.Anchor()
+    dcanchor.color = anchor.color
+    dcanchor.name = anchor.name
+    dcanchor.x = anchor.x
+    dcanchor.y = anchor.y
+    return dcanchor
+
 def _save_glyph(glyph):
     dcglyph = defcon.Glyph()
     dcglyph.unicodes = copy(glyph._unicodes)
@@ -136,6 +148,9 @@ def _save_glyph(glyph):
         dcglyph.appendContour(dccontour)
     # dclayer.components = [_save_component(c) for c in glyph.components]
     # Anchors
+    for a in glyph.anchors:
+        dcglyph.appendAnchor(_save_anchor(a))
+
     for k,v in glyph.lib._dict.items():
         if k == "glyph":
             continue
