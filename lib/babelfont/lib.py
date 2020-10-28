@@ -17,3 +17,6 @@ class Lib(BaseLib):
 
     def _setItem(self, attr, value):
         self._dict[attr] = value
+
+    def _contains(self, attr):
+        return attr in self._dict
