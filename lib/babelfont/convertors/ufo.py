@@ -158,12 +158,16 @@ def _save_dcfont(font):
     for k,v in font.lib._dict.items():
         dcf.lib[k] = copy(v)
     dcf.info.setDataFromSerialization(font.info._dict)
-    for l in font.layers:
-        if l.name in dcf.layers.layerOrder:
-            newLayer = dcf.layers[l.name]
-        else:
+    if len(font.layers) == 1:
+        # Just put it in public.default
+        _save_layer(font.defaultLayer, dcf.layers.defaultLayer)
+    else:
+        for l in dcf.layers.layerOrder:
+            del(dcf.layers[l])
+
+        for l in font.layers:
             newLayer = dcf.newLayer(l.name)
-        _save_layer(l, newLayer)
+            _save_layer(l, newLayer)
     return dcf
 
 # # Random stuff

@@ -71,7 +71,7 @@ def _load_gslayer(gslayer, layer):  # -> Glyph
     glyph = Glyph()
     glyph._layer = layer
     glyph._name = gslayer.parent.name
-    glyph._unicodes = [gslayer.parent.unicode]
+    glyph._unicodes = [int(gslayer.parent.unicode,16)]
     glyph._width = gslayer.width
     glyph._height = gslayer.master.ascender - gslayer.master.descender  # ?
     glyph._lib = Lib()
@@ -80,12 +80,16 @@ def _load_gslayer(gslayer, layer):  # -> Glyph
 
     c = gslayer.parent.category
     sc = gslayer.parent.subCategory
+    if c:
+        glyph._lib["com.schriftgestaltung.Glyphs.category"] = c
+    if sc:
+        glyph._lib["com.schriftgestaltung.Glyphs.subcategory"] = sc
     if sc == "Ligature":
-        glyph._category = "ligature"
+        glyph._lib["public.openTypeCategory"] = "ligature"
     if c == "Mark":
-        glyph._category = "mark"
+        glyph._lib["public.openTypeCategory"] = "mark"
     else:
-        glyph._category = "base"
+        glyph._lib["public.openTypeCategory"] = "base"
 
     # components, anchors, guidelines, image
     glyph._components = [_load_gscomponent(c, glyph) for c in gslayer.components]
@@ -97,6 +101,7 @@ def _load_gspath(gspath, glyph):
     contour = Contour()
     contour._glyph = glyph
     contour._points = [_load_gspoint(p, contour) for p in gspath.nodes]
+    contour._clockwise = gspath.direction == 1
     return contour
 
 
@@ -137,7 +142,7 @@ def _save_contour(contour):
     path = glyphsLib.GSPath()
     path.nodes = [_save_point(p) for p in contour._points]
     # Check node order
-    # XXX closed, direction
+    # XXX closed
     return path
 
 
@@ -153,8 +158,13 @@ def _save_glyph(glyph, gsfont):
     gsglyph = glyphsLib.GSGlyph()
     gslayer.layerId = masterId
     gsglyph.layers.append(gslayer)
-    gsglyph.unicode = glyph._unicodes[0]
-    gsglyph.lastChange = glyph.lib["com.schriftgestaltung.lastChange"]
+    gsglyph.unicode = "%04x" % glyph._unicodes[0]
+    if "com.schriftgestaltung.lastChange" in glyph.lib:
+        gsglyph.lastChange = glyph.lib["com.schriftgestaltung.lastChange"]
+    if "com.schriftgestaltung.Glyphs.category" in glyph.lib:
+        gsglyph.category = glyph._lib["com.schriftgestaltung.Glyphs.category"]
+    if "com.schriftgestaltung.Glyphs.subcategory" in glyph.lib:
+        gsglyph.subCategory = glyph._lib["com.schriftgestaltung.Glyphs.subcategory"]
 
     gslayer.paths = [_save_contour(c) for c in glyph.contours]
     gslayer.components = [_save_component(c) for c in glyph.components]
@@ -169,8 +179,10 @@ def _save_glyph(glyph, gsfont):
 def _save_gsfont(font):
     f = glyphsLib.GSFont()
     f.familyName = font.info.familyName
-    f.appVersion = font.lib["com.schriftgestaltung.appVersion"]
-    f.DisplayStrings = font.lib["com.schriftgestaltung.DisplayStrings"]
+    if "com.schriftgestaltung.appVersion" in font.lib:
+        f.appVersion = font.lib["com.schriftgestaltung.appVersion"]
+    if "com.schriftgestaltung.DisplayStrings" in font.lib:
+        f.DisplayStrings = font.lib["com.schriftgestaltung.DisplayStrings"]
     f.date = _ufo_date_to_glyphs(font.info.openTypeHeadCreated)
     f.upm = font.info.unitsPerEm
     fontmaster = glyphsLib.GSFontMaster()

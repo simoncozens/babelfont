@@ -60,7 +60,19 @@ class Glyph(BaseGlyph):
     # Babelfont glyphs have a category, even if fontParts ones don't
     @property
     def category(self):
-        return self._category
+        if "public.openTypeCategory" in self.lib:
+            return self.lib["public.openTypeCategory"]
 
-    def set_category(self, caterory):
-        self._category = category
+    def set_category(self, category):
+        assert(category in ["ligature", "mark", "base"])
+        self.lib["public.openTypeCategory"] = category
+        if category == "ligature" and \
+            "com.schriftgestaltung.Glyphs.category" not in self.lib:
+            self.lib["com.schriftgestaltung.Glyphs.category"] = "Letter"
+            self.lib["com.schriftgestaltung.Glyphs.subcategory"] = "Ligature"
+        elif category == "mark" and \
+            "com.schriftgestaltung.Glyphs.category" not in self.lib:
+            self.lib["com.schriftgestaltung.Glyphs.category"] = "Mark"
+        elif category == "base" and \
+            "com.schriftgestaltung.Glyphs.category" not in self.lib:
+            self.lib["com.schriftgestaltung.Glyphs.category"] = "Letter"
