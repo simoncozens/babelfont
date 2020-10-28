@@ -1,6 +1,8 @@
 from fontParts.base.contour import BaseContour
+from babelfont import addUnderscoreProperty
 
 
+@addUnderscoreProperty("clockwise")
 class Contour(BaseContour):
     def _lenPoints(self):
         return len(self._points)

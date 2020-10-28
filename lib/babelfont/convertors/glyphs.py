@@ -52,9 +52,7 @@ def _load_gsfont(gsfontmaster):
 
     # Only support one layer for now
     layer = Layer()
-    layer._lib = Lib()
     layer._name = gsfontmaster.name
-    layer._glyphs = {}
 
     bbf.info.ascender = gsfontmaster.ascender
     bbf.info.capHeight = gsfontmaster.capHeight
