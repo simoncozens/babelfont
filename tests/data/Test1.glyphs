@@ -1,7 +1,8 @@
 {
 .appVersion = "1342";
 DisplayStrings = (
-ABBA
+ABBA,
+A
 );
 date = "2020-10-13 08:27:59 +0000";
 familyName = "New Font";
@@ -17,9 +18,15 @@ xHeight = 500;
 glyphs = (
 {
 glyphname = A;
-lastChange = "2020-10-28 12:30:17 +0000";
+lastChange = "2020-10-28 12:39:57 +0000";
 layers = (
 {
+anchors = (
+{
+name = TestAnchor;
+position = "{215, 263}";
+}
+);
 layerId = "08BA8065-12E2-4DC0-8840-1E4ED448363F";
 paths = (
 {

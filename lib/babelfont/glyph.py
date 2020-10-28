@@ -13,6 +13,7 @@ class Glyph(BaseGlyph):
     def _init(self, *args, **kwargs):
         self._lib = Lib()
         self._components = []
+        self._anchors = []
 
     def _autoUnicodes(self):
         # Maybe someday

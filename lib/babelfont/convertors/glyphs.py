@@ -94,6 +94,7 @@ def _load_gslayer(gslayer, layer):  # -> Glyph
     # components, anchors, guidelines, image
     glyph._components = [_load_gscomponent(c, glyph) for c in gslayer.components]
     glyph._contours = [_load_gspath(p, glyph) for p in gslayer.paths]
+    glyph._anchors = [_load_gsanchor(a, glyph) for a in gslayer.anchors]
     return glyph
 
 
@@ -115,7 +116,9 @@ def _load_gscomponent(gscomponent, glyph):
 def _load_gsanchor(gsanchor, glyph):
     anchor = Anchor()
     anchor._glyph = glyph
-    # XXX
+    anchor.x = gsanchor.position.x
+    anchor.y = gsanchor.position.y
+    anchor.name = gsanchor.name
     return anchor
 
 
@@ -145,6 +148,12 @@ def _save_contour(contour):
     # XXX closed
     return path
 
+def _save_anchor(anchor):
+    gsanchor = glyphsLib.GSAnchor()
+    gsanchor.position.x = anchor.x
+    gsanchor.position.y = anchor.y
+    gsanchor.name = anchor.name
+    return gsanchor
 
 def _save_component(component):
     c = glyphsLib.GSComponent(component.glyph)
@@ -168,6 +177,7 @@ def _save_glyph(glyph, gsfont):
 
     gslayer.paths = [_save_contour(c) for c in glyph.contours]
     gslayer.components = [_save_component(c) for c in glyph.components]
+    gslayer.anchors = [_save_anchor(a) for a in glyph.anchors]
     gslayer.name = glyph.name
     gslayer.RSB = glyph.rightMargin
     gslayer.LSB = glyph.leftMargin
