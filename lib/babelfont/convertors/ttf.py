@@ -97,7 +97,10 @@ def _load_other_info(bbf, ttfont):
     bbf.info.openTypeOS2VendorID = ttfont["OS/2"].achVendID
     # panose is horrible
     bbf.info.openTypeOS2UnicodeRanges = (ttfont["OS/2"].ulUnicodeRange1, ttfont["OS/2"].ulUnicodeRange2, ttfont["OS/2"].ulUnicodeRange3, ttfont["OS/2"].ulUnicodeRange4)
-    bbf.info.openTypeOS2CodePageRanges = (ttfont["OS/2"].ulCodePageRange1, ttfont["OS/2"].ulCodePageRange2)
+
+    # Getting some "invalid value" for my fonts.
+    # bbf.info.openTypeOS2CodePageRanges = (ttfont["OS/2"].ulCodePageRange1, ttfont["OS/2"].ulCodePageRange2)
+
     bbf.info.xHeight = ttfont["OS/2"].sxHeight
     bbf.info.capHeight = ttfont["OS/2"].sCapHeight
 
