@@ -7,6 +7,7 @@ from babelfont import addUnderscoreProperty
 from babelfont.glyph import Glyph
 from babelfont.info import Info
 from babelfont.layer import Layer
+from babelfont import Babelfont
 
 
 @addUnderscoreProperty("path")

@@ -167,7 +167,8 @@ def _save_glyph(glyph, gsfont):
     gsglyph = glyphsLib.GSGlyph()
     gslayer.layerId = masterId
     gsglyph.layers.append(gslayer)
-    gsglyph.unicode = "%04x" % glyph._unicodes[0]
+    if glyph._unicodes:
+        gsglyph.unicode = "%04x" % glyph._unicodes[0]
     if "com.schriftgestaltung.lastChange" in glyph.lib:
         gsglyph.lastChange = glyph.lib["com.schriftgestaltung.lastChange"]
     if "com.schriftgestaltung.Glyphs.category" in glyph.lib:
@@ -193,10 +194,12 @@ def _save_gsfont(font):
         f.appVersion = font.lib["com.schriftgestaltung.appVersion"]
     if "com.schriftgestaltung.DisplayStrings" in font.lib:
         f.DisplayStrings = font.lib["com.schriftgestaltung.DisplayStrings"]
-    f.date = _ufo_date_to_glyphs(font.info.openTypeHeadCreated)
+    if font.info.openTypeHeadCreated:
+        f.date = _ufo_date_to_glyphs(font.info.openTypeHeadCreated)
     f.upm = font.info.unitsPerEm
     fontmaster = glyphsLib.GSFontMaster()
-    fontmaster.id = font.lib["com.schriftgestaltung.fontMasterID"]
+    if "com.schriftgestaltung.fontMasterID" in font.lib:
+        fontmaster.id = font.lib["com.schriftgestaltung.fontMasterID"]
 
     f.masters = [fontmaster]
     fontmaster.ascender = font.info.ascender
