@@ -57,12 +57,16 @@ def _load_gsfont(gsfontmaster):
     bbf.info.ascender = gsfontmaster.ascender
     bbf.info.capHeight = gsfontmaster.capHeight
     bbf.info.descender = gsfontmaster.descender
+    bbf.info.xHeight = gsfontmaster.xHeight
 
     bbf._layers.append(layer)
     bbf._layerOrder.append(gsfontmaster.name)
 
     for g in gsfontmaster.font.glyphs:
         layer._glyphs[g.name] = _load_gslayer(g.layers[gsfontmaster.id], layer)
+
+    for g in gsfontmaster.font.glyphs:
+        _finalise_glyph(g.layers[gsfontmaster.id], layer._glyphs[g.name])
 
     return bbf
 
@@ -90,13 +94,15 @@ def _load_gslayer(gslayer, layer):  # -> Glyph
         glyph._lib["public.openTypeCategory"] = "mark"
     else:
         glyph._lib["public.openTypeCategory"] = "base"
-
-    # components, anchors, guidelines, image
-    glyph._components = [_load_gscomponent(c, glyph) for c in gslayer.components]
     glyph._contours = [_load_gspath(p, glyph) for p in gslayer.paths]
     glyph._anchors = [_load_gsanchor(a, glyph) for a in gslayer.anchors]
     return glyph
 
+# Have to load components after all glyphs are processed
+def _finalise_glyph(gslayer, glyph):
+    # XXX guidelines, image
+    glyph._components = [_load_gscomponent(c, glyph) for c in gslayer.components]
+    return glyph
 
 def _load_gspath(gspath, glyph):
     contour = Contour()
@@ -109,7 +115,8 @@ def _load_gspath(gspath, glyph):
 def _load_gscomponent(gscomponent, glyph):
     component = Component()
     component._glyph = glyph
-    # XXX
+    component._baseGlyph = gscomponent.componentName
+    component._transformation = tuple(gscomponent.transform.value)
     return component
 
 
@@ -156,7 +163,9 @@ def _save_anchor(anchor):
     return gsanchor
 
 def _save_component(component):
-    c = glyphsLib.GSComponent(component.glyph)
+    c = glyphsLib.GSComponent(component.baseGlyph)
+    if component.transformation != (1,0,0,1,0,0):
+        c.transform = component.transformation
     # XXX
     return c
 
@@ -203,6 +212,7 @@ def _save_gsfont(font):
 
     f.masters = [fontmaster]
     fontmaster.ascender = font.info.ascender
+    fontmaster.xHeight = font.info.xHeight
     fontmaster.capHeight = font.info.capHeight
     fontmaster.descender = font.info.descender
     for glyph in font.defaultLayer:
