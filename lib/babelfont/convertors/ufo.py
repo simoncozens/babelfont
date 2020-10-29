@@ -64,7 +64,7 @@ def _load_dcglyph(dcglyph, layer):
     glyph._width = dcglyph.width
     glyph._height = dcglyph.height
     # components, anchors, guidelines, image
-    # glyph._components = [_load_dccomponent(c, glyph) for c in dclayer.components]
+    glyph._components = [_load_dccomponent(c, glyph) for c in dcglyph.components]
     glyph._contours = [_load_dccontour(p, glyph) for p in dcglyph]
     glyph._anchors = [_load_dcanchor(a, glyph) for a in dcglyph.anchors]
     return glyph
@@ -78,11 +78,13 @@ def _load_dccontour(dccontour, glyph):
     return contour
 
 
-# def _load_dccomponent(dccomponent, glyph):
-#     component = Component()
-#     component._glyph = glyph
-#     # XXX
-#     return component
+def _load_dccomponent(dccomponent, glyph):
+    component = Component()
+    component._glyph = glyph
+    component._baseGlyph = dccomponent.baseGlyph
+    component.transformation = dccomponent.transformation
+    # XXX
+    return component
 
 
 def _load_dcanchor(dcanchor, glyph):
@@ -127,10 +129,12 @@ def _save_contour(contour):
     return path
 
 
-# def _save_component(component):
-#     c = defcon.Component(component.glyph)
-#     # XXX
-#     return c
+def _save_component(component):
+    c = defcon.Component(None)
+    c.baseGlyph = component.baseGlyph
+    c.transformation = component.transformation
+    # XXX
+    return c
 
 def _save_anchor(anchor):
     dcanchor = defcon.Anchor()
@@ -146,7 +150,6 @@ def _save_glyph(glyph):
     for c in glyph.contours:
         dccontour = _save_contour(c)
         dcglyph.appendContour(dccontour)
-    # dclayer.components = [_save_component(c) for c in glyph.components]
     # Anchors
     for a in glyph.anchors:
         dcglyph.appendAnchor(_save_anchor(a))
@@ -155,8 +158,6 @@ def _save_glyph(glyph):
         if k == "glyph":
             continue
         dcglyph.lib[k] = copy(v)
-
-    dcglyph.name = glyph.name
     dcglyph.rightMargin = glyph.rightMargin
     dcglyph.leftMargin = glyph.leftMargin
     dcglyph.width = glyph.width
@@ -166,6 +167,12 @@ def _save_glyph(glyph):
 def _save_layer(layer, dclayer):
     for g in layer:
         dclayer.insertGlyph(_save_glyph(g))
+    # Handle components after all glyphs are in
+    for glyph in layer:
+        dcglyph = dclayer[glyph.name]
+        for c in glyph.components:
+            dcglyph.appendComponent(_save_component(c))
+
     dclayer.color = layer.color
 
 def _save_dcfont(font):

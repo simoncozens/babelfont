@@ -2,7 +2,8 @@
 .appVersion = "1342";
 DisplayStrings = (
 ABBA,
-A
+A,
+AB
 );
 date = "2020-10-13 08:27:59 +0000";
 familyName = "New Font";
@@ -12,7 +13,7 @@ ascender = 800;
 capHeight = 700;
 descender = -200;
 id = "08BA8065-12E2-4DC0-8840-1E4ED448363F";
-xHeight = 500;
+xHeight = 400;
 }
 );
 glyphs = (
@@ -121,6 +122,77 @@ width = 578;
 unicode = 0042;
 category = Letter;
 subCategory = Uppercase;
+},
+{
+glyphname = i;
+lastChange = "2020-10-29 14:05:35 +0000";
+layers = (
+{
+components = (
+{
+name = idotless;
+},
+{
+name = dotaccentcomb;
+}
+);
+layerId = "08BA8065-12E2-4DC0-8840-1E4ED448363F";
+width = 217;
+}
+);
+unicode = 0069;
+},
+{
+glyphname = idotless;
+lastChange = "2020-10-29 14:04:44 +0000";
+layers = (
+{
+layerId = "08BA8065-12E2-4DC0-8840-1E4ED448363F";
+paths = (
+{
+closed = 1;
+nodes = (
+"50 0 LINE",
+"167 0 LINE",
+"167 400 LINE",
+"50 400 LINE"
+);
+}
+);
+width = 217;
+}
+);
+unicode = 0131;
+},
+{
+glyphname = dotaccentcomb;
+lastChange = "2020-10-29 14:05:59 +0000";
+layers = (
+{
+layerId = "08BA8065-12E2-4DC0-8840-1E4ED448363F";
+paths = (
+{
+closed = 1;
+nodes = (
+"151 475 OFFCURVE",
+"183 507 OFFCURVE",
+"183 547 CURVE SMOOTH",
+"183 586 OFFCURVE",
+"151 618 OFFCURVE",
+"112 618 CURVE SMOOTH",
+"72 618 OFFCURVE",
+"40 586 OFFCURVE",
+"40 547 CURVE SMOOTH",
+"40 507 OFFCURVE",
+"72 475 OFFCURVE",
+"112 475 CURVE SMOOTH"
+);
+}
+);
+width = 223;
+}
+);
+unicode = 0307;
 }
 );
 unitsPerEm = 1000;

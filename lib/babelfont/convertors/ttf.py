@@ -135,6 +135,10 @@ def _load_ttglyph(g, ttfont):
         c._glyph = glyph
         glyph._contours.append(c)
 
+    if hasattr(ttglyph, "components"):
+        for c in ttglyph.components:
+            glyph._components.append(_load_component(c))
+
     glyph._width       = ttfont["hmtx"][g][0]
     glyph._leftMargin  = ttfont["hmtx"][g][1]
     glyph._height      = ttfont["hhea"].ascent
@@ -179,6 +183,8 @@ def _load_contour(ttglyph, index):
     c._correct_direction()
     return c
 
+def _load_component(c):
+    import code; code.interact(local=locals())
 # babelfont -> TTFont
 
 

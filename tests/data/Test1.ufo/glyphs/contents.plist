@@ -6,5 +6,11 @@
 	<string>A_.glif</string>
 	<key>B</key>
 	<string>B_.glif</string>
+	<key>dotaccentcomb</key>
+	<string>dotaccentcomb.glif</string>
+	<key>i</key>
+	<string>i.glif</string>
+	<key>idotless</key>
+	<string>idotless.glif</string>
 </dict>
 </plist>

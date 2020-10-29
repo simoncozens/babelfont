@@ -14,6 +14,16 @@
 	<array>
 		<string>A</string>
 		<string>B</string>
+		<string>i</string>
+		<string>idotless</string>
+		<string>dotaccentcomb</string>
 	</array>
+	<key>public.postscriptNames</key>
+	<dict>
+		<key>dotaccentcomb</key>
+		<string>uni0307</string>
+		<key>idotless</key>
+		<string>dotlessi</string>
+	</dict>
 </dict>
 </plist>

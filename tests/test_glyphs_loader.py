@@ -32,4 +32,4 @@ def test_font_load():
   font = glyphs.open("tests/data/Test1.glyphs")
   assert(isinstance(font, Font))
   assert(isinstance(font.defaultLayer, Layer))
-  assert(font.defaultLayer.keys() == {"A":1,"B":1}.keys())
+  assert(font.defaultLayer.keys() == {"A":1,"B":1, "i":1, "idotless": 1, "dotaccentcomb": 1}.keys())
