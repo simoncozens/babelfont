@@ -38,7 +38,7 @@ def save(font, filename):
 def _load_gsfont(gsfontmaster):
     bbf = Font(gsfontmaster)
 
-    # XXX Create: info, groups, kerning, features, lib
+    # XXX Create: groups, kerning, features
 
     bbf.info.familyName = gsfontmaster.font.familyName
     bbf.info.styleName = gsfontmaster.name
@@ -49,6 +49,8 @@ def _load_gsfont(gsfontmaster):
 
     bbf.info.openTypeHeadCreated = _glyphs_date_to_ufo(gsfontmaster.font.date)
     bbf.info.unitsPerEm = gsfontmaster.font.upm
+
+    _load_groups(bbf.groups, gsfontmaster.font.classes)
 
     # Only support one layer for now
     layer = Layer()
@@ -68,6 +70,7 @@ def _load_gsfont(gsfontmaster):
     for g in gsfontmaster.font.glyphs:
         _finalise_glyph(g.layers[gsfontmaster.id], layer._glyphs[g.name])
 
+    _load_kerning(bbf.kerning, gsfontmaster.font.kerning[gsfontmaster.id])
     return bbf
 
 
@@ -138,6 +141,17 @@ def _load_gspoint(gspoint, contour):
     point.smooth = gspoint.smooth
     return point
 
+
+def _load_groups(groups, classes):
+    for c in classes:
+        groups[c.name] = c.code.split() # Urgh
+
+def _load_kerning(kerning, gskerning):
+    for left in gskerning.keys():
+        assert left[0] != "@"
+        for right, value in gskerning[left].items():
+            assert right[0] != "@"
+            kerning[(left,right)] = value
 
 # babelfont -> glyphsLib
 
@@ -217,7 +231,14 @@ def _save_gsfont(font):
     fontmaster.descender = font.info.descender
     for glyph in font.defaultLayer:
         _save_glyph(glyph, f)
+    for g in font.groups:
+        f.classes.append(glyphsLib.GSClass(g, " ".join(font.groups[g])))
+    _save_kerning(font.kerning, f, fontmaster.id)
     return f
+
+def _save_kerning(kerning, font, mid):
+    for (l,r), value in kerning.items():
+        font.setKerningForPair(mid,l,r,value)
 
 # Random stuff
 

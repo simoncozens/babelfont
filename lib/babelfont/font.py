@@ -1,12 +1,12 @@
 from fontParts.base.font import BaseFont
-from fontParts.base.groups import BaseGroups
-from fontParts.base.kerning import BaseKerning
 from fontParts.base.features import BaseFeatures
 from babelfont.lib import Lib
 from babelfont import addUnderscoreProperty
 from babelfont.glyph import Glyph
+from babelfont.groups import Groups
 from babelfont.info import Info
 from babelfont.layer import Layer
+from babelfont.kerning import Kerning
 from babelfont import Babelfont
 
 
@@ -25,10 +25,11 @@ class Font(BaseFont):
         self._layers = []
         self._info = Info()
         self._info.font = self
-        self._groups = BaseGroups()
-        self._kerning = BaseKerning()
+        self._groups = Groups()
+        self._kerning = Kerning()
         self._features = BaseFeatures()
         self._lib = Lib()
+        self._unicodemap = None
 
     def __eq__(self, other):
         return NotImplemented
@@ -66,3 +67,15 @@ class Font(BaseFont):
     def _removeLayer(self, name, **kwargs):
         self._layers = [ l for l in self._layers if l.name != name ]
 
+    def glyphForCodepoint(self, u):
+        if not self._unicodemap:
+            self._unicodemap = {}
+            for g in self:
+                for cp in g.unicodes:
+                    self._unicodemap[cp] = g.name
+            if ".notdef" in self:
+                self._unicodemap[0] = ".notdef"
+            else:
+                self._unicodemap[0] = self.glyphOrder[0]
+
+        return self._unicodemap.get(u, self._unicodemap[0])
