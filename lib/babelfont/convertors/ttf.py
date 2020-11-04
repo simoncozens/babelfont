@@ -35,7 +35,8 @@ def _load_ttfont(ttfont):
     layer = bbf.newLayer("public.default")
     cmap = ttfont["cmap"].buildReversed()
     for glyph in ttfont.getGlyphOrder():
-        layer._glyphs[glyph] = _load_ttglyph(glyph, ttfont, cmap)
+        layer._glyphs[glyph] = None
+        layer._promised_glyphs[glyph] = lambda glyph=glyph,ttfont=ttfont,cmap=cmap : _load_ttglyph(glyph, ttfont, cmap)
     return bbf
 
 _namesmap = [
