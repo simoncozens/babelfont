@@ -30,6 +30,7 @@ class Font(BaseFont):
         self._features = BaseFeatures()
         self._lib = Lib()
         self._unicodemap = None
+        self._reversedunicodemap = None
 
     def __eq__(self, other):
         return NotImplemented
@@ -67,10 +68,13 @@ class Font(BaseFont):
     def _removeLayer(self, name, **kwargs):
         self._layers = [ l for l in self._layers if l.name != name ]
 
-    def glyphForCodepoint(self, u):
-        if not self._unicodemap:
+    def _build_maps(self):
+        if not self._unicodemap or not self._reversedunicodemap:
             self._unicodemap = {}
+            self._reversedunicodemap = {}
             for g in self:
+                if g.unicodes:
+                    self._reversedunicodemap[g.name] = g.unicodes[0]
                 for cp in g.unicodes:
                     self._unicodemap[cp] = g.name
             if ".notdef" in self:
@@ -78,4 +82,10 @@ class Font(BaseFont):
             else:
                 self._unicodemap[0] = self.glyphOrder[0]
 
+    def glyphForCodepoint(self, u):
+        self._build_maps()
         return self._unicodemap.get(u, self._unicodemap[0])
+
+    def codepointForGlyph(self, g):
+        self._build_maps()
+        return self._reversedunicodemap.get(g, 0)
