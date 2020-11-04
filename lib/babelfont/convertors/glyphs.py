@@ -71,7 +71,8 @@ def _load_gsfont(gsfontmaster):
     for g in gsfontmaster.font.glyphs:
         _finalise_glyph(g.layers[gsfontmaster.id], layer._glyphs[g.name])
 
-    _load_kerning(bbf.kerning, gsfontmaster.font.kerning[gsfontmaster.id])
+    if gsfontmaster.id in gsfontmaster.font.kerning:
+        _load_kerning(bbf.kerning, gsfontmaster.font.kerning[gsfontmaster.id])
     return bbf
 
 
@@ -79,12 +80,16 @@ def _load_gslayer(gslayer, layer):  # -> Glyph
     glyph = Glyph()
     glyph._layer = layer
     glyph._name = gslayer.parent.name
-    glyph._unicodes = [int(gslayer.parent.unicode,16)]
+    if gslayer.parent.unicode:
+        glyph._unicodes = [int(gslayer.parent.unicode,16)]
+    else:
+        glyph._unicodes = []
     glyph._width = gslayer.width
     glyph._height = gslayer.master.ascender - gslayer.master.descender  # ?
     glyph._lib = Lib()
     glyph._lib.glyph = glyph
-    glyph._lib["com.schriftgestaltung.lastChange"] = gslayer.parent.lastChange
+    if gslayer.parent.lastChange:
+        glyph._lib["com.schriftgestaltung.lastChange"] = gslayer.parent.lastChange
 
     c = gslayer.parent.category
     sc = gslayer.parent.subCategory
