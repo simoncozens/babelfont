@@ -32,11 +32,11 @@ class Babelfont:
             cls.convertors.append(_module)
 
     @classmethod
-    def open(cls, filename):
+    def open(cls, filename, **kwargs):
         cls._load_convertors()
         for c in cls.convertors:
             if c.can_handle(filename):
-                return c.open(filename)
+                return c.open(filename, **kwargs)
         raise NotImplementedError
 
     @classmethod

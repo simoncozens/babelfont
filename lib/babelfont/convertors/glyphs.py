@@ -14,18 +14,19 @@ def can_handle(filename):
     return filename.endswith(".glyphs")
 
 
-def open(filename, master=None):
+def open(filename, **kwargs):
     gsfont = glyphsLib.GSFont(filename)
     gsmaster = None
-    if master is None:
+    if "master" not in kwargs or not kwargs["master"]:
         gsmaster = gsfont.masters[0]
     else:
+        wanted = kwargs["master"]
         for m in gsfont.masters:
-            if m.name == master:
+            if m.name == wanted:
                 gsmaster = m
                 break
         if not gsmaster:
-            raise ValueError(f"Master {master} not found in {filename}")
+            raise ValueError(f"Master {wanted} not found in {filename}")
     return _load_gsfont(gsmaster)
 
 def save(font, filename):

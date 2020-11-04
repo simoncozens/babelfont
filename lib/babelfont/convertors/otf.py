@@ -18,7 +18,7 @@ def can_handle(filename):
     font = TTFont(filename)
     return "CFF " in font
 
-def open(filename):
+def open(filename, **kwargs):
     return _load_ttfont(TTFont(filename))
 
 def save(font, filename):
