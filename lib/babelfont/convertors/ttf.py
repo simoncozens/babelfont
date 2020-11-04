@@ -33,8 +33,9 @@ def _load_ttfont(ttfont):
     bbf.lib.glyphOrder = ttfont.getGlyphOrder()
     # Make a layer
     layer = bbf.newLayer("public.default")
+    cmap = ttfont["cmap"].buildReversed()
     for glyph in ttfont.getGlyphOrder():
-        layer._glyphs[glyph] = _load_ttglyph(glyph, ttfont)
+        layer._glyphs[glyph] = _load_ttglyph(glyph, ttfont, cmap)
     return bbf
 
 _namesmap = [
@@ -96,10 +97,16 @@ def _load_other_info(bbf, ttfont):
     bbf.info.openTypeOS2Selection = [x for x in selection if x not in [0,5,6]]
     bbf.info.openTypeOS2VendorID = ttfont["OS/2"].achVendID
     # panose is horrible
-    bbf.info.openTypeOS2UnicodeRanges = (ttfont["OS/2"].ulUnicodeRange1, ttfont["OS/2"].ulUnicodeRange2, ttfont["OS/2"].ulUnicodeRange3, ttfont["OS/2"].ulUnicodeRange4)
+    bbf.info.openTypeOS2UnicodeRanges = _toFlagBits(
+        ttfont["OS/2"].ulUnicodeRange1 + \
+        (ttfont["OS/2"].ulUnicodeRange2 << 32) + \
+        (ttfont["OS/2"].ulUnicodeRange3 << 64) + \
+        (ttfont["OS/2"].ulUnicodeRange4 << 96)
+    )
 
-    # Getting some "invalid value" for my fonts.
-    # bbf.info.openTypeOS2CodePageRanges = (ttfont["OS/2"].ulCodePageRange1, ttfont["OS/2"].ulCodePageRange2)
+    bbf.info.openTypeOS2CodePageRanges = _toFlagBits(
+        ttfont["OS/2"].ulCodePageRange1 + ttfont["OS/2"].ulCodePageRange2 << 32
+    )
 
     bbf.info.xHeight = ttfont["OS/2"].sxHeight
     bbf.info.capHeight = ttfont["OS/2"].sCapHeight
@@ -118,10 +125,9 @@ def _load_other_info(bbf, ttfont):
     # vhea
     # postscript
 
-def _load_ttglyph(g, ttfont):
+def _load_ttglyph(g, ttfont, cmap):
     glyph = Glyph()
     glyph._name = g
-    cmap = ttfont["cmap"].buildReversed()
 
     if g in cmap:
         glyph._unicodes = list(cmap[g])
@@ -135,15 +141,17 @@ def _load_ttglyph(g, ttfont):
         c._glyph = glyph
         glyph._contours.append(c)
 
-    if hasattr(ttglyph, "components"):
-        for c in ttglyph.components:
-            glyph._components.append(_load_component(c))
-
     glyph._width       = ttfont["hmtx"][g][0]
     glyph._leftMargin  = ttfont["hmtx"][g][1]
     glyph._height      = ttfont["hhea"].ascent
     if glyph.bounds:
         glyph._rightMargin = glyph._width - glyph.bounds[2]
+
+    if hasattr(ttglyph, "components"):
+        for c in ttglyph.components:
+            comp = _load_component(c)
+            comp._glyph = glyph
+            glyph._components.append(comp)
 
     return glyph
 
@@ -184,7 +192,10 @@ def _load_contour(ttglyph, index):
     return c
 
 def _load_component(c):
-    import code; code.interact(local=locals())
+    component = Component()
+    component._baseGlyph, component.transformation = c.getComponentInfo()
+    return component
+
 # babelfont -> TTFont
 
 
