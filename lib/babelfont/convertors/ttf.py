@@ -136,6 +136,15 @@ def _load_ttglyph(g, ttfont, cmap):
         glyph._unicodes = list(cmap[g])
     else:
         glyph._unicodes = []
+
+    if "GDEF" in ttfont and hasattr(ttfont["GDEF"].table, "GlyphClassDef"):
+        classdefs = ttfont["GDEF"].table.GlyphClassDef.classDefs
+        if g in classdefs:
+            if classdefs[g] == 1: glyph._lib["public.openTypeCategory"] = "base"
+            if classdefs[g] == 2: glyph._lib["public.openTypeCategory"] = "ligature"
+            if classdefs[g] == 3: glyph._lib["public.openTypeCategory"] = "mark"
+            if classdefs[g] == 4: glyph._lib["public.openTypeCategory"] = "component"
+
     glyph._contours = []
 
     ttglyph = ttfont.getGlyphSet()[g]._glyph # _TTGlyphGlyf object

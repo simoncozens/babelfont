@@ -48,6 +48,14 @@ def _load_otglyph(g, ttfont, cmap):
         glyph._unicodes = []
     glyph._contours = []
 
+    if "GDEF" in ttfont and hasattr(ttfont["GDEF"].table, "GlyphClassDef"):
+        classdefs = ttfont["GDEF"].table.GlyphClassDef.classDefs
+        if g in classdefs:
+            if classdefs[g] == 1: glyph._lib["public.openTypeCategory"] = "base"
+            if classdefs[g] == 2: glyph._lib["public.openTypeCategory"] = "ligature"
+            if classdefs[g] == 3: glyph._lib["public.openTypeCategory"] = "mark"
+            if classdefs[g] == 4: glyph._lib["public.openTypeCategory"] = "component"
+
     ttglyph = ttfont.getGlyphSet()[g]
     pen = RecordingPen()
     ttglyph.draw(pen)
