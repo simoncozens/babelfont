@@ -1,3 +1,4 @@
 defcon
 fontParts
-fontTools
+fontTools[ufo]
+glyphsLib
