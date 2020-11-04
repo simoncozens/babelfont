@@ -5,6 +5,16 @@ ABBA,
 A,
 AB
 );
+classes = (
+{
+code = "A B i idotless";
+name = AllLetters;
+},
+{
+code = "A B";
+name = UpperCase;
+}
+);
 date = "2020-10-13 08:27:59 +0000";
 familyName = "New Font";
 fontMaster = (
@@ -62,7 +72,7 @@ subCategory = Uppercase;
 },
 {
 glyphname = B;
-lastChange = "2020-10-28 12:30:17 +0000";
+lastChange = "2020-11-04 08:58:32 +0000";
 layers = (
 {
 layerId = "08BA8065-12E2-4DC0-8840-1E4ED448363F";
@@ -195,6 +205,13 @@ width = 223;
 unicode = 0307;
 }
 );
+kerning = {
+"08BA8065-12E2-4DC0-8840-1E4ED448363F" = {
+A = {
+B = -50;
+};
+};
+};
 unitsPerEm = 1000;
 versionMajor = 1;
 versionMinor = 0;
