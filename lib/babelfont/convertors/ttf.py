@@ -37,6 +37,8 @@ def _load_ttfont(ttfont):
     for glyph in ttfont.getGlyphOrder():
         layer._glyphs[glyph] = None
         layer._promised_glyphs[glyph] = lambda glyph=glyph,ttfont=ttfont,cmap=cmap : _load_ttglyph(glyph, ttfont, cmap)
+    _load_ttanchors(bbf, ttfont)
+
     return bbf
 
 _namesmap = [
@@ -147,6 +149,8 @@ def _load_ttglyph(g, ttfont, cmap):
 
     glyph._contours = []
 
+    _load_ttcategory(glyph, ttfont, g)
+
     ttglyph = ttfont.getGlyphSet()[g]._glyph # _TTGlyphGlyf object
     for i in range (0, max(ttglyph.numberOfContours, 0)):
         c = _load_contour(ttglyph, i)
@@ -166,6 +170,45 @@ def _load_ttglyph(g, ttfont, cmap):
             glyph._components.append(comp)
 
     return glyph
+
+def _load_ttcategory(glyph, ttfont, g):
+    if not "GDEF" in ttfont or not hasattr(ttfont["GDEF"].table, "GlyphClassDef"):
+        return
+    classdefs = ttfont["GDEF"].table.GlyphClassDef.classDefs
+    if not g in classdefs:
+        return
+    if classdefs[g] == 1: glyph._lib["public.openTypeCategory"] = "base"
+    if classdefs[g] == 2: glyph._lib["public.openTypeCategory"] = "ligature"
+    if classdefs[g] == 3: glyph._lib["public.openTypeCategory"] = "mark"
+    if classdefs[g] == 4: glyph._lib["public.openTypeCategory"] = "component"
+
+def _load_ttanchors(font, ttfont):
+    if not "GPOS" in ttfont:
+        return
+    t = ttfont["GPOS"].table
+
+    # Do cursive first
+    cursives = filter(lambda x: x.LookupType == 3, t.LookupList.Lookup)
+    for c in cursives:
+        for s in c.SubTable:
+            for glyph, record in zip(s.Coverage.glyphs, s.EntryExitRecord):
+                if record.EntryAnchor:
+                    entryAnchor = Anchor()
+                    entryAnchor._glyph = glyph
+                    entryAnchor.x = record.EntryAnchor.XCoordinate
+                    entryAnchor.y = record.EntryAnchor.YCoordinate
+                    entryAnchor.name = "entry"
+                    font[glyph]._anchors.append(entryAnchor)
+                if record.ExitAnchor:
+                    exitAnchor = Anchor()
+                    exitAnchor._glyph = glyph
+                    exitAnchor.x = record.ExitAnchor.XCoordinate
+                    exitAnchor.y = record.ExitAnchor.YCoordinate
+                    exitAnchor.name = "exit"
+                    font[glyph]._anchors.append(exitAnchor)
+
+    # Now do others, synthesizing names
+    # XXX
 
 def _load_contour(ttglyph, index):
     endPt = ttglyph.endPtsOfContours[index]

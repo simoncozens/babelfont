@@ -8,7 +8,7 @@ from babelfont.contour import Contour
 from babelfont.component import Component
 from babelfont.anchor import Anchor
 from copy import copy
-from babelfont.convertors.ttf import _load_name_table, _load_other_info
+from babelfont.convertors.ttf import _load_name_table, _load_other_info, _load_ttanchors, _load_ttcategory
 from fontTools.pens.recordingPen import RecordingPen
 
 
@@ -36,6 +36,7 @@ def _load_ttfont(ttfont):
     for glyph in ttfont.getGlyphOrder():
         layer._glyphs[glyph] = None
         layer._promised_glyphs[glyph] = lambda glyph=glyph,ttfont=ttfont,cmap=cmap : _load_otglyph(glyph, ttfont, cmap)
+    _load_ttanchors(bbf, ttfont)
     return bbf
 
 def _load_otglyph(g, ttfont, cmap):
@@ -48,13 +49,7 @@ def _load_otglyph(g, ttfont, cmap):
         glyph._unicodes = []
     glyph._contours = []
 
-    if "GDEF" in ttfont and hasattr(ttfont["GDEF"].table, "GlyphClassDef"):
-        classdefs = ttfont["GDEF"].table.GlyphClassDef.classDefs
-        if g in classdefs:
-            if classdefs[g] == 1: glyph._lib["public.openTypeCategory"] = "base"
-            if classdefs[g] == 2: glyph._lib["public.openTypeCategory"] = "ligature"
-            if classdefs[g] == 3: glyph._lib["public.openTypeCategory"] = "mark"
-            if classdefs[g] == 4: glyph._lib["public.openTypeCategory"] = "component"
+    _load_ttcategory(glyph, ttfont, g)
 
     ttglyph = ttfont.getGlyphSet()[g]
     pen = RecordingPen()
