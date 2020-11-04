@@ -38,7 +38,7 @@ def save(font, filename):
 def _load_gsfont(gsfontmaster):
     bbf = Font(gsfontmaster)
 
-    # XXX Create: groups, kerning, features
+    # XXX Create: features
 
     bbf.info.familyName = gsfontmaster.font.familyName
     bbf.info.styleName = gsfontmaster.name

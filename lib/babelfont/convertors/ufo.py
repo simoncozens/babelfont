@@ -28,7 +28,7 @@ def save(font, filename):
 def _load_dcfont(dcf):
     bbf = Font(dcf)
 
-    # XXX Create: groups, kerning, features
+    # XXX Create: features
     for k,v in dcf.info.getDataForSerialization().items():
         bbf.info._setAttr(k, copy(v))
     for k,v in dcf.lib.items():
@@ -38,7 +38,9 @@ def _load_dcfont(dcf):
         bblayer.font = bbf
         bbf._layers.append(bblayer)
         bbf._layerOrder.append(bblayer.name)
-
+    for name, contents in dcf.groups.items():
+        bbf.groups[name] = contents
+    _copy_kerning(dcf.kerning, bbf.kerning)
     return bbf
 
 
@@ -109,6 +111,9 @@ def _load_dcpoint(dcpoint, contour):
     point.smooth = dcpoint.smooth
     return point
 
+def _copy_kerning(inkerning, outkerning):
+    for pair, value in inkerning.items():
+        outkerning[pair] = value
 
 # # babelfont -> defcon
 
@@ -190,6 +195,10 @@ def _save_dcfont(font):
         for l in font.layers:
             newLayer = dcf.newLayer(l.name)
             _save_layer(l, newLayer)
+    for name, contents in font.groups.items():
+        dcf.groups[name] = contents
+    _copy_kerning(font.kerning, dcf.kerning)
+
     return dcf
 
 # # Random stuff
