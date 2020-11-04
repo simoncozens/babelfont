@@ -71,10 +71,12 @@ def _load_name_table(bbf, nametable):
         if smsn in ["regular", "italic", "bold", "bold italic"]:
             bbf.info.styleMapStyleName = smsn
 
-    if family := (nametable.getDebugName(16) or nametable.getDebugName(1)):
+    family = (nametable.getDebugName(16) or nametable.getDebugName(1))
+    if family:
         bbf.info.familyName = family
 
-    if style := (nametable.getDebugName(17) or nametable.getDebugName(2)):
+    style = (nametable.getDebugName(17) or nametable.getDebugName(2))
+    if style:
         bbf.info.styleName = style
 
     # For bonus points we should load all translations here too.
