@@ -6,8 +6,8 @@ babelfont
 .. image:: https://img.shields.io/pypi/v/babelfont.svg
         :target: https://pypi.python.org/pypi/babelfont
 
-.. image:: https://img.shields.io/travis/simoncozens/babelfont.svg
-        :target: https://travis-ci.com/simoncozens/babelfont
+.. image:: https://github.com/simoncozens/babelfont/workflows/Python%20package/badge.svg
+        :target: https://github.com/simoncozens/babelfont/actions/
 
 .. image:: https://readthedocs.org/projects/babelfont/badge/?version=latest
         :target: https://babelfont.readthedocs.io/en/latest/?badge=latest
