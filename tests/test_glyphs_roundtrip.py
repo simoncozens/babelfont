@@ -2,9 +2,13 @@ from babelfont import Babelfont
 import plistlib
 import subprocess
 from io import BytesIO
+import pytest
+import sys
 
 
 def test_roundtrip():
+    if sys.platform != "darwin":
+        pytest.skip("Needs to be run on OS X")
     font = Babelfont.open("tests/data/Test1.glyphs")
     Babelfont.save(font, "tests/data/Test1.roundtrip.glyphs")
     pl1_json = subprocess.run(
