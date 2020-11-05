@@ -4,6 +4,7 @@ from babelfont.layer import Layer
 from babelfont.lib import Lib
 from babelfont.glyph import Glyph
 from babelfont.point import Point
+from babelfont.features import Features
 from babelfont.contour import Contour
 from babelfont.component import Component
 from babelfont.anchor import Anchor
@@ -42,6 +43,8 @@ def _load_dcfont(dcf):
         bbf.groups[name] = contents
     bbf.lib.glyphOrder = list(dcf.layers[None].keys())
     _copy_kerning(dcf.kerning, bbf.kerning)
+    if dcf.features and dcf.features.text:
+        bbf.features.text = dcf.features.text
     return bbf
 
 
@@ -199,7 +202,8 @@ def _save_dcfont(font):
     for name, contents in font.groups.items():
         dcf.groups[name] = contents
     _copy_kerning(font.kerning, dcf.kerning)
-
+    if font.features and font.features.text:
+        dcf.features.text = font.features.text
     return dcf
 
 # # Random stuff

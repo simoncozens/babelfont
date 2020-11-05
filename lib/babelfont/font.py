@@ -1,11 +1,11 @@
 from fontParts.base.font import BaseFont
-from fontParts.base.features import BaseFeatures
 from babelfont.lib import Lib
 from babelfont import addUnderscoreProperty
 from babelfont.glyph import Glyph
 from babelfont.groups import Groups
 from babelfont.info import Info
 from babelfont.layer import Layer
+from babelfont.features import Features
 from babelfont.kerning import Kerning
 from babelfont import Babelfont
 
@@ -27,7 +27,7 @@ class Font(BaseFont):
         self._info.font = self
         self._groups = Groups()
         self._kerning = Kerning()
-        self._features = BaseFeatures()
+        self._features = Features()
         self._lib = Lib()
         self._unicodemap = None
         self._reversedunicodemap = None
