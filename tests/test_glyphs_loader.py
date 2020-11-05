@@ -37,3 +37,4 @@ def test_font_load():
         == {"A": 1, "B": 1, "i": 1, "idotless": 1, "dotaccentcomb": 1}.keys()
     )
     assert "AllLetters" in font.groups
+    assert font.glyphForCodepoint(ord("A")) == "A"

@@ -40,6 +40,7 @@ def _load_dcfont(dcf):
         bbf._layerOrder.append(bblayer.name)
     for name, contents in dcf.groups.items():
         bbf.groups[name] = contents
+    bbf.lib.glyphOrder = list(dcf.layers[None].keys())
     _copy_kerning(dcf.kerning, bbf.kerning)
     return bbf
 

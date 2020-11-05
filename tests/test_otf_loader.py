@@ -18,6 +18,7 @@ def test_load():
 
     dot = font["uni0307"]
     assert dot.category == "mark"
+    assert font.glyphForCodepoint(ord("A")) == "A"
 
 def test_load2():
     font = Babelfont.open("tests/data/Nunito-Regular.ttf")
