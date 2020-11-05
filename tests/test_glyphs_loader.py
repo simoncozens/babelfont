@@ -38,3 +38,8 @@ def test_font_load():
     )
     assert "AllLetters" in font.groups
     assert font.glyphForCodepoint(ord("A")) == "A"
+
+def test_segments():
+    font = glyphs.open("tests/data/Test1.glyphs")
+    segments = font["B"].contours[0].segments
+    assert len(segments) == 7

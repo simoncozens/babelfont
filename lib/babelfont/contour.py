@@ -1,9 +1,12 @@
 from fontParts.base.contour import BaseContour
+from fontParts.fontshell.segment import RSegment # Fine until fontshell splits...
 from babelfont import addUnderscoreProperty
 
 
 @addUnderscoreProperty("clockwise")
 class Contour(BaseContour):
+    segmentClass = RSegment
+
     def _lenPoints(self):
         return len(self._points)
 
