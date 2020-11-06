@@ -52,4 +52,9 @@ setup(
     url='https://github.com/simoncozens/babelfont',
     version='0.2.2',
     zip_safe=False,
+    entry_points={
+        "console_scripts": [
+            "babelfont = babelfont.__main__:main"
+        ]
+    },
 )
