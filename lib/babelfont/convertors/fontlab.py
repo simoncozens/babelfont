@@ -8,7 +8,7 @@ from babelfont.contour import Contour
 from babelfont.component import Component
 from babelfont.anchor import Anchor
 import json
-from munch import munchify # Because I am lazy
+from munch import munchify  # Because I am lazy
 from babelfont.convertors.utils import _toFlagBits
 
 
@@ -31,11 +31,14 @@ def load(filename, **kwargs):
             raise ValueError(f"Master {wanted} not found in {filename}")
     return _load_vfj(vfj, master.fontMaster)
 
+
 def save(font, filename):
     gsfont = _save_gsfont(font)
     gsfont.save(filename)
 
+
 # vfj -> babelfont
+
 
 def _load_vfj(vfj, master):
     bbf = Font()
@@ -122,7 +125,9 @@ def _load_glyph(g, layer, master):  # -> Glyph
         raise ValueError
 
     if hasattr(g, "unicode"):
-        glyph._unicodes = [int(g.unicode,16)]
+        glyph._unicodes = [int(g.unicode, 16)]
+    else:
+        glyph._unicodes = []
     glyph._width = glayer.advanceWidth
     glyph._height = master.ascender - master.descender  # ?
     glyph._lib = Lib()
@@ -136,12 +141,19 @@ def _load_glyph(g, layer, master):  # -> Glyph
         if g.openTypeGlyphClass == 3:
             glyph._lib["public.openTypeCategory"] = "mark"
 
-
-    # Elements with more than one entry?
-    if hasattr(glayer, "elements") and hasattr(glayer.elements[0], "elementData") and hasattr(glayer.elements[0].elementData, "contours"):
-        glyph._contours = [_load_contour(glyph, c.nodes) for c in glayer.elements[0].elementData.contours]
+    glyph._contours = []
+    glyph._components = []
+    if hasattr(glayer, "elements"):
+        for element in glayer.elements:
+            if hasattr(element, "component"):
+                glyph._components.append(_load_component(element, glyph))
+            else:
+                for c in element.elementData.contours:
+                    glyph._contours.append(_load_contour(glyph, c.nodes))
     # Guidelines
+
     return glyph
+
 
 def _load_contour(glyph, segments):
     contour = Contour()
@@ -149,7 +161,7 @@ def _load_contour(glyph, segments):
     contour._points = []
 
     for s in segments:
-        if s[-1] == "x": # sx?
+        if s[-1] == "x":  # sx?
             s = s[:-3]
 
         if s[-1] == "s":
@@ -157,12 +169,10 @@ def _load_contour(glyph, segments):
             s = s[:-2]
         else:
             smooth = False
-        if s[-1] == "c": # Close
+        if s[-1] == "c":  # Close
             s = s[:-2]
-        if "s" in s: import code; code.interact(local=locals())
-
         points = s.split("  ")
-        for ix,position in enumerate(points):
+        for ix, position in enumerate(points):
             p = Point()
             p._contour = contour
             p.x, p.y = [float(pos) for pos in position.split(" ")]
@@ -172,19 +182,26 @@ def _load_contour(glyph, segments):
                 p.type = "curve"
             else:
                 p.type = "offcurve"
-            if ix == len(points)-1 and smooth:
+            if ix == len(points) - 1 and smooth:
                 p.smooth = True
+            else:
+                p.smooth = False
             contour._points.append(p)
+        if len(contour._points) and contour._points[-1].type == "offcurve":
+            contour._points[0].type = "curve"
 
-
+    contour._correct_direction()
     return contour
 
 
-def _load_gscomponent(gscomponent, glyph):
+def _load_component(c, glyph):
     component = Component()
     component._glyph = glyph
-    component._baseGlyph = gscomponent.componentName
-    component._transformation = tuple(gscomponent.transform.value)
+    component._baseGlyph = c.component.glyphName
+    if hasattr(c, "transform"):
+        component._transformation = tuple(
+            (1, 0, 0, 1, c.transform.get("xOffset", 0), c.transform.get("yOffset", 0))
+        )
     return component
 
 
@@ -210,6 +227,7 @@ def _load_gspoint(gspoint, contour):
 def _load_groups(groups, classes):
     for c in classes:
         groups[c.name] = c.names
+
 
 # def _load_kerning(kerning, gskerning):
 #     for left in gskerning.keys():
