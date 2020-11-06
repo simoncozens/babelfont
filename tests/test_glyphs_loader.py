@@ -29,7 +29,7 @@ def test_gslayer_load():
 
 
 def test_font_load():
-    font = glyphs.open("tests/data/Test1.glyphs")
+    font = glyphs.load("tests/data/Test1.glyphs")
     assert isinstance(font, Font)
     assert isinstance(font.defaultLayer, Layer)
     assert (
@@ -40,6 +40,6 @@ def test_font_load():
     assert font.glyphForCodepoint(ord("A")) == "A"
 
 def test_segments():
-    font = glyphs.open("tests/data/Test1.glyphs")
+    font = glyphs.load("tests/data/Test1.glyphs")
     segments = font["B"].contours[0].segments
     assert len(segments) == 7

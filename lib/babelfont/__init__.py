@@ -1,6 +1,7 @@
 import os
 import sys
 import pkgutil
+import warnings
 
 
 class addUnderscoreProperty:
@@ -33,10 +34,16 @@ class Babelfont:
 
     @classmethod
     def open(cls, filename, **kwargs):
+        warnings.warn("Call to deprecated function open, use load instead.",
+                      category=DeprecationWarning)
+        return cls.load(filename, **kwargs)
+
+    @classmethod
+    def load(cls, filename, **kwargs):
         cls._load_convertors()
         for c in cls.convertors:
             if c.can_handle(filename):
-                return c.open(filename, **kwargs)
+                return c.load(filename, **kwargs)
         raise NotImplementedError
 
     @classmethod

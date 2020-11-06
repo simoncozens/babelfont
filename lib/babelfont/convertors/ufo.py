@@ -15,7 +15,7 @@ def can_handle(filename):
     return filename.endswith(".ufo")
 
 
-def open(filename, **kwargs):
+def load(filename, **kwargs):
     dcfont = defcon.Font(filename)
     return _load_dcfont(dcfont)
 

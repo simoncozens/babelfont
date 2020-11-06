@@ -14,7 +14,7 @@ def can_handle(filename):
     return filename.endswith(".glyphs")
 
 
-def open(filename, **kwargs):
+def load(filename, **kwargs):
     gsfont = glyphsLib.GSFont(filename)
     gsmaster = None
     if "master" not in kwargs or not kwargs["master"]:
