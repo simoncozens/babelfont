@@ -115,8 +115,11 @@ def _load_other_info(bbf, ttfont):
         ttfont["OS/2"].ulCodePageRange1 + ttfont["OS/2"].ulCodePageRange2 << 32
     )
 
+    # XXX vertical metrics...
     bbf.info.xHeight = ttfont["OS/2"].sxHeight
     bbf.info.capHeight = ttfont["OS/2"].sCapHeight
+    bbf.info.ascender = ttfont["hhea"].ascender
+    bbf.info.descender = ttfont["hhea"].descender
 
     for k in ["usWidthClass", "usWeightClass", "sTypoAscender", "sTypoDescender", \
         "sTypoLineGap", "usWinAscent", "usWinDescent", "ySubscriptXSize", \
