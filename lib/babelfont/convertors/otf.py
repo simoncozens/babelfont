@@ -8,7 +8,7 @@ from babelfont.contour import Contour
 from babelfont.component import Component
 from babelfont.anchor import Anchor
 from copy import copy
-from babelfont.convertors.ttf import _load_name_table, _load_other_info, _load_ttanchors, _load_ttcategory
+from babelfont.convertors.ttf import _load_name_table, _load_other_info, _load_ttanchors, _load_ttcategory, _load_features
 from fontTools.pens.recordingPen import RecordingPen
 
 
@@ -36,7 +36,8 @@ def _load_ttfont(ttfont):
     for glyph in ttfont.getGlyphOrder():
         layer._glyphs[glyph] = None
         layer._promised_glyphs[glyph] = lambda glyph=glyph,ttfont=ttfont,cmap=cmap : _load_otglyph(glyph, ttfont, cmap)
-    _load_ttanchors(bbf, ttfont)
+    ff = _load_features(bbf, ttfont)
+    _load_ttanchors(bbf, ttfont, ff)
     return bbf
 
 def _load_otglyph(g, ttfont, cmap):

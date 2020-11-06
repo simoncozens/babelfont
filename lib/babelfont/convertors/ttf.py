@@ -37,7 +37,8 @@ def _load_ttfont(ttfont):
     for glyph in ttfont.getGlyphOrder():
         layer._glyphs[glyph] = None
         layer._promised_glyphs[glyph] = lambda glyph=glyph,ttfont=ttfont,cmap=cmap : _load_ttglyph(glyph, ttfont, cmap)
-    _load_ttanchors(bbf, ttfont)
+    ff = _load_features(bbf, ttfont)
+    _load_ttanchors(bbf, ttfont, ff)
 
     return bbf
 
@@ -182,7 +183,16 @@ def _load_ttcategory(glyph, ttfont, g):
     if classdefs[g] == 3: glyph._lib["public.openTypeCategory"] = "mark"
     if classdefs[g] == 4: glyph._lib["public.openTypeCategory"] = "component"
 
-def _load_ttanchors(font, ttfont):
+def _load_features(font, ttfont):
+    try:
+        from fontFeatures.ttLib import unparse
+    except Exception as e:
+        return None
+    ff = unparse(ttfont)
+    font.features.text = ff.asFea()
+    return ff
+
+def _load_ttanchors(font, ttfont, ff=None):
     if not "GPOS" in ttfont:
         return
     t = ttfont["GPOS"].table
