@@ -2,4 +2,3 @@ defcon
 fontParts
 fontTools[ufo]
 glyphsLib
-munch

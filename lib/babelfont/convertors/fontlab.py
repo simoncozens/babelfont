@@ -8,7 +8,6 @@ from babelfont.contour import Contour
 from babelfont.component import Component
 from babelfont.anchor import Anchor
 import json
-from munch import munchify  # Because I am lazy
 from babelfont.convertors.utils import _toFlagBits
 
 
@@ -17,19 +16,19 @@ def can_handle(filename):
 
 
 def load(filename, **kwargs):
-    vfj = munchify(json.load(open(filename, "r"))).font
+    vfj = json.load(open(filename, "r"))["font"]
     if "master" not in kwargs or not kwargs["master"]:
-        wanted = vfj.defaultMaster
+        wanted = vfj["defaultMaster"]
     else:
         wanted = kwargs["master"]
     master = None
-    for m in vfj.masters:
-        if m.fontMaster.name == wanted:
+    for m in vfj["masters"]:
+        if m["fontMaster"]["name"] == wanted:
             master = m
             break
         if not master:
             raise ValueError(f"Master {wanted} not found in {filename}")
-    return _load_vfj(vfj, master.fontMaster)
+    return _load_vfj(vfj, master["fontMaster"])
 
 
 def save(font, filename):
@@ -43,69 +42,74 @@ def save(font, filename):
 def _load_vfj(vfj, master):
     bbf = Font()
 
-    bbf.info.familyName = vfj.info.tfn
+    bbf.info.familyName = vfj["info"]["tfn"]
     # sgn?
-    bbf.info.styleName = master.name
-    bbf.info.copyright = vfj.info.copyright
-    bbf.info.trademark = vfj.info.trademark
+    bbf.info.styleName = master["name"]
+    bbf.info.copyright = vfj["info"]["copyright"]
+    bbf.info.trademark = vfj["info"]["trademark"]
 
-    bbf.lib.glyphOrder = [x.name for x in vfj.glyphs]
-    bbf.lib["com.fontlab.appVersion"] = vfj.meta.metaFormatVersion
-    bbf.lib["com.fontlab.appBuild"] = vfj.meta.metaBuild
+    bbf.lib.glyphOrder = [x["name"] for x in vfj["glyphs"]]
+    bbf.lib["com.fontlab.appVersion"] = vfj["meta"]["metaFormatVersion"]
+    bbf.lib["com.fontlab.appBuild"] = vfj["meta"]["metaBuild"]
 
-    bbf.info.openTypeHeadCreated = vfj.info.creationDate
-    bbf.info.openTypeNameDesigner = vfj.info.designer
-    bbf.info.openTypeNameDesignerURL = vfj.info.designerURL
-    bbf.info.openTypeNameManufacturer = vfj.info.manufacturer
-    bbf.info.openTypeNameManufacturerURL = vfj.info.manufacturerURL
-    bbf.info.versionMajor = vfj.info.versionMajor
-    bbf.info.versionMinor = vfj.info.versionMinor
-    bbf.info.year = vfj.info.year
-    bbf.info.openTypeNameVersion = vfj.info.version
+    bbf.info.openTypeHeadCreated = vfj["info"]["creationDate"]
+    bbf.info.openTypeNameDesigner = vfj["info"]["designer"]
+    bbf.info.openTypeNameDesignerURL = vfj["info"]["designerURL"]
+    bbf.info.openTypeNameManufacturer = vfj["info"]["manufacturer"]
+    bbf.info.openTypeNameManufacturerURL = vfj["info"]["manufacturerURL"]
+    bbf.info.versionMajor = vfj["info"]["versionMajor"]
+    bbf.info.versionMinor = vfj["info"]["versionMinor"]
+    bbf.info.year = vfj["info"]["year"]
+    bbf.info.openTypeNameVersion = vfj["info"]["version"]
 
-    bbf.info.openTypeOS2UnicodeRanges = _toFlagBits(int(vfj.info.unicodeRange, 16))
-    bbf.info.openTypeOS2CodePageRanges = _toFlagBits(int(vfj.info.codepageRange, 16))
-    if vfj.info.useTypoMetrics:
+    bbf.info.openTypeOS2UnicodeRanges = _toFlagBits(
+        int(vfj["info"]["unicodeRange"], 16)
+    )
+    bbf.info.openTypeOS2CodePageRanges = _toFlagBits(
+        int(vfj["info"]["codepageRange"], 16)
+    )
+    if vfj["info"]["useTypoMetrics"]:
         bbf.info.openTypeOS2Selection = [7]
-    bbf.info.openTypeOS2Type = _toFlagBits(int(vfj.info.embedding, 16))
+    bbf.info.openTypeOS2Type = _toFlagBits(int(vfj["info"]["embedding"], 16))
 
-    bbf.info.unitsPerEm = vfj.upm
+    bbf.info.unitsPerEm = vfj["upm"]
 
-    _load_groups(bbf.groups, vfj.classes)
+    _load_groups(bbf.groups, vfj["classes"])
 
-    bbf.features.text = "\n".join([f.feature for f in vfj.openTypeFeatures])
+    # XXX Add groups here
+    bbf.features.text = "\n".join([f["feature"] for f in vfj["openTypeFeatures"]])
 
     # Only support one layer for now
     layer = Layer()
-    layer._name = master.name
+    layer._name = master["name"]
 
-    bbf.info.ascender = master.ascender
-    bbf.info.capHeight = master.capsHeight
-    bbf.info.descender = master.descender
-    bbf.info.xHeight = master.xHeight
+    bbf.info.ascender = master["ascender"]
+    bbf.info.capHeight = master["capsHeight"]
+    bbf.info.descender = master["descender"]
+    bbf.info.xHeight = master["xHeight"]
 
-    bbf.info.postscriptFontName = master.psn
+    bbf.info.postscriptFontName = master["psn"]
 
     # measurement, safeTop, safeBottom?
-    bbf.info.openTypeOS2WeightClass = master.weight
-    bbf.info.openTypeOS2WidthClass = master.width
-    bbf.info.openTypeOS2TypoLineGap = master.lineGap
-    bbf.info.postscriptUnderlineThickness = master.underlineThickness
-    bbf.info.postscriptUnderlinePosition = master.underlinePosition
-    bbf.info.panose = [int(i) for i in master.panose.split()]
+    bbf.info.openTypeOS2WeightClass = master["weight"]
+    bbf.info.openTypeOS2WidthClass = master["width"]
+    bbf.info.openTypeOS2TypoLineGap = master["lineGap"]
+    bbf.info.postscriptUnderlineThickness = master["underlineThickness"]
+    bbf.info.postscriptUnderlinePosition = master["underlinePosition"]
+    bbf.info.panose = [int(i) for i in master["panose"].split()]
     # guidelines, mask?,
-    bbf.info.openTypeHheaAscender = master.otherData.hhea_ascender
-    bbf.info.openTypeHheaDescender = master.otherData.hhea_descender
-    bbf.info.openTypeHheaLineGap = master.otherData.hhea_line_gap
-    bbf.info.openTypeOS2StrikeoutSize = master.otherData.strikeout_size
-    bbf.info.openTypeOS2StrikeoutPosition = master.otherData.strikeout_position
+    bbf.info.openTypeHheaAscender = master["otherData"]["hhea_ascender"]
+    bbf.info.openTypeHheaDescender = master["otherData"]["hhea_descender"]
+    bbf.info.openTypeHheaLineGap = master["otherData"]["hhea_line_gap"]
+    bbf.info.openTypeOS2StrikeoutSize = master["otherData"]["strikeout_size"]
+    bbf.info.openTypeOS2StrikeoutPosition = master["otherData"]["strikeout_position"]
     # XXX superscripts, subscriptsmas
 
     bbf._layers.append(layer)
-    bbf._layerOrder.append(master.name)
+    bbf._layerOrder.append(master["name"])
 
-    for g in vfj.glyphs:
-        layer._glyphs[g.name] = _load_glyph(g, layer, master)
+    for g in vfj["glyphs"]:
+        layer._glyphs[g["name"]] = _load_glyph(g, layer, master)
 
     # if master.kerning:
     #     _load_kerning(bbf.kerning, master)
@@ -115,21 +119,21 @@ def _load_vfj(vfj, master):
 def _load_glyph(g, layer, master):  # -> Glyph
     glyph = Glyph()
     glyph._layer = layer
-    glyph._name = g.name
+    glyph._name = g["name"]
     glayer = None
 
-    for l in g.layers:
-        if l.name == master.name:
+    for l in g["layers"]:
+        if l["name"] == master["name"]:
             glayer = l
     if not glayer:
         raise ValueError
 
     if hasattr(g, "unicode"):
-        glyph._unicodes = [int(g.unicode, 16)]
+        glyph._unicodes = [int(g["unicode"], 16)]
     else:
         glyph._unicodes = []
-    glyph._width = glayer.advanceWidth
-    glyph._height = master.ascender - master.descender  # ?
+    glyph._width = glayer["advanceWidth"]
+    glyph._height = master["ascender"] - master["descender"]  # ?
     glyph._lib = Lib()
     glyph._lib.glyph = glyph
 
@@ -144,11 +148,11 @@ def _load_glyph(g, layer, master):  # -> Glyph
     glyph._contours = []
     glyph._components = []
     if hasattr(glayer, "elements"):
-        for element in glayer.elements:
+        for element in glayer["elements"]:
             if hasattr(element, "component"):
                 glyph._components.append(_load_component(element, glyph))
             else:
-                for c in element.elementData.contours:
+                for c in element["elementData"]["contours"]:
                     glyph._contours.append(_load_contour(glyph, c.nodes))
     # Guidelines
 
@@ -197,10 +201,17 @@ def _load_contour(glyph, segments):
 def _load_component(c, glyph):
     component = Component()
     component._glyph = glyph
-    component._baseGlyph = c.component.glyphName
+    component._baseGlyph = c["component"]["glyphName"]
     if hasattr(c, "transform"):
         component._transformation = tuple(
-            (1, 0, 0, 1, c.transform.get("xOffset", 0), c.transform.get("yOffset", 0))
+            (
+                1,
+                0,
+                0,
+                1,
+                c["transform"].get("xOffset", 0),
+                c["transform"].get("yOffset", 0),
+            )
         )
     return component
 
@@ -214,19 +225,9 @@ def _load_gsanchor(gsanchor, glyph):
     return anchor
 
 
-def _load_gspoint(gspoint, contour):
-    point = Point()
-    point._contour = contour
-    point._x = gspoint.position.x
-    point._y = gspoint.position.y
-    point.type = gspoint.type
-    point.smooth = gspoint.smooth
-    return point
-
-
 def _load_groups(groups, classes):
     for c in classes:
-        groups[c.name] = c.names
+        groups[c["name"]] = c["names"]
 
 
 # def _load_kerning(kerning, gskerning):
