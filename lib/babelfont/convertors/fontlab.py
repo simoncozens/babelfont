@@ -130,7 +130,7 @@ def _load_glyph(g, layer, master):  # -> Glyph
     if not glayer:
         raise ValueError
 
-    if hasattr(g, "unicode"):
+    if "unicode" in g:
         glyph._unicodes = [int(g["unicode"], 16)]
     else:
         glyph._unicodes = []
@@ -149,13 +149,13 @@ def _load_glyph(g, layer, master):  # -> Glyph
 
     glyph._contours = []
     glyph._components = []
-    if hasattr(glayer, "elements"):
+    if "elements" in glayer:
         for element in glayer["elements"]:
-            if hasattr(element, "component"):
+            if "component" in element:
                 glyph._components.append(_load_component(element, glyph))
             else:
                 for c in element["elementData"]["contours"]:
-                    glyph._contours.append(_load_contour(glyph, c.nodes))
+                    glyph._contours.append(_load_contour(glyph, c["nodes"]))
     # Guidelines
 
     return glyph
