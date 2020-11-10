@@ -11,9 +11,11 @@ import json
 from babelfont.convertors.utils import _toFlagBits
 
 
-def can_handle(filename):
+def can_load(filename):
     return filename.endswith(".vfj")
 
+def can_save(filename):
+    return None
 
 def load(filename, **kwargs):
     vfj = json.load(open(filename, "r"))["font"]

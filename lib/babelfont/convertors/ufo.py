@@ -11,7 +11,10 @@ from babelfont.anchor import Anchor
 from copy import copy
 
 
-def can_handle(filename):
+def can_load(filename):
+    return filename.endswith(".ufo")
+
+def can_save(filename):
     return filename.endswith(".ufo")
 
 

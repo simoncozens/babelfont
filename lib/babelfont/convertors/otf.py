@@ -12,11 +12,14 @@ from babelfont.convertors.ttf import _load_name_table, _load_other_info, _load_t
 from fontTools.pens.recordingPen import RecordingPen
 
 
-def can_handle(filename):
+def can_load(filename):
     if not (filename.endswith(".otf") or filename.endswith(".ttf")):
       return False
     font = TTFont(filename)
     return "CFF " in font
+
+def can_save(filename):
+    return filename.endswith(".otf")
 
 def load(filename, **kwargs):
     return _load_ttfont(TTFont(filename))

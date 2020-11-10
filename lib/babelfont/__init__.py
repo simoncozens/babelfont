@@ -42,7 +42,7 @@ class Babelfont:
     def load(cls, filename, **kwargs):
         cls._load_convertors()
         for c in cls.convertors:
-            if c.can_handle(filename):
+            if c.can_load(filename):
                 return c.load(filename, **kwargs)
         raise NotImplementedError
 
@@ -50,6 +50,6 @@ class Babelfont:
     def save(cls, obj, filename):
         cls._load_convertors()
         for c in cls.convertors:
-            if c.can_handle(filename):
+            if c.can_save(filename):
                 return c.save(obj, filename)
         raise NotImplementedError

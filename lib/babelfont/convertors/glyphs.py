@@ -10,7 +10,10 @@ from babelfont.component import Component
 from babelfont.anchor import Anchor
 
 
-def can_handle(filename):
+def can_load(filename):
+    return filename.endswith(".glyphs")
+
+def can_save(filename):
     return filename.endswith(".glyphs")
 
 

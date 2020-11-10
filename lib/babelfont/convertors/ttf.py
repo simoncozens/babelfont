@@ -12,11 +12,14 @@ from copy import copy
 import math
 
 
-def can_handle(filename):
+def can_load(filename):
     if not (filename.endswith(".otf") or filename.endswith(".ttf")):
       return False
     font = TTFont(filename)
     return "glyf" in font
+
+def can_save(filename):
+    return filename.endswith(".ttf")
 
 def load(filename, **kwargs):
     return _load_ttfont(TTFont(filename))
