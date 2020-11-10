@@ -38,7 +38,8 @@ def save(font, filename):
 
 def _load_ttfont(ttfont):
     bbf = Font()
-    _load_name_table(bbf, ttfont["name"])
+    if "name" in ttfont:
+        _load_name_table(bbf, ttfont["name"])
     _load_other_info(bbf, ttfont)
     bbf.lib.glyphOrder = ttfont.getGlyphOrder()
     # Make a layer
@@ -326,6 +327,14 @@ def _save_ttfont(bbf):
                 os2[k] = getattr(bbf.info, infokey)
     fb.setupOS2(**os2)
     # Name tables
+    nameStrings = dict(
+        familyName=dict(en=bbf.info.familyName),
+        styleName=dict(en=bbf.info.styleName),
+        fullName=f'{bbf.info.familyName} {bbf.info.styleName}',
+        psName = bbf.info.postscriptFontName,
+        version="Version " + str(bbf.info.versionMajor + bbf.info.versionMinor/10**len(str(bbf.info.versionMinor))),
+    )
+    fb.setupNameTable(nameStrings)
     # Kerning
     # Features
 
