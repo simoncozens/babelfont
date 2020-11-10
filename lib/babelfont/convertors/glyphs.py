@@ -67,12 +67,23 @@ def _load_gsfont(gsfontmaster):
 
     for g in gsfontmaster.font.glyphs:
         layer._glyphs[g.name] = _load_gslayer(g.layers[gsfontmaster.id], layer)
+        if g.leftKerningGroup:
+            groupname = "public.kern1."+g.leftKerningGroup
+            if not groupname in bbf.groups:
+                bbf.groups[groupname] = []
+            bbf.groups[groupname] = [*bbf.groups[groupname], g.name]
+        if g.rightKerningGroup:
+            groupname = "public.kern2."+g.rightKerningGroup
+            if not groupname in bbf.groups:
+                bbf.groups[groupname] = []
+            bbf.groups[groupname] = [*bbf.groups[groupname], g.name]
+
 
     for g in gsfontmaster.font.glyphs:
         _finalise_glyph(g.layers[gsfontmaster.id], layer._glyphs[g.name])
 
     if gsfontmaster.id in gsfontmaster.font.kerning:
-        _load_kerning(bbf.kerning, gsfontmaster.font.kerning[gsfontmaster.id])
+        _load_kerning(bbf.kerning, gsfontmaster.font.kerning[gsfontmaster.id], gsfontmaster.font)
     return bbf
 
 
@@ -152,12 +163,16 @@ def _load_groups(groups, classes):
     for c in classes:
         groups[c.name] = c.code.split() # Urgh
 
-def _load_kerning(kerning, gskerning):
+def _load_kerning(kerning, gskerning, gsfont):
     for left in gskerning.keys():
-        assert left[0] != "@"
+        if "@" in left:
+            ufoleft = "public.kern1."+left[7:]
+        else:
+            ufoleft = left
         for right, value in gskerning[left].items():
-            assert right[0] != "@"
-            kerning[(left,right)] = value
+            if "@" in right:
+                right = "public.kern2."+right[7:]
+            kerning[(ufoleft,right)] = value
 
 # babelfont -> glyphsLib
 
@@ -189,7 +204,7 @@ def _save_component(component):
     # XXX
     return c
 
-def _save_glyph(glyph, gsfont):
+def _save_glyph(glyph, gsfont, bbf):
     # This needs to go into a layer and a glyph
     masterId = gsfont.masters[0].id
     gslayer = glyphsLib.GSLayer()
@@ -215,6 +230,14 @@ def _save_glyph(glyph, gsfont):
     # Attach to master ID
     gsglyph.name = glyph.name
     gsfont.glyphs.append(gsglyph)
+    # Set kerning groups
+    for name, contents in bbf.groups.items():
+        if not "public.kern" in name: continue
+        if glyph.name in contents:
+            if "public.kern1" in name:
+                gsglyph.leftKerningGroup = name[13:]
+            else:
+                gsglyph.rightKerningGroup = name[13:]
 
 def _save_gsfont(font):
     f = glyphsLib.GSFont()
@@ -236,14 +259,21 @@ def _save_gsfont(font):
     fontmaster.capHeight = font.info.capHeight
     fontmaster.descender = font.info.descender
     for glyph in font.defaultLayer:
-        _save_glyph(glyph, f)
+        _save_glyph(glyph, f, bbf=font)
     for g in font.groups:
+        if "public.kern" in g:
+            continue
         f.classes.append(glyphsLib.GSClass(g, " ".join(font.groups[g])))
     _save_kerning(font.kerning, f, fontmaster.id)
     return f
 
 def _save_kerning(kerning, font, mid):
     for (l,r), value in kerning.items():
+        if "public.kern1" in l:
+            l = "@MMK_L_"+l[13:]
+        if "public.kern2" in r:
+            r = "@MMK_R_"+r[13:]
+
         font.setKerningForPair(mid,l,r,value)
 
 # Random stuff
