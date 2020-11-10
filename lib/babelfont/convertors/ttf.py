@@ -300,7 +300,7 @@ def _save_ttfont(bbf):
     fb.updateHead(
         fontRevision = bbf.info.versionMajor + bbf.info.versionMinor/10**len(str(bbf.info.versionMinor)),
         created = _ufo_date_to_opentime(bbf.info.openTypeHeadCreated),
-        lowestRecPPEM = bbf.info.openTypeHeadLowestRecPPEM
+        lowestRecPPEM = bbf.info.openTypeHeadLowestRecPPEM or fb.font["head"].lowestRecPPEM
         )
     fb.setupGlyf(glyf)
     fb.setupHorizontalMetrics(metrics)
@@ -322,7 +322,8 @@ def _save_ttfont(bbf):
             infokey = infokey[1:]
         infokey = "openTypeOS2"+infokey
         if hasattr(bbf.info, infokey):
-            os2[k] = getattr(bbf.info, infokey)
+            if getattr(bbf.info, infokey):
+                os2[k] = getattr(bbf.info, infokey)
     fb.setupOS2(**os2)
     # Name tables
     # Kerning
