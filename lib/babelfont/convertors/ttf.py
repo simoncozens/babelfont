@@ -8,8 +8,14 @@ from babelfont.contour import Contour
 from babelfont.component import Component
 from babelfont.anchor import Anchor
 from babelfont.convertors.utils import _toFlagBits
+from fontTools.pens.ttGlyphPen import TTGlyphPen
+from fontTools.pens.cu2quPen import Cu2QuPen
+from fontTools.fontBuilder import FontBuilder
+from fontTools.misc.timeTools import epoch_diff, timestampSinceEpoch
 from copy import copy
 import math
+import time
+from datetime import datetime
 
 
 def can_load(filename):
@@ -93,7 +99,7 @@ def _load_other_info(bbf, ttfont):
     bbf.info.unitsPerEm = ttfont["head"].unitsPerEm
     bbf.info.versionMajor, bbf.info.versionMinor = [int(x) for x in str(ttfont["head"].fontRevision).split(".")]
     bbf.info.openTypeHeadFlags = _toFlagBits(ttfont["head"].flags)
-    # bbf.info.openTypeHeadCreated = ttfont["head"].created # XXX
+    bbf.info.openTypeHeadCreated = _opentime_date_to_ufo(ttfont["head"].created) # XXX
     bbf.info.openTypeHeadLowestRecPPEM = ttfont["head"].lowestRecPPEM
 
     for k in ["ascender", "descender", "lineGap", "caretSlopeRise", \
@@ -137,6 +143,8 @@ def _load_other_info(bbf, ttfont):
 
     # vhea
     # postscript
+    bbf.info.postscriptUnderlineThickness = ttfont["post"].underlineThickness
+    bbf.info.postscriptUnderlinePosition = ttfont["post"].underlinePosition
 
 def _load_ttglyph(g, ttfont, cmap):
     glyph = Glyph()
@@ -269,3 +277,66 @@ def _load_component(c):
     return component
 
 # babelfont -> TTFont
+
+def _save_ttfont(bbf):
+    fb = FontBuilder(bbf.info.unitsPerEm, isTTF=True)
+    fb.setupGlyphOrder(bbf.lib.glyphOrder)
+    bbf._build_maps()
+    fb.setupCharacterMap(bbf._unicodemap)
+    glyf = {}
+    metrics = {}
+    for i in [1,2]:
+        for g in bbf:
+            if i == 1 and g.components: continue
+            if i == 2 and not g.components: continue
+            pen = Cu2QuPen(TTGlyphPen(glyf),bbf.info.unitsPerEm/1000)
+            g.draw(pen)
+            glyf[g.name] = pen.pen.glyph()
+            bounds = g.bounds
+            xMin = 0
+            if bounds:
+                xMin = bounds[0]
+            metrics[g.name] = (g.width, xMin)
+    fb.updateHead(
+        fontRevision = bbf.info.versionMajor + bbf.info.versionMinor/10**len(str(bbf.info.versionMinor)),
+        created = _ufo_date_to_opentime(bbf.info.openTypeHeadCreated),
+        lowestRecPPEM = bbf.info.openTypeHeadLowestRecPPEM
+        )
+    fb.setupGlyf(glyf)
+    fb.setupHorizontalMetrics(metrics)
+    fb.setupHorizontalHeader(ascent = int(bbf.info.openTypeHheaAscender or bbf.info.ascender or 0), descent = int(bbf.info.openTypeHheaDescender or bbf.info.descender or 0))
+    os2 = {
+        "sTypoAscender":bbf.info.openTypeOS2TypoAscender or bbf.info.ascender or 0,
+        "sTypoDescender":bbf.info.openTypeOS2TypoDescender or bbf.info.descender or 0,
+        "sxHeight": bbf.info.xHeight,
+        "sCapHeight": bbf.info.capHeight,
+    }
+    for k in ["usWidthClass", "usWeightClass",
+        "sTypoLineGap", "usWinAscent", "usWinDescent", "ySubscriptXSize", \
+        "ySubscriptYSize", "ySubscriptXOffset", "ySubscriptYOffset", \
+        "ySuperscriptXSize", "ySuperscriptYSize", "ySuperscriptXOffset", \
+        "ySuperscriptYOffset", "yStrikeoutSize", "yStrikeoutPosition"
+        ]:
+        infokey = k
+        while not infokey[0].isupper():
+            infokey = infokey[1:]
+        infokey = "openTypeOS2"+infokey
+        if hasattr(bbf.info, infokey):
+            os2[k] = getattr(bbf.info, infokey)
+    fb.setupOS2(**os2)
+    # Name tables
+    # Kerning
+    # Features
+
+    fb.setupPost(
+        underlinePosition=bbf.info.postscriptUnderlinePosition,
+        underlineThickness=bbf.info.postscriptUnderlineThickness,
+    )
+    return fb.font
+
+def _opentime_date_to_ufo(value):
+    tm = time.gmtime(max(0, value + epoch_diff))
+    return time.strftime('%Y/%m/%d %H:%M:%S', tm)
+
+def _ufo_date_to_opentime(d):
+    return timestampSinceEpoch(datetime.strptime(d, '%Y/%m/%d %H:%M:%S').timestamp())
