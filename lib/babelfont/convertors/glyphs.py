@@ -8,7 +8,7 @@ from babelfont.point import Point
 from babelfont.contour import Contour
 from babelfont.component import Component
 from babelfont.anchor import Anchor
-
+from glyphsLib.types import Transform
 
 def can_load(filename):
     return filename.endswith(".glyphs")
@@ -203,8 +203,7 @@ def _save_anchor(anchor):
 def _save_component(component):
     c = glyphsLib.GSComponent(component.baseGlyph)
     if component.transformation != (1,0,0,1,0,0):
-        c.transform = component.transformation
-    # XXX
+        c.transform = Transform(*component.transformation)
     return c
 
 def _save_glyph(glyph, gsfont, bbf):
@@ -257,6 +256,8 @@ def _save_gsfont(font):
         fontmaster.id = font.lib["com.schriftgestaltung.fontMasterID"]
 
     f.masters = [fontmaster]
+    f.instances = [glyphsLib.GSInstance()]
+    f.instances[0].instanceInterpolations = {}
     fontmaster.ascender = font.info.ascender
     fontmaster.xHeight = font.info.xHeight
     fontmaster.capHeight = font.info.capHeight

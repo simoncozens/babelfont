@@ -204,7 +204,7 @@ def _load_component(c, glyph):
     component = Component()
     component._glyph = glyph
     component._baseGlyph = c["component"]["glyphName"]
-    if hasattr(c, "transform"):
+    if "transform" in c:
         component._transformation = tuple(
             (
                 1,
