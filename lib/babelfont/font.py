@@ -85,9 +85,12 @@ class Font(BaseFont):
     def _get_glyphOrder(self):
         return self.lib.glyphOrder
 
-    def glyphForCodepoint(self, u):
+    def glyphForCodepoint(self, u, fallback=True):
         self._build_maps()
-        return self._unicodemap.get(u, self._unicodemap[0])
+        if fallback:
+            return self._unicodemap.get(u, self._unicodemap[0])
+        else:
+            return self._unicodemap.get(u, None)
 
     def codepointForGlyph(self, g):
         self._build_maps()
