@@ -1,9 +1,13 @@
 from babelfont import Babelfont
 from babelfont.glyph import Glyph
+from fontTools.ttLib import TTFont
+import pytest
+import glob
+import os
 
 
 def test_load():
-    font = Babelfont.open("tests/data/NewFont-Regular.ttf")
+    font = Babelfont.load("tests/data/NewFont-Regular.ttf")
     a_layer = font["A"]
     assert isinstance(a_layer, Glyph)
     assert len(a_layer.contours) == 2
@@ -20,11 +24,17 @@ def test_load():
     assert dot.category == "mark"
     assert font.glyphForCodepoint(ord("A")) == "A"
 
-def test_load2():
-    font = Babelfont.open("tests/data/Nunito-Regular.ttf")
-    # font.save("tests/data/Nunito-from-ttf.ufo")
+def test_round_trip():
+    font = Babelfont.load("tests/data/Nunito-Regular.ttf")
+    TTFont("tests/data/Nunito-Regular.ttf").saveXML("tests/data/Nunito-1.ttx")
+    font.save("tests/data/Nunito-from-ttf.ttf")
+    TTFont("tests/data/Nunito-from-ttf.ttf").saveXML("tests/data/Nunito-2.ttx")
 
+# Torture test
+tests = []
+for testfile in glob.glob("tests/data/testotfs/*"):
+    tests.append(pytest.param(testfile, id=os.path.basename(testfile)))
+@pytest.mark.parametrize("fontname", tests)
+def test_otfloader(fontname):
+    font = Babelfont.load(fontname)
 
-def test_load_otf():
-    font = Babelfont.open("tests/data/Nunito-Regular.otf")
-    # font.save("tests/data/Nunito-from-otf.ufo")

@@ -8,7 +8,7 @@ from babelfont.contour import Contour
 from babelfont.component import Component
 from babelfont.anchor import Anchor
 import json
-from babelfont.convertors.utils import _toFlagBits
+from babelfont.utils import _toFlagBits
 
 
 def can_load(filename):

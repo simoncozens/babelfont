@@ -256,8 +256,8 @@ def _save_gsfont(font):
         fontmaster.id = font.lib["com.schriftgestaltung.fontMasterID"]
 
     f.masters = [fontmaster]
-    f.instances = [glyphsLib.GSInstance()]
-    f.instances[0].instanceInterpolations = {}
+    # f.instances = [glyphsLib.GSInstance()]
+    # f.instances[0].instanceInterpolations = {}
     fontmaster.ascender = font.info.ascender
     fontmaster.xHeight = font.info.xHeight
     fontmaster.capHeight = font.info.capHeight

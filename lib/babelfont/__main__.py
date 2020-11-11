@@ -18,6 +18,7 @@ def main():
       font.save(args.output)
     except Exception as e:
       print("Couldn't write %s: %s" % (args.output, e))
+      raise e
       sys.exit(1)
 
     sys.exit(0)
