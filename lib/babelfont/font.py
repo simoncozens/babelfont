@@ -69,7 +69,7 @@ class Font(BaseFont):
         self._layers = [ l for l in self._layers if l.name != name ]
 
     def _build_maps(self):
-        if not self._unicodemap or not self._reversedunicodemap:
+        if self._unicodemap is None or self._reversedunicodemap is None:
             self._unicodemap = {}
             self._reversedunicodemap = {}
             for g in self:

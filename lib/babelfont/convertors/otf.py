@@ -37,8 +37,19 @@ def _load_ttfont(ttfont):
     layer = bbf.newLayer("public.default")
     cmap = ttfont["cmap"].buildReversed()
     for glyph in ttfont.getGlyphOrder():
+        if glyph in cmap:
+            cps = list(cmap[glyph])
+            bbf._reversedunicodemap[glyph] = cps[0]
+            for cp in cps:
+                bbf._unicodemap[cp] = glyph
         layer._glyphs[glyph] = None
-        layer._promised_glyphs[glyph] = lambda glyph=glyph,ttfont=ttfont,cmap=cmap : _load_otglyph(glyph, ttfont, cmap)
+        layer._promised_glyphs[
+            glyph
+        ] = lambda glyph=glyph, ttfont=ttfont, cmap=cmap: _load_otglyph(
+            glyph, ttfont, cmap
+        )
+    bbf._unicodemap[0] = ttfont.getGlyphOrder()[0]
+
     ff = _load_features(bbf, ttfont)
     _load_ttanchors(bbf, ttfont, ff)
     return bbf

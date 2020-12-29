@@ -46,17 +46,25 @@ def _load_ttfont(ttfont):
     if "name" in ttfont:
         _load_name_table(bbf, ttfont["name"])
     _load_other_info(bbf, ttfont)
+    bbf._unicodemap = {}
+    bbf._reversedunicodemap = {}
     bbf.lib.glyphOrder = ttfont.getGlyphOrder()
     # Make a layer
     layer = bbf.newLayer("public.default")
     cmap = ttfont["cmap"].buildReversed()
     for glyph in ttfont.getGlyphOrder():
+        if glyph in cmap:
+            cps = list(cmap[glyph])
+            bbf._reversedunicodemap[glyph] = cps[0]
+            for cp in cps:
+                bbf._unicodemap[cp] = glyph
         layer._glyphs[glyph] = None
         layer._promised_glyphs[
             glyph
         ] = lambda glyph=glyph, ttfont=ttfont, cmap=cmap: _load_ttglyph(
             glyph, ttfont, cmap
         )
+    bbf._unicodemap[0] = ttfont.getGlyphOrder()[0]
     ff = _load_features(bbf, ttfont)
     _load_ttanchors(bbf, ttfont, ff)
 
@@ -200,19 +208,6 @@ def _load_ttglyph(g, ttfont, cmap):
         glyph._unicodes = list(cmap[g])
     else:
         glyph._unicodes = []
-
-    if "GDEF" in ttfont and hasattr(ttfont["GDEF"].table, "GlyphClassDef"):
-        classdefs = ttfont["GDEF"].table.GlyphClassDef.classDefs
-        if g in classdefs:
-            if classdefs[g] == 1:
-                glyph._lib["public.openTypeCategory"] = "base"
-            if classdefs[g] == 2:
-                glyph._lib["public.openTypeCategory"] = "ligature"
-            if classdefs[g] == 3:
-                glyph._lib["public.openTypeCategory"] = "mark"
-            if classdefs[g] == 4:
-                glyph._lib["public.openTypeCategory"] = "component"
-
     glyph._contours = []
 
     _load_ttcategory(glyph, ttfont, g)
