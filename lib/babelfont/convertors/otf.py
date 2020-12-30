@@ -32,6 +32,8 @@ def _load_ttfont(ttfont):
     bbf = Font()
     _load_name_table(bbf, ttfont["name"])
     _load_other_info(bbf, ttfont)
+    bbf._unicodemap = {}
+    bbf._reversedunicodemap = {}
     bbf.lib.glyphOrder = ttfont.getGlyphOrder()
     # Make a layer
     layer = bbf.newLayer("public.default")
