@@ -362,9 +362,11 @@ def _save_ttfont(bbf):
             if bounds:
                 xMin = bounds[0]
             metrics[g.name] = (g.width, xMin)
+    versionMajor = bbf.info.versionMajor or 1
+    versionMinor = bbf.info.versionMinor or 0
     fb.updateHead(
-        fontRevision=bbf.info.versionMajor
-        + bbf.info.versionMinor / 10 ** len(str(bbf.info.versionMinor)),
+        fontRevision=versionMajor
+        + versionMinor / 10 ** len(str(versionMinor)),
         created=_ufo_date_to_opentime(bbf.info.openTypeHeadCreated),
         lowestRecPPEM=bbf.info.openTypeHeadLowestRecPPEM
         or fb.font["head"].lowestRecPPEM,
@@ -425,8 +427,8 @@ def _save_ttfont(bbf):
     # Features
 
     fb.setupPost(
-        underlinePosition=bbf.info.postscriptUnderlinePosition,
-        underlineThickness=bbf.info.postscriptUnderlineThickness,
+        underlinePosition=(bbf.info.postscriptUnderlinePosition or 0),
+        underlineThickness=(bbf.info.postscriptUnderlineThickness or 0),
     )
     return fb.font
 
