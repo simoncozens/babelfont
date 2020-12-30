@@ -53,8 +53,15 @@ def _load_gsfont(gsfontmaster):
 
     bbf.info.openTypeHeadCreated = _glyphs_date_to_ufo(gsfontmaster.font.date)
     bbf.info.unitsPerEm = gsfontmaster.font.upm
-
+    bbf.info.copyright = gsfontmaster.font.copyright
+    bbf.info.versionMajor = gsfontmaster.font.versionMajor
+    bbf.info.versionMinor = gsfontmaster.font.versionMinor
+    bbf.info.openTypeNameDesigner = gsfontmaster.font.designer
+    bbf.info.openTypeNameDesignerURL = gsfontmaster.font.designerURL
+    bbf.info.openTypeNameManufacturer = gsfontmaster.font.manufacturer
+    bbf.info.openTypeNameManufacturerURL = gsfontmaster.font.manufacturerURL
     _load_groups(bbf.groups, gsfontmaster.font.classes)
+
 
     # Only support one layer for now
     layer = Layer()
