@@ -55,7 +55,7 @@ def _load_dclayer(dclayer):  # -> Layer
     bblayer = Layer()
     for k,v in dclayer.lib.items():
         bblayer.lib._setItem(k, copy(v))
-    # bblayer.color = dclayer.color
+    bblayer.color = tuple(v for v in dclayer.color)
     bblayer.name = dclayer.name
     for k in dclayer.keys():
         bblayer._glyphs[k] = _load_dcglyph(dclayer[k], bblayer)
