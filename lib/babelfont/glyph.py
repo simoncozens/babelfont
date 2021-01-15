@@ -1,4 +1,5 @@
 from fontParts.base.glyph import BaseGlyph
+from babelfont.image import Image
 from babelfont import addUnderscoreProperty
 from babelfont.lib import Lib
 
@@ -6,14 +7,26 @@ from babelfont.lib import Lib
 # @addUnderscoreProperty(["name", "unicodes", "width", "height", "lib"])
 @addUnderscoreProperty("name")
 @addUnderscoreProperty("unicodes")
+@addUnderscoreProperty("guidelines")
+@addUnderscoreProperty("image")
 @addUnderscoreProperty("width")
 @addUnderscoreProperty("height")
 @addUnderscoreProperty("lib")
+@addUnderscoreProperty("note")
+@addUnderscoreProperty("markColor")
 class Glyph(BaseGlyph):
     def _init(self, *args, **kwargs):
         self._lib = Lib()
         self._components = []
         self._anchors = []
+        self._unicodes = []
+        self._guidelines = []
+        self._contours = []
+        self._image = Image()
+        self._width = 0
+        self._height = 0
+        self._note = ""
+        self._markColor = None
 
     def _autoUnicodes(self):
         # Maybe someday

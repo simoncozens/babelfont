@@ -43,3 +43,8 @@ def test_segments():
     font = glyphs.load("tests/data/Test1.glyphs")
     segments = font["B"].contours[0].segments
     assert len(segments) == 7
+
+
+def test_clone_glyph():
+    font = glyphs.load("tests/data/Test1.glyphs")
+    font["B"].copy()
