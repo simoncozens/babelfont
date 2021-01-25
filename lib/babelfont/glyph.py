@@ -2,6 +2,7 @@ from fontParts.base.glyph import BaseGlyph
 from babelfont.image import Image
 from babelfont import addUnderscoreProperty
 from babelfont.lib import Lib
+from babelfont.anchor import Anchor
 
 
 # @addUnderscoreProperty(["name", "unicodes", "width", "height", "lib"])
@@ -38,6 +39,12 @@ class Glyph(BaseGlyph):
     def _lenContours(self):
         return len(self._contours)
 
+    def _lenGuidelines(self):
+        return 0
+
+    def _clearImage(self):
+        self._image = Image()
+
     def _getContour(self, index, **kwargs):
         return self._contours[index]
 
@@ -70,6 +77,9 @@ class Glyph(BaseGlyph):
 
     def _removeAnchor(self, index, **kwargs):
         del(self._anchors[index])
+
+    def _appendAnchor(self, name, **kwargs):
+        self._anchors.append(Anchor(name=name, **kwargs))
 
     # Babelfont glyphs have a category, even if fontParts ones don't
     @property
