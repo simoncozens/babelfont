@@ -37,7 +37,7 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
     ],
-    description="Routines for extracting information from fontTools glyphs",
+    description="Abstract interface to font source files based on fontParts",
     install_requires=requirements,
     license="Apache Software License 2.0",
     long_description=readme + '\n\n' + history,
@@ -50,7 +50,7 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/simoncozens/babelfont',
-    version='0.4.1',
+    version='2.0.0',
     zip_safe=False,
     entry_points={
         "console_scripts": [
