@@ -294,7 +294,9 @@ def _save_kerning(kerning, font, mid):
 # Random stuff
 
 def _glyphs_date_to_ufo(d):
-    return d.strftime('%Y/%m/%d %H:%M:%S')
+    if d:
+        return d.strftime('%Y/%m/%d %H:%M:%S')
+    return None
 
 def _ufo_date_to_glyphs(d):
     return datetime.strptime(d, '%Y/%m/%d %H:%M:%S').strftime('%Y-%m-%d %H:%M:%S +0000')
