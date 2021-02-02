@@ -50,6 +50,9 @@ class Font(BaseFont):
             return self.defaultLayer.keys()
         return []
 
+    def exportedGlyphs(self):
+        return [ k for k in self.defaultLayer.keys() if self[k].exported ]
+
     def _get_defaultLayerName(self):
         if len(self._layers) > 0:
             return self._layers[0].name

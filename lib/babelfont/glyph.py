@@ -24,6 +24,7 @@ class Glyph(BaseGlyph):
         self._guidelines = []
         self._contours = []
         self._image = Image()
+        self.exported = True
         self._width = 0
         self._height = 0
         self._note = ""

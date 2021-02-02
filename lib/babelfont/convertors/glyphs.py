@@ -107,6 +107,7 @@ def _load_gslayer(gslayer, layer):  # -> Glyph
         glyph._unicodes = []
     glyph._width = gslayer.width
     glyph._height = gslayer.master.ascender - gslayer.master.descender  # ?
+    glyph.exported = gslayer.parent.export
     glyph._lib = Lib()
     glyph._lib.glyph = glyph
     if gslayer.parent.lastChange:
