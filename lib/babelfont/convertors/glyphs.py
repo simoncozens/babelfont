@@ -76,6 +76,8 @@ def _load_gsfont(gsfontmaster):
     bbf._layerOrder.append(gsfontmaster.name)
 
     for g in gsfontmaster.font.glyphs:
+        if not g.export:
+            continue
         layer._glyphs[g.name] = _load_gslayer(g.layers[gsfontmaster.id], layer)
         if g.leftKerningGroup:
             groupname = "public.kern1."+g.leftKerningGroup
@@ -90,6 +92,8 @@ def _load_gsfont(gsfontmaster):
 
 
     for g in gsfontmaster.font.glyphs:
+        if not g.export:
+            continue
         _finalise_glyph(g.layers[gsfontmaster.id], layer._glyphs[g.name])
 
     if gsfontmaster.id in gsfontmaster.font.kerning:
