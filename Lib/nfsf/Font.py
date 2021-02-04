@@ -1,6 +1,6 @@
 from .BaseObject import BaseObject
 from pathlib import Path
-
+from fontTools.misc.filenames import userNameToFileName
 
 class Font(BaseObject):
     _serialize_slots = [
@@ -34,6 +34,6 @@ class Font(BaseObject):
             for g in self.glyphs:
                 glyphpath = path / "glyphs"
                 glyphpath.mkdir(parents=True, exist_ok=True)
-                with open(glyphpath / (g.name+".nfsglyph"), "wb") as f2:
+                with open(glyphpath / (userNameToFileName(g.name)+".nfsglyph"), "wb") as f2:
                     g._write_value(f2, "layers", g.layers)
             self._write_value(f, "glyphs", self.glyphs)
