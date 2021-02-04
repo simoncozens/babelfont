@@ -201,7 +201,7 @@ class GlyphsTwo(BaseConvertor):
         self.font.upm = self.glyphs["unitsPerEm"]
         self.font.version = (self.glyphs["versionMajor"], self.glyphs["versionMinor"])
         # XXX localise
-        self.font.name = self.glyphs["familyName"]
+        self.font.names.familyName = self.glyphs["familyName"]
         self.font.note = self.glyphs.get("note")
         self.font.date = datetime.strptime(
             self.glyphs.get("date"), "%Y-%m-%d %H:%M:%S +0000"

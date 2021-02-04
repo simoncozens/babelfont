@@ -1,10 +1,11 @@
 from .BaseObject import BaseObject
 from pathlib import Path
 from fontTools.misc.filenames import userNameToFileName
+from .Names import Names
+
 
 class Font(BaseObject):
     _serialize_slots = [
-        "name",
         "upm",
         "version",
         "axes",
@@ -21,6 +22,7 @@ class Font(BaseObject):
         self.masters = []
         self.glyphs = []
         self.instances = []
+        self.names = Names()
         self._formatspecific = {}
         self.date = None
 
@@ -30,6 +32,9 @@ class Font(BaseObject):
 
         with open(path / "info.json", "wb") as f:
             self.write(stream=f)
+
+        with open(path / "names.json", "wb") as f:
+            self._write_value(f, "glyphs", self.names)
 
         with open(path / "glyphs.json", "wb") as f:
             for g in self.glyphs:

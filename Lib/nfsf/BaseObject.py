@@ -9,6 +9,16 @@ Color = namedtuple("Color", "r,g,b,a", defaults=[0,0,0,0])
 Position = namedtuple("Position", "x,y,angle", defaults=[0,0,0])
 _Node = namedtuple("Node", "x,y,type,userdata", defaults=[0,0,"c",None])
 
+class I18NDictionary(dict):
+    def get_default(self):
+        if "dflt" in self:
+            return self["dflt"]
+        else:
+            return list(self.values())[0]
+
+    def set_default(self, value):
+        self["dflt"] = value
+
 @dataclass
 class BaseObject:
     _serialize_slots = []
