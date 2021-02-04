@@ -10,6 +10,10 @@ Position = namedtuple("Position", "x,y,angle", defaults=[0,0,0])
 _Node = namedtuple("Node", "x,y,type,userdata", defaults=[0,0,"c",None])
 
 class I18NDictionary(dict):
+    def copy_in(self, other):
+        for k,v in other.items():
+            self[k] = v
+
     def get_default(self):
         if "dflt" in self:
             return self["dflt"]
@@ -17,7 +21,14 @@ class I18NDictionary(dict):
             return list(self.values())[0]
 
     def set_default(self, value):
-        self["dflt"] = value
+        if value:
+            self["dflt"] = value
+
+    def write(self, stream, indent):
+        if len(self.keys()) > 1:
+            stream.write(orjson.dumps(self))
+        else:
+            stream.write('"{0}"'.format(self.get_default()).encode())
 
 @dataclass
 class BaseObject:

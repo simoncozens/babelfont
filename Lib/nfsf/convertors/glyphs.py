@@ -200,8 +200,28 @@ class GlyphsTwo(BaseConvertor):
     def _load_metadata(self):
         self.font.upm = self.glyphs["unitsPerEm"]
         self.font.version = (self.glyphs["versionMajor"], self.glyphs["versionMinor"])
-        # XXX localise
-        self.font.names.familyName = self.glyphs["familyName"]
+        self.font.names.familyName.set_default(self.glyphs["familyName"])
+
+        # This is very glyphs 3
+        props = {}
+        for prop in self.glyphs.get("properties", []):
+            if "value" in prop:
+                props[prop["key"]] = prop["value"]
+            else:
+                props[prop["key"]] = { p["language"]: p["value"] for p in prop["values"] }
+
+        if props:
+            interestingProps = {
+                "copyrights": "copyright", "designer": "designer",
+                "designerURL": "designerURL" } # Etc
+            for glyphsname, attrname in interestingProps.items():
+                thing = props.get(glyphsname, "")
+                if isinstance(thing, dict):
+                    getattr(self.font.names, attrname).copy_in(thing)
+                else:
+                    getattr(self.font.names, attrname).set_default(thing)
+            # Do other properties here
+
         self.font.note = self.glyphs.get("note")
         self.font.date = datetime.strptime(
             self.glyphs.get("date"), "%Y-%m-%d %H:%M:%S +0000"
@@ -210,7 +230,6 @@ class GlyphsTwo(BaseConvertor):
         _maybesetformatspecific(self.font, self.glyphs, ".formatVersion")
         _maybesetformatspecific(self.font, self.glyphs, "DisplayStrings")
         _maybesetformatspecific(self.font, self.glyphs, "customParameters")
-        _maybesetformatspecific(self.font, self.glyphs, "properties")
         _maybesetformatspecific(self.font, self.glyphs, "settings")
         _maybesetformatspecific(self.font, self.glyphs, "numbers")
         _maybesetformatspecific(self.font, self.glyphs, "stems")
