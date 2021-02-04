@@ -9,6 +9,7 @@ class Axis(BaseObject):
     min: int = None
     max: int = None
     default: int = None
-    _write_one_line = True
 
-    _serialize_slots = ["name", "tag"]
+
+    _serialize_slots = __annotations__.keys()
+    _write_one_line = True
