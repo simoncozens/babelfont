@@ -40,11 +40,6 @@ class GlyphsTwo(BaseConvertor):
         for gmaster in self.glyphs["fontMaster"]:
             self.font.masters.append(self._load_master(gmaster))
 
-        self.mastersById = {
-            master._formatspecific["com.glyphsapp"]["id"]: master
-            for master in self.font.masters
-        }
-
         for gglyph in self.glyphs["glyphs"]:
             g = self._load_glyph(gglyph)
             self.font.glyphs.append(g)
@@ -206,7 +201,7 @@ class GlyphsTwo(BaseConvertor):
         self.font.upm = self.glyphs["unitsPerEm"]
         self.font.version = (self.glyphs["versionMajor"], self.glyphs["versionMinor"])
         # XXX localise
-        self.font.localizedName = self.glyphs["familyName"]
+        self.font.name = self.glyphs["familyName"]
         self.font.note = self.glyphs.get("note")
         self.font.date = datetime.strptime(
             self.glyphs.get("date"), "%Y-%m-%d %H:%M:%S +0000"

@@ -4,7 +4,7 @@ from fontTools.misc.filenames import userNameToFileName
 
 class Font(BaseObject):
     _serialize_slots = [
-        "localizedName",
+        "name",
         "upm",
         "version",
         "axes",
@@ -22,6 +22,7 @@ class Font(BaseObject):
         self.glyphs = []
         self.instances = []
         self._formatspecific = {}
+        self.date = None
 
     def save(self, pathname):
         path = Path(pathname)
