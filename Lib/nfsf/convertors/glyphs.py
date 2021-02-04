@@ -3,27 +3,29 @@ from nfsf import *
 import openstep_plist
 from nfsf.util.affine import Affine
 from nfsf.convertors import BaseConvertor
+import re
+import uuid
+
 
 class GlyphsTwo(BaseConvertor):
     suffix = ".glyphs"
 
     @classmethod
     def is_suitable_plist(cls, convertor):
-        return ".formatVersion" not in convertor.scratch["plist"] or convertor.scratch["plist"][".formatVersion"] < 3
+        return (
+            ".formatVersion" not in convertor.scratch["plist"]
+            or convertor.scratch["plist"][".formatVersion"] < 3
+        )
 
     @classmethod
     def can_load(cls, convertor):
         if not super().can_load(convertor):
             return False
         if not "plist" in convertor.scratch:
-            convertor.scratch["plist"] = openstep_plist.load(open(convertor.filename, "r"), use_numbers=True)
+            convertor.scratch["plist"] = openstep_plist.load(
+                open(convertor.filename, "r"), use_numbers=True
+            )
         return cls.is_suitable_plist(convertor)
-
-
-class GlyphsThree(GlyphsTwo):
-    @classmethod
-    def is_suitable_plist(cls, convertor):
-        return ".formatVersion" in convertor.scratch["plist"] and convertor.scratch["plist"][".formatVersion"] >= 3
 
     @classmethod
     def load(cls, convertor):
@@ -54,19 +56,20 @@ class GlyphsThree(GlyphsTwo):
         return self.font
 
     def _load_axes(self):
-        for gaxis in self.glyphs.get("axes", []):
-            axis = Axis(name=gaxis["name"], tag=gaxis["tag"])
-            _maybesetformatspecific(axis, gaxis, "hidden")
-            self.font.axes.append(axis)
+        # XXX Synthesize axes
+        pass
 
     def _load_master(self, gmaster):
-        location = gmaster.get("axesValues", [])
-        metrics = self.glyphs["metrics"]
-        master = Master(name=gmaster["name"])
-        metric_types = [m["type"] for m in metrics]
-        metric_values = [x.get("pos", 0) for x in gmaster["metricValues"]]
-        master.metrics = {k: v for (k, v) in list(zip(metric_types, metric_values))}
-        master.location = {k.name: v for k, v in zip(self.font.axes, location)}
+        # location = gmaster.get("axesValues", [])
+        master = Master(
+            name=gmaster.get("name", ""),
+            xHeight=gmaster.get("xHeight"),
+            capHeight=gmaster.get("capHeight"),
+            ascender=gmaster.get("ascender"),
+            descender=gmaster.get("descender"),
+        )
+        # XXX Synthesize location
+
         master.guides = [self._load_guide(x) for x in gmaster.get("guides", [])]
 
         _maybesetformatspecific(master, gmaster, "customParameters")
@@ -79,8 +82,6 @@ class GlyphsThree(GlyphsTwo):
         _maybesetformatspecific(master, gmaster, "visible")
         return master
 
-
-
     def _load_glyph(self, gglyph):
         name = gglyph["glyphname"]
         c = gglyph.get("category")
@@ -92,6 +93,9 @@ class GlyphsThree(GlyphsTwo):
         else:
             category = "base"
         cp = gglyph.get("unicode")
+        if isinstance(cp, str) and re.match(r"^[0-9A-F]{4}$", cp):
+            cp = int(cp, 16)
+
         g = Glyph(name=name, codepoint=cp, category=category)
         for entry in [
             "case",
@@ -117,61 +121,58 @@ class GlyphsThree(GlyphsTwo):
         l = Layer(width=width, id=layer.get("layerId"))
         l.name = layer.get("name")
         l._master = layer.get("associatedMasterId")
-        l.guides = [self._load_guide(x) for x in layer.get("guides", [])]
+        l.guides = [
+            self._load_guide(x)
+            for x in layer.get("guideLines", layer.get("guides", []))
+        ]
         l.shapes = []
         for shape in layer.get("shapes", []):
             l.shapes.append(self._load_shape(shape))
+        for shape in layer.get("paths", []):
+            l.shapes.append(self._load_path(shape))
+        for shape in layer.get("components", []):
+            l.shapes.append(self._load_component(shape))
+
         _maybesetformatspecific(l, layer, "hints")
         _maybesetformatspecific(l, layer, "partSelection")
         _maybesetformatspecific(l, layer, "visible")
         returns = [l]
         if "background" in layer:
             (background,) = self._load_layer(layer["background"], width=l.width)
+            # If it doesn't have an ID, we need to generate one
+            background.id = background.id or str(uuid.uuid1())
             background.isBackground = True
 
-            l.background = background.id
+            l._background = background.id
             returns.append(background)
         # TODO backgroundImage, metricTop/Bottom/etc, vertOrigin, vertWidth.
         return returns
 
     def _load_guide(self, gguide):
-        return Guide(pos=[*gguide.get("pos", (0,0)), gguide.get("angle",0)])
+        pos = gguide.get("position", "{0, 0}")
+        m = re.match(r"^\{(\S+), (\S+)\}", pos)
+        return Guide(pos=[int(m[1]), int(m[2]), int(gguide.get("angle", 0))])
 
     def _load_instance(self, ginstance):
         instance = Instance(name=ginstance["name"])
         if "axesValues" in ginstance:
             location = ginstance["axesValues"]
             instance.location = {k.name: v for k, v in zip(self.font.axes, location)}
-        return instance
-
-    def _load_metadata(self):
-        self.font.upm = self.glyphs["unitsPerEm"]
-        self.font.version = (self.glyphs["versionMajor"], self.glyphs["versionMinor"])
-        # XXX localise
-        self.font.localizedName = self.glyphs["familyName"]
-        self.font.note = self.glyphs.get("note")
-        self.font.date = datetime.strptime(
-            self.glyphs.get("date"), "%Y-%m-%d %H:%M:%S +0000"
-        )
-        _maybesetformatspecific(self.font, self.glyphs, ".appVersion")
-        _maybesetformatspecific(self.font, self.glyphs, ".formatVersion")
-        _maybesetformatspecific(self.font, self.glyphs, "DisplayStrings")
-        _maybesetformatspecific(self.font, self.glyphs, "customParameters")
-        _maybesetformatspecific(self.font, self.glyphs, "properties")
-        _maybesetformatspecific(self.font, self.glyphs, "settings")
-        _maybesetformatspecific(self.font, self.glyphs, "numbers")
-        _maybesetformatspecific(self.font, self.glyphs, "stems")
-        _maybesetformatspecific(self.font, self.glyphs, "userData")
-
-    def _load_shape(self, shape):
-        if "nodes" in shape:  # It's a path
-            return self._load_path(shape)
         else:
-            return self._load_component(shape)
+            # XXX synthesize
+            pass
+        return instance
 
     def _load_path(self, path):
         shape = Shape()
-        shape.nodes = [ Node(*n[0:3]) for n in path["nodes"] ]
+        shape.nodes = []
+        for n in path["nodes"]:
+            m = re.match(r"(\S+) (\S+) (\S+)( SMOOTH)?(.*)", n)
+            ntype = m[3][0].lower()
+            if m[4]:
+                ntype = ntype + "s"
+            n = Node(x=float(m[1]), y=float(m[2]), type=ntype)
+            shape.nodes.append(n)
         shape.closed = path["closed"]
         return shape
 
@@ -201,10 +202,82 @@ class GlyphsThree(GlyphsTwo):
             _maybesetformatspecific(c, shape, entry)
         return c
 
+    def _load_metadata(self):
+        self.font.upm = self.glyphs["unitsPerEm"]
+        self.font.version = (self.glyphs["versionMajor"], self.glyphs["versionMinor"])
+        # XXX localise
+        self.font.localizedName = self.glyphs["familyName"]
+        self.font.note = self.glyphs.get("note")
+        self.font.date = datetime.strptime(
+            self.glyphs.get("date"), "%Y-%m-%d %H:%M:%S +0000"
+        )
+        _maybesetformatspecific(self.font, self.glyphs, ".appVersion")
+        _maybesetformatspecific(self.font, self.glyphs, ".formatVersion")
+        _maybesetformatspecific(self.font, self.glyphs, "DisplayStrings")
+        _maybesetformatspecific(self.font, self.glyphs, "customParameters")
+        _maybesetformatspecific(self.font, self.glyphs, "properties")
+        _maybesetformatspecific(self.font, self.glyphs, "settings")
+        _maybesetformatspecific(self.font, self.glyphs, "numbers")
+        _maybesetformatspecific(self.font, self.glyphs, "stems")
+        _maybesetformatspecific(self.font, self.glyphs, "userData")
+
+
+class GlyphsThree(GlyphsTwo):
+    @classmethod
+    def is_suitable_plist(cls, convertor):
+        return (
+            ".formatVersion" in convertor.scratch["plist"]
+            and convertor.scratch["plist"][".formatVersion"] >= 3
+        )
+
+    def _load(self):
+        super()._load()
+        return self.font
+
+    def _load_axes(self):
+        for gaxis in self.glyphs.get("axes", []):
+            axis = Axis(name=gaxis["name"], tag=gaxis["tag"])
+            _maybesetformatspecific(axis, gaxis, "hidden")
+            self.font.axes.append(axis)
+
+    def _load_master(self, gmaster):
+        location = gmaster.get("axesValues", [])
+        metrics = self.glyphs["metrics"]
+        master = Master(name=gmaster["name"])
+        metric_types = [m["type"] for m in metrics]
+        metric_values = [x.get("pos", 0) for x in gmaster["metricValues"]]
+        master.metrics = {k: v for (k, v) in list(zip(metric_types, metric_values))}
+        master.location = {k.name: v for k, v in zip(self.font.axes, location)}
+        master.guides = [self._load_guide(x) for x in gmaster.get("guides", [])]
+
+        _maybesetformatspecific(master, gmaster, "customParameters")
+        _maybesetformatspecific(master, gmaster, "iconName")
+        _maybesetformatspecific(master, gmaster, "id")
+        _maybesetformatspecific(master, gmaster, "numberValues")
+        _maybesetformatspecific(master, gmaster, "stemValues")
+        _maybesetformatspecific(master, gmaster, "properties")
+        _maybesetformatspecific(master, gmaster, "userData")
+        _maybesetformatspecific(master, gmaster, "visible")
+        return master
+
+    def _load_guide(self, gguide):
+        return Guide(pos=[*gguide.get("pos", (0, 0)), gguide.get("angle", 0)])
+
+    def _load_shape(self, shape):
+        if "nodes" in shape:  # It's a path
+            return self._load_path(shape)
+        else:
+            return self._load_component(shape)
+
+    def _load_path(self, path):
+        shape = Shape()
+        shape.nodes = [Node(*n[0:3]) for n in path["nodes"]]
+        shape.closed = path["closed"]
+        return shape
+
 
 def _maybesetformatspecific(item, glyphs, key):
     if glyphs.get(key):
         if "com.glyphsapp" not in item._formatspecific:
             item._formatspecific["com.glyphsapp"] = {}
         item._formatspecific["com.glyphsapp"][key] = glyphs.get(key)
-
