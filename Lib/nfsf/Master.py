@@ -3,11 +3,14 @@ from .BaseObject import BaseObject
 
 @dataclass
 class Master(BaseObject):
-  _serialize_slots = ["name", "location", "guides", "metrics"]
-
   name: str
   location: dict = None
   guides: list = None
+  xHeight: int = None
+  capHeight: int = None
+  ascender: int = None
+  descender: int = None
+  kerning: dict = None
 
-def __init__(self):
-    super().__init__()
+  _serialize_slots = __annotations__.keys()
+  _separate_items = { "kerning": True }
