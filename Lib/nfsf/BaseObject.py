@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from ruamel.yaml import YAML
+import orjson
 from io import StringIO
 from collections import namedtuple
 import datetime
@@ -62,8 +62,10 @@ class BaseObject:
             stream.write(b"  " * indent)
         stream.write(b"{")
         towrite = []
-        for k in self._serialize_slots:
+        for k in list(self._serialize_slots):
             v = getattr(self, k)
+            if k == "_formatspecific":
+                k = "_"
             default = None
 
             if k in self.__dataclass_fields__:
@@ -82,6 +84,20 @@ class BaseObject:
             if ix != len(towrite) -1:
                 stream.write(b", ")
 
+        if hasattr(self, "_formatspecific") and self._formatspecific:
+            stream.write(b",")
+            if not self._write_one_line:
+                stream.write(b"\n")
+                stream.write(b"  " * (indent+1))
+            stream.write(b'"_":')
+            if self._write_one_line:
+                stream.write(orjson.dumps(self._formatspecific))
+            else:
+                stream.write(b"\n")
+                stream.write(orjson.dumps(self._formatspecific, option=orjson.OPT_INDENT_2))
+
+        if not self._write_one_line:
+            stream.write(b"\n")            
         stream.write(b"}")
         if not self._write_one_line:
             stream.write(b"\n")
