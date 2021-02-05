@@ -5,10 +5,18 @@ from .Node import Node
 
 @dataclass
 class Shape(BaseObject):
-  ref: str = None
-  transform: list = None
-  nodes: [Node] = None
-  closed: bool = True
-  direction: int = 1
+    ref: str = None
+    transform: list = None
+    nodes: [Node] = None
+    closed: bool = True
+    direction: int = 1
 
-  _serialize_slots = __annotations__.keys()
+    _serialize_slots = __annotations__.keys()
+
+    @property
+    def is_path(self):
+        return not bool(self.transform)
+
+    @property
+    def is_component(self):
+        return bool(self.transform)
