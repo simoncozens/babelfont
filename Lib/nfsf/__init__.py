@@ -7,4 +7,5 @@ from nfsf.Guide import Guide
 from nfsf.Anchor import Anchor
 from nfsf.Layer import Layer
 from nfsf.Shape import Shape
-from nfsf.BaseObject import Color,Node,Position
+from nfsf.Node import Node
+from nfsf.BaseObject import Color, Position

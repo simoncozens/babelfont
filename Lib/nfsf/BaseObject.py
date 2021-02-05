@@ -5,9 +5,9 @@ from collections import namedtuple
 import datetime
 
 
-Color = namedtuple("Color", "r,g,b,a", defaults=[0,0,0,0])
-Position = namedtuple("Position", "x,y,angle", defaults=[0,0,0])
-_Node = namedtuple("Node", "x,y,type,userdata", defaults=[0,0,"c",None])
+Color = namedtuple("Color", "r,g,b,a", defaults=[0, 0, 0, 0])
+Position = namedtuple("Position", "x,y,angle", defaults=[0, 0, 0])
+
 
 class I18NDictionary(dict):
     def copy_in(self, other):
@@ -122,11 +122,3 @@ class BaseObject:
         stream.write(b"}")
         if not self._write_one_line:
             stream.write(b"\n")
-
-
-class Node(_Node):
-    def write(self, stream, indent):
-        if not self.userdata:
-            stream.write( ('[%i,%i,"%s"]' % (self.x, self.y, self.type)).encode())
-        else:
-            stream.write( ('[%i,%i,"%s", "%s"]' % (self.x, self.y, self.type, self.userdata)).encode())

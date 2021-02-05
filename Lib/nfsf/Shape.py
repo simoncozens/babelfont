@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from .BaseObject import BaseObject, Node
+from .BaseObject import BaseObject
+from .Node import Node
 
 
 @dataclass
