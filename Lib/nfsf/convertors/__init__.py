@@ -3,6 +3,7 @@ import sys
 import pkgutil
 import inspect
 
+
 class BaseConvertor:
     suffix = ".XXX"
 
@@ -13,8 +14,9 @@ class BaseConvertor:
     def can_save(self, other):
         return other.filename.endswith(self.suffix)
 
+
 class Convert:
-    convertors = [ ]
+    convertors = []
 
     @classmethod
     def _load_convertors(cls):
@@ -29,7 +31,11 @@ class Convert:
             if is_pkg:
                 continue
             _module = loader.find_module(module_name).load_module(module_name)
-            classes = [x[1] for x in inspect.getmembers(_module, inspect.isclass) if issubclass(x[1], BaseConvertor) ]
+            classes = [
+                x[1]
+                for x in inspect.getmembers(_module, inspect.isclass)
+                if issubclass(x[1], BaseConvertor)
+            ]
             cls.convertors.extend(classes)
 
     def __init__(self, filename):

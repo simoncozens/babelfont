@@ -15,7 +15,7 @@ class Font(BaseObject):
         "note",
         "date",
     ]
-    _separate_items = { "instances": True, "axes": True, "glyphs": True, "masters": True }
+    _separate_items = {"instances": True, "axes": True, "glyphs": True, "masters": True}
 
     def __init__(self):
         super().__init__()
@@ -41,6 +41,8 @@ class Font(BaseObject):
             for g in self.glyphs:
                 glyphpath = path / "glyphs"
                 glyphpath.mkdir(parents=True, exist_ok=True)
-                with open(glyphpath / (userNameToFileName(g.name)+".nfsglyph"), "wb") as f2:
+                with open(
+                    glyphpath / (userNameToFileName(g.name) + ".nfsglyph"), "wb"
+                ) as f2:
                     g._write_value(f2, "layers", g.layers)
             self._write_value(f, "glyphs", self.glyphs)

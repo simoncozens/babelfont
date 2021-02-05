@@ -4,8 +4,8 @@ from .BaseObject import BaseObject
 
 @dataclass
 class Component(BaseObject):
-  name: str
-  position: list = None
-  transform: list = None
+    name: str
+    position: list = None
+    transform: list = None
 
-  _serialize_slots = ["name", "transform"]
+    _serialize_slots = ["name", "transform"]

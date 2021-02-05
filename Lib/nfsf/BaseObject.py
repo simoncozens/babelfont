@@ -11,7 +11,7 @@ Position = namedtuple("Position", "x,y,angle", defaults=[0, 0, 0])
 
 class I18NDictionary(dict):
     def copy_in(self, other):
-        for k,v in other.items():
+        for k, v in other.items():
             self[k] = v
 
     def get_default(self):
@@ -30,6 +30,7 @@ class I18NDictionary(dict):
         else:
             stream.write('"{0}"'.format(self.get_default()).encode())
 
+
 @dataclass
 class BaseObject:
     _serialize_slots = []
@@ -41,35 +42,35 @@ class BaseObject:
 
     def _write_value(self, stream, k, v, indent=0):
         if hasattr(v, "write"):
-            v.write(stream, indent+1)
+            v.write(stream, indent + 1)
         elif isinstance(v, tuple):
             stream.write(b"[")
-            for ix,l in enumerate(v):
-                self._write_value(stream, k, l, indent+1)
-                if ix < len(v)-1:
+            for ix, l in enumerate(v):
+                self._write_value(stream, k, l, indent + 1)
+                if ix < len(v) - 1:
                     stream.write(b", ")
             stream.write(b"]")
         elif isinstance(v, dict):
             stream.write(b"{")
-            for ix,(k1,v1) in enumerate(v.items()):
-                self._write_value(stream, k, k1, indent+1)
+            for ix, (k1, v1) in enumerate(v.items()):
+                self._write_value(stream, k, k1, indent + 1)
                 stream.write(b": ")
-                self._write_value(stream, k, v1, indent+1)
-                if ix < len(v.items())-1:
+                self._write_value(stream, k, v1, indent + 1)
+                if ix < len(v.items()) - 1:
                     stream.write(b", ")
             stream.write(b"}")
         elif isinstance(v, list):
             stream.write(b"[")
-            for ix,l in enumerate(v):
+            for ix, l in enumerate(v):
                 if k in self._separate_items:
                     stream.write(b"\n")
-                    stream.write(b"  " * (indent+2))
-                self._write_value(stream, k, l, indent+1)
-                if ix < len(v)-1:
+                    stream.write(b"  " * (indent + 2))
+                self._write_value(stream, k, l, indent + 1)
+                if ix < len(v) - 1:
                     stream.write(b", ")
             if k in self._separate_items:
                 stream.write(b"\n")
-                stream.write(b"  " * (indent+1))
+                stream.write(b"  " * (indent + 1))
             stream.write(b"]")
         elif isinstance(v, datetime.datetime):
             stream.write('"{0}"'.format(v.__str__()).encode())
@@ -78,7 +79,7 @@ class BaseObject:
         else:
             stream.write(str(v).encode())
 
-    def write(self, stream, indent = 0):
+    def write(self, stream, indent=0):
         if not self._write_one_line:
             stream.write(b"  " * indent)
         stream.write(b"{")
@@ -93,32 +94,34 @@ class BaseObject:
                 default = self.__dataclass_fields__[k].default
             if not v or (default and v == default):
                 continue
-            towrite.append((k,v))
+            towrite.append((k, v))
 
-        for ix, (k,v) in enumerate(towrite):
+        for ix, (k, v) in enumerate(towrite):
             if not self._write_one_line:
                 stream.write(b"\n")
-                stream.write(b"  " * (indent+1))
+                stream.write(b"  " * (indent + 1))
 
             stream.write('"{0}": '.format(k).encode())
             self._write_value(stream, k, v, indent)
-            if ix != len(towrite) -1:
+            if ix != len(towrite) - 1:
                 stream.write(b", ")
 
         if hasattr(self, "_formatspecific") and self._formatspecific:
             stream.write(b",")
             if not self._write_one_line:
                 stream.write(b"\n")
-                stream.write(b"  " * (indent+1))
+                stream.write(b"  " * (indent + 1))
             stream.write(b'"_":')
             if self._write_one_line:
                 stream.write(orjson.dumps(self._formatspecific))
             else:
                 stream.write(b"\n")
-                stream.write(orjson.dumps(self._formatspecific, option=orjson.OPT_INDENT_2))
+                stream.write(
+                    orjson.dumps(self._formatspecific, option=orjson.OPT_INDENT_2)
+                )
 
         if not self._write_one_line:
-            stream.write(b"\n")            
+            stream.write(b"\n")
         stream.write(b"}")
         if not self._write_one_line:
             stream.write(b"\n")

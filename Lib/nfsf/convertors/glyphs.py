@@ -213,8 +213,10 @@ class GlyphsTwo(BaseConvertor):
 
         if props:
             interestingProps = {
-                "copyrights": "copyright", "designer": "designer",
-                "designerURL": "designerURL" } # Etc
+                "copyrights": "copyright",
+                "designer": "designer",
+                "designerURL": "designerURL",
+            }  # Etc
             for glyphsname, attrname in interestingProps.items():
                 thing = props.get(glyphsname, "")
                 if isinstance(thing, dict):
