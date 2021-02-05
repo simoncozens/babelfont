@@ -58,6 +58,7 @@ class GlyphsTwo(BaseConvertor):
         # location = gmaster.get("axesValues", [])
         master = Master(
             name=gmaster.get("name", ""),
+            id=gmaster.get("id"),
             xHeight=gmaster.get("xHeight"),
             capHeight=gmaster.get("capHeight"),
             ascender=gmaster.get("ascender"),

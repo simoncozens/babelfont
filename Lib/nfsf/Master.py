@@ -4,6 +4,7 @@ from .BaseObject import BaseObject
 @dataclass
 class Master(BaseObject):
   name: str
+  id: str
   location: dict = None
   guides: list = None
   xHeight: int = None
