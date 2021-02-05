@@ -213,7 +213,7 @@ class GlyphsTwo(BaseConvertor):
             if "value" in prop:
                 props[prop["key"]] = prop["value"]
             else:
-                props[prop["key"]] = { p["language"]: p["value"] for p in prop["values"] }
+                props[prop["key"]] = {p["language"]: p["value"] for p in prop["values"]}
 
         if props:
             interestingProps = {
