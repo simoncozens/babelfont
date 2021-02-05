@@ -1,4 +1,5 @@
 from .BaseObject import BaseObject
+from .Glyph import GlyphList
 from pathlib import Path
 from fontTools.misc.filenames import userNameToFileName
 from .Names import Names
@@ -20,7 +21,7 @@ class Font(BaseObject):
         super().__init__()
         self.axes = []
         self.masters = []
-        self.glyphs = []
+        self.glyphs = GlyphList()
         self.instances = []
         self.names = Names()
         self._formatspecific = {}
