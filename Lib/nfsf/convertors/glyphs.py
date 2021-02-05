@@ -64,6 +64,7 @@ class GlyphsTwo(BaseConvertor):
             ascender=gmaster.get("ascender"),
             descender=gmaster.get("descender"),
         )
+        master.font = self.font
         # XXX Synthesize location
 
         master.guides = [self._load_guide(x) for x in gmaster.get("guides", [])]
@@ -116,7 +117,10 @@ class GlyphsTwo(BaseConvertor):
             width = layer["width"]
         l = Layer(width=width, id=layer.get("layerId"))
         l.name = layer.get("name")
-        l._master = layer.get("associatedMasterId")
+        if [x for x in self.font.masters if x.id == l.id]:
+            l._master = l.id
+        else:
+            l._master = layer.get("associatedMasterId")
         l.guides = [
             self._load_guide(x)
             for x in layer.get("guideLines", layer.get("guides", []))
@@ -260,7 +264,7 @@ class GlyphsThree(GlyphsTwo):
     def _load_master(self, gmaster):
         location = gmaster.get("axesValues", [])
         metrics = self.glyphs["metrics"]
-        master = Master(name=gmaster["name"])
+        master = Master(name=gmaster["name"], id=gmaster["id"])
         metric_types = [m["type"] for m in metrics]
         metric_values = [x.get("pos", 0) for x in gmaster["metricValues"]]
         master.metrics = {k: v for (k, v) in list(zip(metric_types, metric_values))}
@@ -269,7 +273,6 @@ class GlyphsThree(GlyphsTwo):
 
         _maybesetformatspecific(master, gmaster, "customParameters")
         _maybesetformatspecific(master, gmaster, "iconName")
-        _maybesetformatspecific(master, gmaster, "id")
         _maybesetformatspecific(master, gmaster, "numberValues")
         _maybesetformatspecific(master, gmaster, "stemValues")
         _maybesetformatspecific(master, gmaster, "properties")
