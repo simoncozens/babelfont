@@ -40,6 +40,7 @@ class GlyphsTwo(BaseConvertor):
 
         for gmaster in self.glyphs["fontMaster"]:
             self.font.masters.append(self._load_master(gmaster))
+        self._fixup_axes()
 
         for gglyph in self.glyphs["glyphs"]:
             g = self._load_glyph(gglyph)
@@ -52,6 +53,10 @@ class GlyphsTwo(BaseConvertor):
         return self.font
 
     def _load_axes(self):
+        # XXX Synthesize axes
+        pass
+
+    def _fixup_axes(self):
         # XXX Synthesize axes
         pass
 
@@ -263,11 +268,30 @@ class GlyphsThree(GlyphsTwo):
         super()._load()
         return self.font
 
+    def _default_master_id(self):
+        # The default master in glyphs is either the first master or the
+        # one selected by the Variable Font Origin custom parameter
+        for param in self.glyphs.get("customParameters",[]):
+            if param["name"] == "Variable Font Origin":
+                return param["value"]
+        return self.glyphs["fontMaster"][0]["id"]
+
     def _load_axes(self):
         for gaxis in self.glyphs.get("axes", []):
             axis = Axis(name=gaxis["name"], tag=gaxis["tag"])
             _maybesetformatspecific(axis, gaxis, "hidden")
             self.font.axes.append(axis)
+
+    def _fixup_axes(self):
+        for master in self.font.masters:
+            for axis in self.font.axes:
+                thisLoc = master.location[axis.name]
+                if axis.min is None or thisLoc < axis.min:
+                    axis.min = thisLoc
+                if master.id == self._default_master_id():
+                    axis.default = master.location[axis.name]
+                if axis.max is None or thisLoc > axis.max:
+                    axis.max = thisLoc
 
     def _load_master(self, gmaster):
         location = gmaster.get("axesValues", [])
