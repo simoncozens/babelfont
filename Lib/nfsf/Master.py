@@ -36,3 +36,7 @@ class Master(BaseObject):
         for layer in g.layers:
             if layer._master == self.id:
                 return layer
+
+    @property
+    def normalized_location(self):
+        return { a.tag: a.normalize_value(self.location[a.name]) for a in self.font.axes }
