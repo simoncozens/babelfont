@@ -14,6 +14,12 @@ class I18NDictionary(dict):
         for k, v in other.items():
             self[k] = v
 
+    def default_or_dict(self):
+        if len(self.values()) > 1:
+            return self
+        else:
+            return self.get_default()
+
     def get_default(self):
         if "dflt" in self:
             return self["dflt"]

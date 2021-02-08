@@ -1,5 +1,5 @@
 from .BaseObject import BaseObject, I18NDictionary
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 
 
 @dataclass
@@ -28,3 +28,11 @@ class Names(BaseObject):
         for k in self.__dataclass_fields__.keys():
             if not getattr(self, k):
                 setattr(self, k, I18NDictionary())
+
+    def as_nametable_dict(self):
+        rv = {}
+        for k,v in asdict(self).items():
+            if not v:
+                continue
+            rv[k] = v.default_or_dict()
+        return rv
