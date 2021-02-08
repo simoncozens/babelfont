@@ -121,7 +121,7 @@ class GlyphsTwo(BaseConvertor):
     def _load_layer(self, layer, width=None):
         if width is None:
             width = layer["width"]
-        l = Layer(width=width, id=layer.get("layerId"))
+        l = Layer(width=width, id=layer.get("layerId"), _font=self.font)
         l.name = layer.get("name")
         if [x for x in self.font.masters if x.id == l.id]:
             l._master = l.id
@@ -272,7 +272,7 @@ class GlyphsThree(GlyphsTwo):
     def _load_master(self, gmaster):
         location = gmaster.get("axesValues", [])
         metrics = self.glyphs["metrics"]
-        master = Master(name=gmaster["name"], id=gmaster["id"])
+        master = Master(name=gmaster["name"], id=gmaster["id"], font=self.font)
         metric_types = [m["type"] for m in metrics]
         metric_values = [x.get("pos", 0) for x in gmaster["metricValues"]]
         master.metrics = {k: v for (k, v) in list(zip(metric_types, metric_values))}

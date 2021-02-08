@@ -13,10 +13,18 @@ class Shape(BaseObject):
 
     _serialize_slots = __annotations__.keys()
 
+    _layer = None
+
     @property
     def is_path(self):
-        return not bool(self.transform)
+        return not bool(self.ref)
 
     @property
     def is_component(self):
-        return bool(self.transform)
+        return bool(self.ref)
+
+    @property
+    def component_layer(self):
+        if not self.is_component:
+            return None
+        return self._layer.master.get_glyph_layer(self.ref)
