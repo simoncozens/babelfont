@@ -3,7 +3,7 @@ from .Glyph import GlyphList
 from pathlib import Path
 from fontTools.misc.filenames import userNameToFileName
 from .Names import Names
-
+import functools
 
 class Font(BaseObject):
     _serialize_slots = [
@@ -46,3 +46,21 @@ class Font(BaseObject):
                 ) as f2:
                     g._write_value(f2, "layers", g.layers)
             self._write_value(f, "glyphs", self.glyphs)
+
+    def master(self, mid):
+        return self._master_map[mid]
+
+    @functools.cached_property
+    def _master_map(self):
+        return { m.id: m for m in self.masters }
+
+    @functools.cached_property
+    def unicode_map(self):
+        unicodes = {}
+        for g in self.glyphs:
+            if not g.codepoints:
+                continue
+            for u in g.codepoints:
+                unicodes[u] = g.name
+        return unicodes
+
