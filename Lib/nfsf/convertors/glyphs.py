@@ -1,9 +1,10 @@
 from datetime import datetime
 from nfsf import *
 import openstep_plist
-from nfsf.util.affine import Affine
+from fontTools.misc.transform import Transform
 from nfsf.convertors import BaseConvertor
 import re
+import math
 import uuid
 
 
@@ -179,15 +180,17 @@ class GlyphsTwo(BaseConvertor):
     def _load_component(self, shape):
         glyphname = shape.get("ref", shape.get("name"))
         transform = shape.get("transform")
+        if isinstance(transform, str):
+            m = re.match(r"^\{(\S+), (\S+), (\S+), (\S+), (\S+), (\S+)\}", transform)
+            transform = [float(g) for g in m.groups()]
         c = Shape(ref=glyphname)
 
         if not transform:
-            translate = Affine.translation(*shape.get("pos", (0, 0)))
-            scale = Affine.scale(*shape.get("scale", (1, 1)))
-            rotation = Affine.rotation(shape.get("angle", 0))
+            translate = Transform().translate(*shape.get("pos", (0, 0)))
+            scale = Transform().scale(*shape.get("scale", (1, 1)))
+            rotation = Transform().rotate(math.radians(shape.get("angle", 0)))
             # Compute transform...
-            t = translate * scale * rotation
-            transform = tuple([t.a, t.b, t.c, t.d, t.e, t.f])
+            transform = translate.transform(scale).transform(rotation)
 
         c.transform = transform
         for entry in [
