@@ -46,6 +46,14 @@ class Font(BaseObject):
     def master(self, mid):
         return self._master_map[mid]
 
+    @property
+    def default_master(self):
+        default_loc = { a.name: a.default for a in self.axes }
+        for m in self.masters:
+            if m.location == default_loc:
+                return m
+
+
     @functools.cached_property
     def _master_map(self):
         return { m.id: m for m in self.masters }
