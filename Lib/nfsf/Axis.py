@@ -1,5 +1,5 @@
 from .BaseObject import BaseObject
-from dataclasses import dataclass
+from dataclasses import dataclass,field
 import uuid
 
 
@@ -7,15 +7,9 @@ import uuid
 class Axis(BaseObject):
     name: str
     tag: str
-    id: str = None
+    id: str = field(default_factory = lambda : str(uuid.uuid1()), repr=False)
     min: int = None
     max: int = None
     default: int = None
 
-    def __post_init__(self):
-        if not self.id:
-            self.id = str(uuid.uuid1())
-        self._formatspecific = {}
-
-    _serialize_slots = __annotations__.keys()
     _write_one_line = True
