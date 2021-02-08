@@ -300,6 +300,11 @@ class GlyphsThree(GlyphsTwo):
         metric_types = [m["type"] for m in metrics]
         metric_values = [x.get("pos", 0) for x in gmaster["metricValues"]]
         master.metrics = {k: v for (k, v) in list(zip(metric_types, metric_values))}
+        master.ascender = master.metrics["ascender"]
+        master.descender = master.metrics["descender"]
+        if "x-height" in master.metrics:
+            master.xHeight = master.metrics["x-height"]
+
         master.location = {k.name: v for k, v in zip(self.font.axes, location)}
         master.guides = [self._load_guide(x) for x in gmaster.get("guides", [])]
 
@@ -331,7 +336,8 @@ class GlyphsThree(GlyphsTwo):
         cp = gglyph.get("unicode")
         if cp and not isinstance(cp, list):
             cp = [cp]
-        return [int(x) for x in cp]
+        if cp:
+            return [int(x) for x in cp]
 
 
 def _maybesetformatspecific(item, glyphs, key):
