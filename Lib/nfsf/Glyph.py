@@ -37,7 +37,7 @@ class GlyphList(dict):
 class Glyph(BaseObject):
     name: str
     category: str = "base"
-    codepoint: int = None
+    codepoints: [int] = None
     layers: [Layer] = None
 
     _serialize_slots = ["name", "category", "codepoint"]

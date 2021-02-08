@@ -80,6 +80,14 @@ class GlyphsTwo(BaseConvertor):
         _maybesetformatspecific(master, gmaster, "visible")
         return master
 
+    def _get_codepoint(self, gglyph):
+        cp = gglyph.get("unicode")
+        if not cp:
+            return []
+        if isinstance(cp, int):
+            return [int("%04i" % cp, 16)]
+        return [int(cp, 16)]
+
     def _load_glyph(self, gglyph):
         name = gglyph["glyphname"]
         c = gglyph.get("category")
@@ -90,11 +98,8 @@ class GlyphsTwo(BaseConvertor):
             category = "mark"
         else:
             category = "base"
-        cp = gglyph.get("unicode")
-        if isinstance(cp, str) and re.match(r"^[0-9A-F]{4}$", cp):
-            cp = int(cp, 16)
-
-        g = Glyph(name=name, codepoint=cp, category=category)
+        cp = self._get_codepoint(gglyph)
+        g = Glyph(name=name, codepoints=cp, category=category)
         for entry in [
             "case",
             "category",
@@ -297,6 +302,12 @@ class GlyphsThree(GlyphsTwo):
         shape.nodes = [Node(*n[0:3]) for n in path["nodes"]]
         shape.closed = path["closed"]
         return shape
+
+    def _get_codepoint(self, gglyph):
+        cp = gglyph.get("unicode")
+        if cp and not isinstance(cp, list):
+            cp = [cp]
+        return [int(x) for x in cp]
 
 
 def _maybesetformatspecific(item, glyphs, key):

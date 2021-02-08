@@ -72,13 +72,13 @@ class Designspace(BaseConvertor):
         return master
 
     def _load_glyph(self, ufo_glyph):
-        cp = ufo_glyph.unicodes or ufo_glyph.unicode
+        cp = ufo_glyph.unicodes or [ufo_glyph.unicode]
         category = (
             self.ds.sources[0]
             .font.lib.get("public.openTypeCategories", {})
             .get(ufo_glyph.name, "base")
         )
-        g = Glyph(name=ufo_glyph.name, codepoint=cp, category=category)
+        g = Glyph(name=ufo_glyph.name, codepoints=cp, category=category)
         return g
 
     def _load_layer(self, source, ufo_layer, glyphname):
