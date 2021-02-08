@@ -1,5 +1,4 @@
 from nfsf import *
-from nfsf.util.affine import Affine
 from nfsf.convertors import BaseConvertor
 from fontTools.designspaceLib import DesignSpaceDocument
 import defcon
