@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from .BaseObject import BaseObject
 from .Layer import Layer
 
@@ -38,9 +38,8 @@ class Glyph(BaseObject):
     name: str
     category: str = "base"
     codepoints: [int] = None
-    layers: [Layer] = None
+    layers: [Layer] = field(default=None, metadata={"skip_serialize": True})
 
-    _serialize_slots = ["name", "category", "codepoint"]
     _write_one_line = True
 
     def __post_init__(self):

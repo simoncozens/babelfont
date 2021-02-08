@@ -17,7 +17,7 @@ class Layer(BaseObject):
     name: str = None
     _master: str = None
     guides: [Guide] = None
-    shapes: list = field(default=None, repr=False)
+    shapes: list = field(default=None, repr=False, metadata={"separate_items": True})
     anchors: [Anchor] = None
     color: Color = None
     layerIndex: int = 0
@@ -25,24 +25,9 @@ class Layer(BaseObject):
     _background: str = None
     isBackground: bool = False
     location: [float] = None
-    _font: object = None  # Can't type Font because of circularity
-
-    _serialize_slots = [
-        "id",
-        "width",
-        "name",
-        "_master",
-        "guides",
-        "shapes",
-        "anchors",
-        "color",
-        "layerIndex",
-        "_background",
-        "isBackground",
-        "location",
-        "bounds",
-    ]
-    _separate_items = {"shapes": True}
+    _font: object = field(
+        default=None, repr=False, metadata={"skip_serialize": True}
+    )  # Can't type Font because of circularity
 
     @property
     def master(self):

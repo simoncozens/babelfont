@@ -1,31 +1,27 @@
+from dataclasses import dataclass, field
+from datetime import datetime
 from .BaseObject import BaseObject
 from .Glyph import GlyphList
+from .Axis import Axis
+from .Instance import Instance
+from .Master import Master
 from pathlib import Path
 from fontTools.misc.filenames import userNameToFileName
 from .Names import Names
 import functools
 
+@dataclass
 class Font(BaseObject):
-    _serialize_slots = [
-        "upm",
-        "version",
-        "axes",
-        "instances",
-        "masters",
-        "note",
-        "date",
-    ]
-    _separate_items = {"instances": True, "axes": True, "glyphs": True, "masters": True}
+    upm: int = 1000
+    version: tuple = (1,0)
+    axes: [Axis] = field(default_factory=list, metadata={"separate_items": True})
+    instances: [Instance] = field(default_factory=list, metadata={"separate_items": True})
+    masters: [Master] = field(default_factory=list, metadata={"skip_serialize": True})
+    glyphs: GlyphList = field(default_factory=GlyphList, metadata={"skip_serialize": True})
+    note: str = None
+    date: datetime = None
+    names: Names = field(default_factory=Names, metadata={"skip_serialize": True})
 
-    def __init__(self):
-        super().__init__()
-        self.axes = []
-        self.masters = []
-        self.glyphs = GlyphList()
-        self.instances = []
-        self.names = Names()
-        self._formatspecific = {}
-        self.date = None
 
     def save(self, pathname):
         path = Path(pathname)

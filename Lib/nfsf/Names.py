@@ -1,6 +1,8 @@
 from .BaseObject import BaseObject, I18NDictionary
+from dataclasses import dataclass
 
 
+@dataclass
 class Names(BaseObject):
     familyName: I18NDictionary = None
     designer: I18NDictionary = None
@@ -22,9 +24,7 @@ class Names(BaseObject):
     styleMapFamilyName: I18NDictionary = None
     trademark: I18NDictionary = None
 
-    _serialize_slots = __annotations__.keys()
-
     def __post_init__(self):
-        for k in self._serialize_slots:
+        for k in self.__dataclass_fields__.keys():
             if not getattr(self, k):
                 setattr(self, k, I18NDictionary())

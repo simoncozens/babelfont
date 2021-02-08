@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
 import orjson
 from io import StringIO
 from collections import namedtuple
@@ -33,12 +33,16 @@ class I18NDictionary(dict):
 
 @dataclass
 class BaseObject:
-    _serialize_slots = []
     _write_one_line = False
     _separate_items = {}
 
     def __post_init__(self):
         self._formatspecific = {}
+
+    def _should_separate_when_serializing(self, key):
+        if key in self.__dataclass_fields__ and "separate_items" in self.__dataclass_fields__[key].metadata:
+             return True
+        return False
 
     def _write_value(self, stream, k, v, indent=0):
         if hasattr(v, "write"):
@@ -62,13 +66,13 @@ class BaseObject:
         elif isinstance(v, list):
             stream.write(b"[")
             for ix, l in enumerate(v):
-                if k in self._separate_items:
+                if self._should_separate_when_serializing(k):
                     stream.write(b"\n")
                     stream.write(b"  " * (indent + 2))
                 self._write_value(stream, k, l, indent + 1)
                 if ix < len(v) - 1:
                     stream.write(b", ")
-            if k in self._separate_items:
+            if self._should_separate_when_serializing(k):
                 stream.write(b"\n")
                 stream.write(b"  " * (indent + 1))
             stream.write(b"]")
@@ -84,14 +88,12 @@ class BaseObject:
             stream.write(b"  " * indent)
         stream.write(b"{")
         towrite = []
-        for k in list(self._serialize_slots):
+        for f in fields(self):
+            k = f.name
+            if "skip_serialize" in f.metadata:
+                continue
             v = getattr(self, k)
-            if k == "_formatspecific":
-                k = "_"
-            default = None
-
-            if k in self.__dataclass_fields__:
-                default = self.__dataclass_fields__[k].default
+            default = f.default
             if not v or (default and v == default):
                 continue
             towrite.append((k, v))

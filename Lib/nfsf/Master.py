@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from .BaseObject import BaseObject
 from .Guide import Guide
 
@@ -28,10 +28,8 @@ class Master(BaseObject):
     capHeight: int = None
     ascender: int = None
     descender: int = None
-    kerning: dict = None
-
-    _serialize_slots = __annotations__.keys()
-    _separate_items = {"kerning": True}
+    kerning: dict = field(default=None, metadata={"separate_items": True})
+    font: object = field(default=None, repr=False, metadata={"skip_serialize": True})
 
     def get_glyph_layer(self, glyphname):
         g = self.font.glyphs[glyphname]
