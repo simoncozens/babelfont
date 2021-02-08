@@ -1,6 +1,8 @@
 from .BaseObject import BaseObject
 from dataclasses import dataclass,field
 import uuid
+from fontTools.varLib.models import normalizeValue
+
 
 
 @dataclass
@@ -13,3 +15,6 @@ class Axis(BaseObject):
     default: int = None
 
     _write_one_line = True
+
+    def normalize_value(self, value):
+        return normalizeValue(value, (self.min, self.default, self.max))
