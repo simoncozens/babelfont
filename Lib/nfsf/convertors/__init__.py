@@ -61,8 +61,6 @@ class Convert:
 
     def save(self, obj, **kwargs):
         for c in self.convertors:
-            print("Trying ", c)
             if c.can_save(self, **kwargs):
-                print(c, " can do it")
                 return c.save(obj, self, **kwargs)
         raise NotImplementedError
