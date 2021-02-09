@@ -24,6 +24,14 @@ class BaseConvertor:
         self.scratch = convertor.scratch
         return self._load()
 
+    @classmethod
+    def save(cls, obj, convertor, **kwargs):
+        self = cls()
+        self.font = obj
+        # Pass on information to child
+        self.filename = convertor.filename
+        self.scratch = convertor.scratch
+        return self._save()
 
 class Convert:
     convertors = []

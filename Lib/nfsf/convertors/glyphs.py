@@ -19,6 +19,13 @@ class GlyphsTwo(BaseConvertor):
         )
 
     @classmethod
+    def can_save(cls, convertor, format=2):
+        if not super().can_save(convertor):
+            return False
+        if format == 2:
+            return True
+
+    @classmethod
     def can_load(cls, convertor):
         if not super().can_load(convertor):
             return False
@@ -28,14 +35,8 @@ class GlyphsTwo(BaseConvertor):
             )
         return cls.is_suitable_plist(convertor)
 
-    @classmethod
-    def load(cls, convertor):
-        self = cls()
-        self.glyphs = convertor.scratch["plist"]
-        self.font = Font()
-        return self._load()
-
     def _load(self):
+        self.glyphs = self.scratch["plist"]
         self._load_axes()
 
         for gmaster in self.glyphs["fontMaster"]:
@@ -264,6 +265,13 @@ class GlyphsThree(GlyphsTwo):
             and convertor.scratch["plist"][".formatVersion"] >= 3
         )
 
+    @classmethod
+    def can_save(cls, convertor, format=3):
+        if not super().can_save(convertor):
+            return False
+        if format == 3:
+            return True
+
     def _load(self):
         super()._load()
         return self.font
@@ -339,9 +347,86 @@ class GlyphsThree(GlyphsTwo):
         if cp:
             return [int(x) for x in cp]
 
+    def _save(self):
+        font = self.font
+        out = _moveformatspecific(font)
+        out["versionMajor"], out["versionMinor"] = font.version
+        out["unitsPerEm"] = font.upm
+        if font.note:
+            out["note"] = font.note
+        if font.date:
+            out["date"] = font.date
+        out["axes"] = [self._save_axis(ax) for ax in self.font.axes]
+        out["fontMaster"] = [self._save_master(m) for m in self.font.masters]
+        out["glyphs"] = [self._save_glyph(g) for g in self.font.glyphs]
+        with open(self.filename, "wb") as file:
+            openstep_plist.dump(out, file,indent=0)
+            file.write(b"\n")
+
+    def _save_axis(self, axis):
+        gaxis = _moveformatspecific(axis)
+        _copyattrs(axis, gaxis, ["name", "tag"])
+        return gaxis
+
+    def _save_master(self, master):
+        gmaster = _moveformatspecific(master)
+        gmaster["axesValues"] = list(master.location.values())
+        if master.guides:
+            gmaster["guides"] = [self._save_guide(g) for g in master.guides]
+        _copyattrs(master, gmaster, ["name", "id"])
+        return gmaster
+
+    def _save_guide(self, guide):
+        gguide = _moveformatspecific(guide)
+        gguide["pos"] = guide.pos[0:2]
+        if guide.pos[2]:
+            gguide["angle"] = guide.pos[2]
+        return gguide
+
+    def _save_glyph(self, glyph):
+        gglyph = _moveformatspecific(glyph)
+        gglyph["glyphname"] = glyph.name
+        if len(glyph.codepoints) == 1:
+            gglyph["unicode"] = glyph.codepoints[0]
+        else:
+            gglyph["unicode"] = glyph.codepoints
+        gglyph["layers"] = [self._save_layer(l) for l in glyph.layers]
+        return gglyph
+
+    def _save_layer(self, layer):
+        glayer = _moveformatspecific(layer)
+        _copyattrs(layer, glayer, ["width", "name"])
+        glayer["layerId"] = layer.id
+        if layer.shapes:
+            glayer["shapes"] = [self._save_shape(s) for s in layer.shapes]
+        return glayer
+
+    def _save_shape(self, shape):
+        gshape = _moveformatspecific(shape)
+        if shape.is_path:
+            gshape["closed"] = shape.closed
+            gshape["nodes"] = [self._save_node(n) for n in shape.nodes]
+        else:
+            _copyattrs(shape, gshape, ["ref", "pos", "angle", "scale"])
+        return gshape
+
+    def _save_node(self, node):
+        return (node.x, node.y, node.type)
 
 def _maybesetformatspecific(item, glyphs, key):
     if glyphs.get(key):
         if "com.glyphsapp" not in item._formatspecific:
             item._formatspecific["com.glyphsapp"] = {}
         item._formatspecific["com.glyphsapp"][key] = glyphs.get(key)
+
+def _moveformatspecific(item):
+    rv = {}
+    if "com.glyphsapp" in item._formatspecific:
+        rv = {**item._formatspecific.get("com.glyphsapp",{})}
+    return rv
+
+def _copyattrs(src, dst, attrs):
+    for a in attrs:
+        v = getattr(src, a)
+        if v:
+            dst[a] = v
