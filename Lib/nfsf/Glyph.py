@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 from .BaseObject import BaseObject
 from .Layer import Layer
+from fontTools.misc.filenames import userNameToFileName
+import os
 
 
 class GlyphList(dict):
@@ -32,16 +34,24 @@ class GlyphList(dict):
         else:
             raise StopIteration
 
-
 @dataclass
-class Glyph(BaseObject):
+class _GlyphFields:
     name: str
     category: str = "base"
-    codepoints: [int] = None
-    layers: [Layer] = field(default=None, metadata={"skip_serialize": True})
+    codepoints: [int] = field(default_factory=list)
+    layers: [Layer] = field(default_factory=list, repr=False, metadata={"skip_serialize": True})
+
+
+@dataclass
+class Glyph(BaseObject, _GlyphFields):
 
     _write_one_line = True
 
     def __post_init__(self):
         self.layers = []
         self._formatspecific = {}
+
+    @property
+    def nfsf_filename(self):
+        return os.path.join("glyphs", (userNameToFileName(self.name) + ".nfsglyph"))
+

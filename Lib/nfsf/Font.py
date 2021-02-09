@@ -6,22 +6,31 @@ from .Axis import Axis
 from .Instance import Instance
 from .Master import Master
 from pathlib import Path
-from fontTools.misc.filenames import userNameToFileName
 from .Names import Names
 import functools
 
 @dataclass
-class Font(BaseObject):
+class _FontFields:
     upm: int = 1000
     version: tuple = (1,0)
     axes: [Axis] = field(default_factory=list, metadata={"separate_items": True})
     instances: [Instance] = field(default_factory=list, metadata={"separate_items": True})
-    masters: [Master] = field(default_factory=list, metadata={"skip_serialize": True})
+    masters: [Master] = field(default_factory=list, metadata={"separate_items": True})
     glyphs: GlyphList = field(default_factory=GlyphList, metadata={"skip_serialize": True})
     note: str = None
     date: datetime = None
     names: Names = field(default_factory=Names, metadata={"skip_serialize": True})
 
+
+@dataclass
+class Font(_FontFields, BaseObject):
+
+    def __repr__(self):
+        return "<Font '%s' (%i masters)>" % (self.names.familyName.get_default(), len(self.masters))
+
+    def export(self, filename, **kwargs):
+        from .convertors import Convert
+        return Convert(filename).save(self, **kwargs)
 
     def save(self, pathname):
         path = Path(pathname)
@@ -38,7 +47,7 @@ class Font(BaseObject):
                 glyphpath = path / "glyphs"
                 glyphpath.mkdir(parents=True, exist_ok=True)
                 with open(
-                    glyphpath / (userNameToFileName(g.name) + ".nfsglyph"), "wb"
+                    path / g.nfsf_filename, "wb"
                 ) as f2:
                     g._write_value(f2, "layers", g.layers)
             self._write_value(f, "glyphs", self.glyphs)

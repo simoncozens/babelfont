@@ -3,9 +3,11 @@ from .BaseObject import BaseObject
 
 
 @dataclass
-class Anchor(BaseObject):
-    _serialize_slots = ["x", "y", "name"]
-
+class _AnchorFields():
     x: int
     y: int
     name: str
+
+@dataclass
+class Anchor(BaseObject, _AnchorFields):
+    pass

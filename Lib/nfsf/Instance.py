@@ -3,10 +3,10 @@ from .BaseObject import BaseObject
 
 
 @dataclass
-class Instance(BaseObject):
-    _serialize_slots = ["name", "location"]
-    _write_one_line = True
-
+class _InstanceFields:
     name: str
     location: dict = None
-    # guides: Guide[]
+
+@dataclass
+class Instance(BaseObject, _InstanceFields):
+    _write_one_line = True

@@ -4,16 +4,17 @@ import uuid
 from fontTools.varLib.models import normalizeValue
 
 
-
 @dataclass
-class Axis(BaseObject):
+class _AxisFields():
     name: str
     tag: str
-    id: str = field(default_factory = lambda : str(uuid.uuid1()), repr=False)
+    id: str = field(default_factory = lambda: str(uuid.uuid1()), repr=False)
     min: int = None
     max: int = None
     default: int = None
 
+@dataclass
+class Axis(BaseObject,_AxisFields):
     _write_one_line = True
 
     def normalize_value(self, value):

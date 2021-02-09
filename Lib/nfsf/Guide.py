@@ -3,9 +3,11 @@ from .BaseObject import BaseObject, Color, Position
 
 
 @dataclass
-class Guide(BaseObject):
-    _serialize_slots = ["pos", "name", "color"]
-
+class _GuideFields:
     pos: Position
     name: str = None
     color: Color = None
+
+@dataclass
+class Guide(BaseObject, _GuideFields):
+    pass

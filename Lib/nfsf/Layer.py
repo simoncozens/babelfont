@@ -10,25 +10,27 @@ from .Anchor import Anchor
 
 
 @dataclass
-class Layer(BaseObject):
-
+class _LayerFields:
     id: str
     width: int
     name: str = None
     _master: str = None
-    guides: [Guide] = None
-    shapes: list = field(default=None, repr=False, metadata={"separate_items": True})
-    anchors: [Anchor] = None
+    guides: [Guide] = field(default_factory = list, repr=False)
+    shapes: list = field(default_factory=list, repr=False, metadata={"separate_items": True})
+    anchors: [Anchor] = field(default_factory = list, repr=False)
     color: Color = None
     layerIndex: int = 0
     # hints: [Hint]
-    _background: str = None
-    isBackground: bool = False
+    _background: str = field(default=None,repr=False)
+    isBackground: bool = field(default=False,repr=False)
     location: [float] = None
     _font: object = field(
         default=None, repr=False, metadata={"skip_serialize": True}
     )  # Can't type Font because of circularity
 
+
+@dataclass
+class Layer(BaseObject, _LayerFields):
     @property
     def master(self):
         assert self._font

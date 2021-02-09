@@ -2,9 +2,21 @@ from dataclasses import dataclass, field
 from .BaseObject import BaseObject
 from .Guide import Guide
 
+@dataclass
+class _MasterFields:
+    name: str
+    id: str = field(repr=False)
+    location: dict = None
+    guides: [Guide] = field(default_factory=list, repr=False, metadata={"separate_items": True})
+    xHeight: int = None
+    capHeight: int = None
+    ascender: int = None
+    descender: int = None
+    kerning: dict = field(default=None, repr=False, metadata={"separate_items": True})
+    font: object = field(default=None, repr=False, metadata={"skip_serialize": True})
 
 @dataclass
-class Master(BaseObject):
+class Master(BaseObject, _MasterFields):
     """A font master.
 
     Attributes:
@@ -19,17 +31,6 @@ class Master(BaseObject):
         descender (int): The descender of this master, in font units.
         font (Font): The font that this master belongs to.
     """
-
-    name: str
-    id: str
-    location: dict = None
-    guides: [Guide] = None
-    xHeight: int = None
-    capHeight: int = None
-    ascender: int = None
-    descender: int = None
-    kerning: dict = field(default=None, metadata={"separate_items": True})
-    font: object = field(default=None, repr=False, metadata={"skip_serialize": True})
 
     def get_glyph_layer(self, glyphname):
         g = self.font.glyphs[glyphname]

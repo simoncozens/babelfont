@@ -1,4 +1,4 @@
-from dataclasses import dataclass, fields
+from dataclasses import dataclass, fields, field
 import orjson
 from io import StringIO
 from collections import namedtuple
@@ -39,11 +39,36 @@ class I18NDictionary(dict):
 
 @dataclass
 class BaseObject:
-    _write_one_line = False
-    _separate_items = {}
+
+    # OK, what's going on here? And why do we split _FoobarFields from Foobar?
+    # We want to achieve the following:
+    #    * A ``_formatspecific`` field on *every* derived object...
+    #    * ...which does not need to be added to the constructor arguments
+    #    * ...but which (for convenience when instantiating from JSON) has an
+    #      alias of ``_`` which *can* be added to the constructor arguments
+
+    # dataclasses load up their fields by walking the inheritance tree, but
+    # (just like Python function declarations) dataclasses don't support putting
+    # defaultable fields after non-defaultable fields.
+
+    # Because we want ``_formatspecific`` (and particularly ``_``) to be optional
+    # on __init__ it needs to be defaultable. So it needs to appear after the
+    # other fields in the inheritance hierarchy. So we inherit from a _...Fields
+    # class first and then BaseObject second. Ugly but it works.
+
+    # dataclasses also don't support field aliases. The ``_`` field is only
+    # really used for initialization, so in ``__post_init__`` we move its
+    # contents into the `_formatspecific` field where it really lives.
+
+    _formatspecific: dict = field(default_factory = dict, repr=False, metadata={"skip_serialize": True})
+    _ : dict = field(default=None, repr=False, metadata={"skip_serialize": True})
 
     def __post_init__(self):
-        self._formatspecific = {}
+        if self._:
+            self._formatspecific = self._
+
+    _write_one_line = False
+    _separate_items = {}
 
     def _should_separate_when_serializing(self, key):
         if key in self.__dataclass_fields__ and "separate_items" in self.__dataclass_fields__[key].metadata:
