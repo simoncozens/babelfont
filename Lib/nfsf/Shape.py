@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from .BaseObject import BaseObject
 from .Node import Node
+import math
 
 
 @dataclass
@@ -32,3 +33,18 @@ class Shape(BaseObject, _ShapeFields):
         if not self.is_component:
             return None
         return self._layer.master.get_glyph_layer(self.ref)
+
+    @property
+    def pos(self):
+        assert self.is_component
+        return self.transform[4:]
+
+    @property
+    def angle(self):
+        assert self.is_component
+        return math.atan2(self.transform[1], self.transform[0]) * 180 / math.pi
+
+    @property
+    def scale(self):
+        assert self.is_component
+        return (1,1) # XXX
