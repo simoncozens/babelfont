@@ -11,8 +11,11 @@ Position = namedtuple("Position", "x,y,angle", defaults=[0, 0, 0])
 
 class I18NDictionary(dict):
     def copy_in(self, other):
-        for k, v in other.items():
-            self[k] = v
+        if isinstance(other, dict):
+            for k, v in other.items():
+                self[k] = v
+        else:
+            self.set_default(other)
 
     def default_or_dict(self):
         if len(self.values()) > 1:
