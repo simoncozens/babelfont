@@ -2,17 +2,27 @@ import os
 import sys
 import pkgutil
 import inspect
-
+from nfsf import Font
 
 class BaseConvertor:
     suffix = ".XXX"
 
     @classmethod
-    def can_load(self, other):
+    def can_load(self, other, **kwargs):
         return other.filename.endswith(self.suffix)
 
-    def can_save(self, other):
+    @classmethod
+    def can_save(self, other, **kwargs):
         return other.filename.endswith(self.suffix)
+
+    @classmethod
+    def load(cls, convertor):
+        self = cls()
+        self.font = Font()
+        # Pass on information to child
+        self.filename = convertor.filename
+        self.scratch = convertor.scratch
+        return self._load()
 
 
 class Convert:
@@ -45,12 +55,14 @@ class Convert:
 
     def load(self, **kwargs):
         for c in self.convertors:
-            if c.can_load(self):
+            if c.can_load(self, **kwargs):
                 return c.load(self, **kwargs)
         raise NotImplementedError
 
-    def save(self, obj):
+    def save(self, obj, **kwargs):
         for c in self.convertors:
-            if c.can_save(self):
-                return c.save(obj, self)
+            print("Trying ", c)
+            if c.can_save(self, **kwargs):
+                print(c, " can do it")
+                return c.save(obj, self, **kwargs)
         raise NotImplementedError
