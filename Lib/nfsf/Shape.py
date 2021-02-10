@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from .BaseObject import BaseObject
+from fontTools.misc.transform import Transform
 from .Node import Node
 import math
 
@@ -7,7 +8,7 @@ import math
 @dataclass
 class _ShapeFields:
     ref: str = None
-    transform: list = None
+    transform: Transform = None
     nodes: [Node] = None
     closed: bool = True
     direction: int = 1
@@ -37,11 +38,15 @@ class Shape(BaseObject, _ShapeFields):
     @property
     def pos(self):
         assert self.is_component
+        if not self.transform:
+            return (0,0)
         return self.transform[4:]
 
     @property
     def angle(self):
         assert self.is_component
+        if not self.transform:
+            return 0
         return math.atan2(self.transform[1], self.transform[0]) * 180 / math.pi
 
     @property
