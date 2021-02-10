@@ -63,8 +63,27 @@ class BaseObject:
     # really used for initialization, so in ``__post_init__`` we move its
     # contents into the `_formatspecific` field where it really lives.
 
-    _formatspecific: dict = field(default_factory = dict, repr=False, metadata={"skip_serialize": True})
-    _ : dict = field(default=None, repr=False, metadata={"skip_serialize": True})
+    _formatspecific: dict = field(
+        default_factory=dict,
+        repr=False,
+        metadata={
+            "skip_serialize": True,
+            "description": """
+Each object in NFSF has an optional attached dictionary to allow the storage
+of format-specific information. Font creation software may store any additional
+information that they wish to have preserved on import and export under a
+namespaced (reverse-domain) key in this dictionary. For example, information
+specific to the Glyphs software should be stored under the key `com.glyphsapp`.
+The value stored under this key may be any data serializable in JSON; typically
+it will be a `dict`.
+
+Note that there is an important distinction between the Python object format
+of this field and the NFSF-JSON representation. When stored to JSON, this key
+is exported not as `_formatspecific` but as a simple underscore (`_`).
+""",
+        },
+    )
+    _: dict = field(default=None, repr=False, metadata={"skip_serialize": True})
 
     def __post_init__(self):
         if self._:
@@ -74,8 +93,11 @@ class BaseObject:
     _separate_items = {}
 
     def _should_separate_when_serializing(self, key):
-        if key in self.__dataclass_fields__ and "separate_items" in self.__dataclass_fields__[key].metadata:
-             return True
+        if (
+            key in self.__dataclass_fields__
+            and "separate_items" in self.__dataclass_fields__[key].metadata
+        ):
+            return True
         return False
 
     def _write_value(self, stream, k, v, indent=0):

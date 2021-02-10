@@ -9,27 +9,94 @@ from pathlib import Path
 from .Names import Names
 import functools
 
+
 @dataclass
 class _FontFields:
-    upm: int = 1000
-    version: tuple = (1,0)
-    axes: [Axis] = field(default_factory=list, metadata={"separate_items": True})
-    instances: [Instance] = field(default_factory=list, metadata={"separate_items": True})
-    masters: [Master] = field(default_factory=list, metadata={"separate_items": True})
-    glyphs: GlyphList = field(default_factory=GlyphList, metadata={"skip_serialize": True})
-    note: str = None
-    date: datetime = None
+    upm: int = field(default=1000, metadata={"description": "The font's units per em."})
+    version: (int, int) = field(
+        default=(1, 0),
+        metadata={
+            "description": "Font version number as a tuple of integers (major, minor).",
+            "json_type": "[int,int]",
+        },
+    )
+    axes: [Axis] = field(
+        default_factory=list,
+        metadata={
+            "separate_items": True,
+            "description": "A list of axes, in the case of variable/multiple master font. May be empty.",
+        },
+    )
+    instances: [Instance] = field(
+        default_factory=list,
+        metadata={
+            "separate_items": True,
+            "description": "A list of named/static instances.",
+        },
+    )
+    masters: [Master] = field(
+        default_factory=list,
+        metadata={
+            "separate_items": True,
+            "description": "A list of the font's masters.",
+        },
+    )
+    glyphs: GlyphList = field(
+        default_factory=GlyphList,
+        metadata={
+            "skip_serialize": True,
+            "separate_items": True,
+            "json_type": "[dict]",
+            "json_location": "glyphs.json",
+            "description": """A list of all glyphs supported in the font.
+
+The `GlyphList` structure in the Python object is a dictionary with array-like
+properties (or you might think of it as an array with dictionary-like properties)
+containing [`Glyph`](Glyph.html) objects. The `GlyphList` may be iterated
+directly, and may be appended to, but may also be used to index a `Glyph` by
+its name. This is generally what you want:
+
+```Python
+
+for g in font.glyphs:
+    assert isinstance(g, Glyph)
+
+font.glyphs.append(newglyph)
+
+glyph_ampersand = font.glyphs["ampersand"]
+```
+            """,
+        },
+    )
+    note: str = field(
+        default=None,
+        metadata={"description": "Any user-defined textual note about this font."},
+    )
+    date: datetime = field(
+        default_factory=datetime.now,
+        metadata={
+            "description": """The font's date. When writing to NFSF-JSON, this
+should be stored in the format `%Y-%m-%d %H:%M:%S`. *If not provided, defaults
+to the current date/time*.""",
+            "json_type": "str",
+        },
+    )
     names: Names = field(default_factory=Names, metadata={"skip_serialize": True})
 
 
 @dataclass
 class Font(_FontFields, BaseObject):
+    """Represents a font, with one or more masters."""
 
     def __repr__(self):
-        return "<Font '%s' (%i masters)>" % (self.names.familyName.get_default(), len(self.masters))
+        return "<Font '%s' (%i masters)>" % (
+            self.names.familyName.get_default(),
+            len(self.masters),
+        )
 
     def export(self, filename, **kwargs):
         from .convertors import Convert
+
         return Convert(filename).save(self, **kwargs)
 
     def save(self, pathname):
@@ -46,9 +113,7 @@ class Font(_FontFields, BaseObject):
             for g in self.glyphs:
                 glyphpath = path / "glyphs"
                 glyphpath.mkdir(parents=True, exist_ok=True)
-                with open(
-                    path / g.nfsf_filename, "wb"
-                ) as f2:
+                with open(path / g.nfsf_filename, "wb") as f2:
                     g._write_value(f2, "layers", g.layers)
             self._write_value(f, "glyphs", self.glyphs)
 
@@ -57,15 +122,14 @@ class Font(_FontFields, BaseObject):
 
     @property
     def default_master(self):
-        default_loc = { a.name: a.default for a in self.axes }
+        default_loc = {a.name: a.default for a in self.axes}
         for m in self.masters:
             if m.location == default_loc:
                 return m
 
-
     @functools.cached_property
     def _master_map(self):
-        return { m.id: m for m in self.masters }
+        return {m.id: m for m in self.masters}
 
     @functools.cached_property
     def unicode_map(self):
@@ -76,4 +140,3 @@ class Font(_FontFields, BaseObject):
             for u in g.codepoints:
                 unicodes[u] = g.name
         return unicodes
-
