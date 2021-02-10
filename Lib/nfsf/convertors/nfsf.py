@@ -72,3 +72,4 @@ class NFSF(BaseConvertor):
         for k in ["note", "upm", "version", "date"]:
             if k in info:
                 setattr(self.font, k, info[k])
+        self.font.date = datetime.strptime(self.font.date, "%Y-%m-%d %H:%M:%S")
