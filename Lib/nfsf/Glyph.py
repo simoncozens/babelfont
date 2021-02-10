@@ -47,10 +47,6 @@ class Glyph(BaseObject, _GlyphFields):
 
     _write_one_line = True
 
-    def __post_init__(self):
-        self.layers = []
-        self._formatspecific = {}
-
     @property
     def nfsf_filename(self):
         return os.path.join("glyphs", (userNameToFileName(self.name) + ".nfsglyph"))
