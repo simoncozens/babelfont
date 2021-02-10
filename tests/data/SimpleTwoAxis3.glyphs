@@ -139,7 +139,6 @@ name = "Bold Skewed";
 glyphs = (
 {
 glyphname = A;
-lastChange = "2021-01-25 11:55:54 +0000";
 layers = (
 {
 layerId = m01;
@@ -278,7 +277,6 @@ unicode = 65;
 },
 {
 glyphname = O;
-lastChange = "2021-02-09 12:33:17 +0000";
 layers = (
 {
 layerId = m01;
@@ -445,7 +443,6 @@ unicode = 79;
 },
 {
 glyphname = space;
-lastChange = "2021-01-25 11:52:02 +0000";
 layers = (
 {
 layerId = m01;
