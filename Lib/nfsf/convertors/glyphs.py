@@ -127,6 +127,7 @@ class GlyphsTwo(BaseConvertor):
             "export",
             "locked",
             "partsSettings",
+            "script",
             "tags",
         ]:
             _maybesetformatspecific(g, gglyph, entry)
@@ -160,6 +161,7 @@ class GlyphsTwo(BaseConvertor):
         _maybesetformatspecific(l, layer, "hints")
         _maybesetformatspecific(l, layer, "partSelection")
         _maybesetformatspecific(l, layer, "visible")
+        _maybesetformatspecific(l, layer, "attr")
         returns = [l]
         if "background" in layer:
             (background,) = self._load_layer(layer["background"], width=l.width)
@@ -198,6 +200,7 @@ class GlyphsTwo(BaseConvertor):
             n = Node(x=float(m[1]), y=float(m[2]), type=ntype)
             shape.nodes.append(n)
         shape.closed = path["closed"]
+        _maybesetformatspecific(path, shape, "attr")
         return shape
 
     def _load_component(self, shape):
@@ -338,7 +341,10 @@ class GlyphsThree(GlyphsTwo):
         return master
 
     def _load_guide(self, gguide):
-        return Guide(pos=[*gguide.get("pos", (0, 0)), gguide.get("angle", 0)])
+        g = Guide(pos=[*gguide.get("pos", (0, 0)), gguide.get("angle", 0)])
+        _maybesetformatspecific(g, gguide, "lockAngle")
+        _maybesetformatspecific(g, gguide, "showMeasurement")
+        return g
 
     def _load_shape(self, shape):
         if "nodes" in shape:  # It's a path
@@ -437,7 +443,7 @@ class GlyphsThree(GlyphsTwo):
         gglyph["glyphname"] = glyph.name
         if len(glyph.codepoints) == 1:
             gglyph["unicode"] = glyph.codepoints[0]
-        else:
+        elif len(glyph.codepoints) > 1:
             gglyph["unicode"] = glyph.codepoints
         gglyph["layers"] = [self._save_layer(l) for l in glyph.layers]
         return gglyph
@@ -446,8 +452,12 @@ class GlyphsThree(GlyphsTwo):
         glayer = _moveformatspecific(layer)
         _copyattrs(layer, glayer, ["width", "name"])
         glayer["layerId"] = layer.id
+        if layer.guides:
+            glayer["guides"] = [self._save_guide(g) for g in layer.guides]
         if layer.shapes:
             glayer["shapes"] = [self._save_shape(s) for s in layer.shapes]
+        if layer._master and layer._master != layer.id:
+            glayer["associatedMasterId"] = layer._master
         return glayer
 
     def _save_shape(self, shape):

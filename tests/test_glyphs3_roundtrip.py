@@ -20,12 +20,13 @@ def check_equal(one, two):
     if expected_trimmed == got_trimmed:
         assert True
     else:
-        assert expected == got
+        assert got == expected
 
-def test_glyphs3_nfsf_glyphs3(tmp_path):
-    original_file = data_path("SimpleTwoAxis3.glyphs")
-    tmp_file = os.path.join(tmp_path, "SimpleTwoAxis3.nfsf")
-    roundtrip_file = os.path.join(tmp_path, "SimpleTwoAxis3.glyphs")
+@pytest.mark.parametrize("filename", ["SimpleTwoAxis3.glyphs", "GlyphsFileFormatv3.glyphs"])
+def test_glyphs3_nfsf_glyphs3(tmp_path, filename):
+    original_file = data_path(filename)
+    tmp_file = os.path.join(tmp_path, "Roundtrip.nfsf")
+    roundtrip_file = os.path.join(tmp_path, "Roundtrip.glyphs")
     f = load(original_file)
     f.save(tmp_file)
     f2 = load(tmp_file)
@@ -33,4 +34,3 @@ def test_glyphs3_nfsf_glyphs3(tmp_path):
     del(f2._formatspecific["com.glyphsapp"]["metrics"])
     f2.export(roundtrip_file, format=3)
     check_equal(original_file, roundtrip_file)
-
