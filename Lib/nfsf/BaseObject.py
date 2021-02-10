@@ -124,7 +124,7 @@ class BaseObject:
         towrite = []
         for f in fields(self):
             k = f.name
-            if "skip_serialize" in f.metadata:
+            if "skip_serialize" in f.metadata or "python_only" in f.metadata:
                 continue
             v = getattr(self, k)
             default = f.default

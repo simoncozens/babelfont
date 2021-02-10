@@ -25,7 +25,7 @@ class _LayerFields:
     isBackground: bool = field(default=False,repr=False)
     location: [float] = None
     _font: object = field(
-        default=None, repr=False, metadata={"skip_serialize": True}
+        default=None, repr=False, metadata={"python_only": True}
     )  # Can't type Font because of circularity
 
 

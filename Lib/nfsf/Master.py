@@ -10,7 +10,7 @@ class _MasterFields:
     guides: [Guide] = field(default_factory=list, repr=False, metadata={"separate_items": True})
     metrics: dict = field(default_factory=dict, repr=False)
     kerning: dict = field(default=None, repr=False, metadata={"separate_items": True})
-    font: object = field(default=None, repr=False, metadata={"skip_serialize": True})
+    font: object = field(default=None, repr=False, metadata={"python_only": True})
 
 @dataclass
 class Master(BaseObject, _MasterFields):
