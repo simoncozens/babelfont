@@ -7,6 +7,7 @@ from fontTools.pens.boundsPen import BoundsPen
 from .BaseObject import BaseObject, Color
 from .Guide import Guide
 from .Anchor import Anchor
+from .Shape import Shape
 
 
 @dataclass
@@ -16,7 +17,7 @@ class _LayerFields:
     name: str = None
     _master: str = None
     guides: [Guide] = field(default_factory = list, repr=False)
-    shapes: list = field(default_factory=list, repr=False, metadata={"separate_items": True})
+    shapes: [Shape] = field(default_factory=list, repr=False, metadata={"separate_items": True})
     anchors: [Anchor] = field(default_factory = list, repr=False)
     color: Color = None
     layerIndex: int = 0
