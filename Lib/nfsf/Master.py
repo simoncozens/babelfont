@@ -8,10 +8,7 @@ class _MasterFields:
     id: str = field(repr=False)
     location: dict = None
     guides: [Guide] = field(default_factory=list, repr=False, metadata={"separate_items": True})
-    xHeight: int = None
-    capHeight: int = None
-    ascender: int = None
-    descender: int = None
+    metrics: dict = field(default_factory=dict, repr=False)
     kerning: dict = field(default=None, repr=False, metadata={"separate_items": True})
     font: object = field(default=None, repr=False, metadata={"skip_serialize": True})
 
@@ -25,12 +22,11 @@ class Master(BaseObject, _MasterFields):
         location (dict): A dictionary locating this master by mapping axis
             name to designspace location.
         guides ([Guide]): A list of master-level guidelines
-        xHeight (int): The x height of this master, in font units.
-        capHeight (int): The cap height of this master, in font units.
-        ascender (int): The ascender of this master, in font units.
-        descender (int): The descender of this master, in font units.
+        metrics (dict): The master's metrics.
         font (Font): The font that this master belongs to.
     """
+
+    CORE_METRICS = ["xHeight", "capHeight", "ascender", "descender"]
 
     def get_glyph_layer(self, glyphname):
         g = self.font.glyphs[glyphname]
@@ -41,3 +37,19 @@ class Master(BaseObject, _MasterFields):
     @property
     def normalized_location(self):
         return { a.tag: a.normalize_value(self.location[a.name]) for a in self.font.axes }
+
+    @property
+    def xHeight(self):
+        return self.metrics.get("xHeight", 0)
+
+    @property
+    def capHeight(self):
+        return self.metrics.get("capHeight", 0)
+
+    @property
+    def ascender(self):
+        return self.metrics.get("ascender", 0)
+
+    @property
+    def descender(self):
+        return self.metrics.get("descender", 0)
