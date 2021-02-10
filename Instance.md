@@ -1,21 +1,24 @@
 ---
 title: Instance
 ---
-Instance(name: str, location: dict = None, _formatspecific: dict = <factory>, _: dict = None)
+An object representing a named or static instance.
 * When writing to NFSF-JSON, this class must be serialized without newlines
 ## Instance.name
 
-* Python type: `str`
+* Python type: `I18NDictionary`
 
+* **Required field**
 
-**Required field**
+The name of this instance. *Localizable.*
 
 
 ## Instance.location
 
 * Python type: `dict`
 
-*If not provided, defaults to* `None`.
+* **Required field**
+
+A dictionary mapping axis tags to coordinates in order to locate this instance in the design space.
 
 
 ## Instance._formatspecific

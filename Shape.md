@@ -7,12 +7,14 @@ Shape(ref: str = None, transform: fontTools.misc.transform.Transform = None, nod
 
 * Python type: `str`
 
+
 *If not provided, defaults to* `None`.
 
 
 ## Shape.transform
 
 * Python type: `Transform`
+
 
 *If not provided, defaults to* `None`.
 
@@ -21,6 +23,7 @@ Shape(ref: str = None, transform: fontTools.misc.transform.Transform = None, nod
 
 * Python type: `[Node]`
 
+
 *If not provided, defaults to* `None`.
 
 
@@ -28,12 +31,14 @@ Shape(ref: str = None, transform: fontTools.misc.transform.Transform = None, nod
 
 * Python type: `bool`
 
+
 *If not provided, defaults to* `True`.
 
 
 ## Shape.direction
 
 * Python type: `int`
+
 
 *If not provided, defaults to* `1`.
 

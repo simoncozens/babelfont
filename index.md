@@ -13,35 +13,35 @@ toc: false
 <title>Axis</title>
 <g id="a_node1"><a xlink:href="Axis.html" xlink:title="&lt;TABLE&gt;">
 <text text-anchor="start" x="357.5" y="-1010.3" font-family="Avenir" font-weight="bold" font-size="14.00">Axis</text>
-<polygon fill="none" stroke="black" points="304.5,-980.5 304.5,-1001.5 406.5,-1001.5 406.5,-980.5 304.5,-980.5"/>
-<text text-anchor="start" x="337" y="-988.3" font-family="Avenir" font-weight="bold" font-size="14.00">name</text>
-<polygon fill="none" stroke="black" points="408.5,-980.5 408.5,-1001.5 438.5,-1001.5 438.5,-980.5 408.5,-980.5"/>
-<text text-anchor="start" x="415" y="-988.3" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
-<polygon fill="none" stroke="black" points="304.5,-957.5 304.5,-978.5 406.5,-978.5 406.5,-957.5 304.5,-957.5"/>
-<text text-anchor="start" x="344.5" y="-965.3" font-family="Avenir" font-weight="bold" font-size="14.00">tag</text>
-<polygon fill="none" stroke="black" points="408.5,-957.5 408.5,-978.5 438.5,-978.5 438.5,-957.5 408.5,-957.5"/>
+<polygon fill="none" stroke="black" points="269.5,-980.5 269.5,-1001.5 371.5,-1001.5 371.5,-980.5 269.5,-980.5"/>
+<text text-anchor="start" x="302" y="-988.3" font-family="Avenir" font-weight="bold" font-size="14.00">name</text>
+<polygon fill="none" stroke="black" points="373.5,-980.5 373.5,-1001.5 473.5,-1001.5 473.5,-980.5 373.5,-980.5"/>
+<text text-anchor="start" x="376.5" y="-988.3" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
+<polygon fill="none" stroke="black" points="269.5,-957.5 269.5,-978.5 371.5,-978.5 371.5,-957.5 269.5,-957.5"/>
+<text text-anchor="start" x="309.5" y="-965.3" font-family="Avenir" font-weight="bold" font-size="14.00">tag</text>
+<polygon fill="none" stroke="black" points="373.5,-957.5 373.5,-978.5 473.5,-978.5 473.5,-957.5 373.5,-957.5"/>
 <text text-anchor="start" x="415" y="-965.3" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
-<polygon fill="none" stroke="black" points="304.5,-934.5 304.5,-955.5 406.5,-955.5 406.5,-934.5 304.5,-934.5"/>
-<text text-anchor="start" x="349.5" y="-941.3" font-family="Avenir" font-size="14.00">id</text>
-<polygon fill="none" stroke="black" points="408.5,-934.5 408.5,-955.5 438.5,-955.5 438.5,-934.5 408.5,-934.5"/>
+<polygon fill="none" stroke="black" points="269.5,-934.5 269.5,-955.5 371.5,-955.5 371.5,-934.5 269.5,-934.5"/>
+<text text-anchor="start" x="314.5" y="-941.3" font-family="Avenir" font-size="14.00">id</text>
+<polygon fill="none" stroke="black" points="373.5,-934.5 373.5,-955.5 473.5,-955.5 473.5,-934.5 373.5,-934.5"/>
 <text text-anchor="start" x="415" y="-942.3" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
-<polygon fill="none" stroke="black" points="304.5,-911.5 304.5,-932.5 406.5,-932.5 406.5,-911.5 304.5,-911.5"/>
-<text text-anchor="start" x="344" y="-918.3" font-family="Avenir" font-size="14.00">min</text>
-<polygon fill="none" stroke="black" points="408.5,-911.5 408.5,-932.5 438.5,-932.5 438.5,-911.5 408.5,-911.5"/>
+<polygon fill="none" stroke="black" points="269.5,-911.5 269.5,-932.5 371.5,-932.5 371.5,-911.5 269.5,-911.5"/>
+<text text-anchor="start" x="309" y="-918.3" font-family="Avenir" font-size="14.00">min</text>
+<polygon fill="none" stroke="black" points="373.5,-911.5 373.5,-932.5 473.5,-932.5 473.5,-911.5 373.5,-911.5"/>
 <text text-anchor="start" x="415.5" y="-919.3" font-family="Avenir" font-style="italic" font-size="14.00">int</text>
-<polygon fill="none" stroke="black" points="304.5,-888.5 304.5,-909.5 406.5,-909.5 406.5,-888.5 304.5,-888.5"/>
-<text text-anchor="start" x="342" y="-895.3" font-family="Avenir" font-size="14.00">max</text>
-<polygon fill="none" stroke="black" points="408.5,-888.5 408.5,-909.5 438.5,-909.5 438.5,-888.5 408.5,-888.5"/>
+<polygon fill="none" stroke="black" points="269.5,-888.5 269.5,-909.5 371.5,-909.5 371.5,-888.5 269.5,-888.5"/>
+<text text-anchor="start" x="307" y="-895.3" font-family="Avenir" font-size="14.00">max</text>
+<polygon fill="none" stroke="black" points="373.5,-888.5 373.5,-909.5 473.5,-909.5 473.5,-888.5 373.5,-888.5"/>
 <text text-anchor="start" x="415.5" y="-896.3" font-family="Avenir" font-style="italic" font-size="14.00">int</text>
-<polygon fill="none" stroke="black" points="304.5,-865.5 304.5,-886.5 406.5,-886.5 406.5,-865.5 304.5,-865.5"/>
-<text text-anchor="start" x="333.5" y="-872.3" font-family="Avenir" font-size="14.00">default</text>
-<polygon fill="none" stroke="black" points="408.5,-865.5 408.5,-886.5 438.5,-886.5 438.5,-865.5 408.5,-865.5"/>
+<polygon fill="none" stroke="black" points="269.5,-865.5 269.5,-886.5 371.5,-886.5 371.5,-865.5 269.5,-865.5"/>
+<text text-anchor="start" x="298.5" y="-872.3" font-family="Avenir" font-size="14.00">default</text>
+<polygon fill="none" stroke="black" points="373.5,-865.5 373.5,-886.5 473.5,-886.5 473.5,-865.5 373.5,-865.5"/>
 <text text-anchor="start" x="415.5" y="-873.3" font-family="Avenir" font-style="italic" font-size="14.00">int</text>
-<polygon fill="none" stroke="black" points="304.5,-842.5 304.5,-863.5 406.5,-863.5 406.5,-842.5 304.5,-842.5"/>
-<text text-anchor="start" x="307.5" y="-849.3" font-family="Avenir" font-size="14.00">_formatspecific</text>
-<polygon fill="none" stroke="black" points="408.5,-842.5 408.5,-863.5 438.5,-863.5 438.5,-842.5 408.5,-842.5"/>
+<polygon fill="none" stroke="black" points="269.5,-842.5 269.5,-863.5 371.5,-863.5 371.5,-842.5 269.5,-842.5"/>
+<text text-anchor="start" x="272.5" y="-849.3" font-family="Avenir" font-size="14.00">_formatspecific</text>
+<polygon fill="none" stroke="black" points="373.5,-842.5 373.5,-863.5 473.5,-863.5 473.5,-842.5 373.5,-842.5"/>
 <text text-anchor="start" x="411.5" y="-850.3" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
-<polygon fill="none" stroke="black" points="301.5,-839.5 301.5,-1025.5 441.5,-1025.5 441.5,-839.5 301.5,-839.5"/>
+<polygon fill="none" stroke="black" points="266.5,-839.5 266.5,-1025.5 476.5,-1025.5 476.5,-839.5 266.5,-839.5"/>
 </a>
 </g>
 </g>
@@ -97,35 +97,35 @@ toc: false
 <!-- Font&#45;&gt;Axis -->
 <g id="edge1" class="edge">
 <title>Font:axes&#45;&gt;Axis</title>
-<path fill="none" stroke="black" d="M182,-734.5C227.72,-734.5 198.64,-791.46 228,-826.5 244.26,-845.9 264.75,-863.76 285.08,-879.08"/>
-<polygon fill="black" stroke="black" points="283.03,-881.91 293.15,-885.04 287.19,-876.28 283.03,-881.91"/>
+<path fill="none" stroke="black" d="M182,-734.5C227.72,-734.5 198.64,-791.46 228,-826.5 234.9,-834.73 242.56,-842.69 250.64,-850.29"/>
+<polygon fill="black" stroke="black" points="248.44,-853.01 258.18,-857.17 253.15,-847.84 248.44,-853.01"/>
 </g>
 <!-- Instance -->
 <g id="node3" class="node">
 <title>Instance</title>
 <g id="a_node3"><a xlink:href="Instance.html" xlink:title="&lt;TABLE&gt;">
 <text text-anchor="start" x="344" y="-798.3" font-family="Avenir" font-weight="bold" font-size="14.00">Instance</text>
-<polygon fill="none" stroke="black" points="304.5,-768.5 304.5,-789.5 406.5,-789.5 406.5,-768.5 304.5,-768.5"/>
-<text text-anchor="start" x="337" y="-776.3" font-family="Avenir" font-weight="bold" font-size="14.00">name</text>
-<polygon fill="none" stroke="black" points="408.5,-768.5 408.5,-789.5 438.5,-789.5 438.5,-768.5 408.5,-768.5"/>
-<text text-anchor="start" x="415" y="-776.3" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
-<polygon fill="none" stroke="black" points="304.5,-745.5 304.5,-766.5 406.5,-766.5 406.5,-745.5 304.5,-745.5"/>
-<text text-anchor="start" x="330.5" y="-752.3" font-family="Avenir" font-size="14.00">location</text>
-<polygon fill="none" stroke="black" points="408.5,-745.5 408.5,-766.5 438.5,-766.5 438.5,-745.5 408.5,-745.5"/>
+<polygon fill="none" stroke="black" points="269.5,-768.5 269.5,-789.5 371.5,-789.5 371.5,-768.5 269.5,-768.5"/>
+<text text-anchor="start" x="302" y="-776.3" font-family="Avenir" font-weight="bold" font-size="14.00">name</text>
+<polygon fill="none" stroke="black" points="373.5,-768.5 373.5,-789.5 473.5,-789.5 473.5,-768.5 373.5,-768.5"/>
+<text text-anchor="start" x="376.5" y="-776.3" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
+<polygon fill="none" stroke="black" points="269.5,-745.5 269.5,-766.5 371.5,-766.5 371.5,-745.5 269.5,-745.5"/>
+<text text-anchor="start" x="294.5" y="-753.3" font-family="Avenir" font-weight="bold" font-size="14.00">location</text>
+<polygon fill="none" stroke="black" points="373.5,-745.5 373.5,-766.5 473.5,-766.5 473.5,-745.5 373.5,-745.5"/>
 <text text-anchor="start" x="411.5" y="-753.3" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
-<polygon fill="none" stroke="black" points="304.5,-722.5 304.5,-743.5 406.5,-743.5 406.5,-722.5 304.5,-722.5"/>
-<text text-anchor="start" x="307.5" y="-729.3" font-family="Avenir" font-size="14.00">_formatspecific</text>
-<polygon fill="none" stroke="black" points="408.5,-722.5 408.5,-743.5 438.5,-743.5 438.5,-722.5 408.5,-722.5"/>
+<polygon fill="none" stroke="black" points="269.5,-722.5 269.5,-743.5 371.5,-743.5 371.5,-722.5 269.5,-722.5"/>
+<text text-anchor="start" x="272.5" y="-729.3" font-family="Avenir" font-size="14.00">_formatspecific</text>
+<polygon fill="none" stroke="black" points="373.5,-722.5 373.5,-743.5 473.5,-743.5 473.5,-722.5 373.5,-722.5"/>
 <text text-anchor="start" x="411.5" y="-730.3" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
-<polygon fill="none" stroke="black" points="301.5,-719.5 301.5,-813.5 441.5,-813.5 441.5,-719.5 301.5,-719.5"/>
+<polygon fill="none" stroke="black" points="266.5,-719.5 266.5,-813.5 476.5,-813.5 476.5,-719.5 266.5,-719.5"/>
 </a>
 </g>
 </g>
 <!-- Font&#45;&gt;Instance -->
 <g id="edge2" class="edge">
 <title>Font:instances&#45;&gt;Instance</title>
-<path fill="none" stroke="black" d="M182,-711.5C215.98,-711.5 252.08,-719.84 283.5,-730.02"/>
-<polygon fill="black" stroke="black" points="282.5,-733.38 293.09,-733.24 284.72,-726.74 282.5,-733.38"/>
+<path fill="none" stroke="black" d="M182,-711.5C203.88,-711.5 226.63,-714.96 248.45,-720.14"/>
+<polygon fill="black" stroke="black" points="247.85,-723.59 258.4,-722.63 249.55,-716.8 247.85,-723.59"/>
 </g>
 <!-- Master -->
 <g id="node5" class="node">

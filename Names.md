@@ -1,7 +1,7 @@
 ---
 title: Names
 ---
-Names(_formatspecific: dict = <factory>, _: dict = None, familyName: nfsf.BaseObject.I18NDictionary = None, designer: nfsf.BaseObject.I18NDictionary = None, designerURL: nfsf.BaseObject.I18NDictionary = None, manufacturer: nfsf.BaseObject.I18NDictionary = None, manufacturerURL: nfsf.BaseObject.I18NDictionary = None, license: nfsf.BaseObject.I18NDictionary = None, licenseURL: nfsf.BaseObject.I18NDictionary = None, version: nfsf.BaseObject.I18NDictionary = None, uniqueID: nfsf.BaseObject.I18NDictionary = None, description: nfsf.BaseObject.I18NDictionary = None, preferredFamilyName: nfsf.BaseObject.I18NDictionary = None, preferredSubfamilyName: nfsf.BaseObject.I18NDictionary = None, compatibleFullName: nfsf.BaseObject.I18NDictionary = None, sampleText: nfsf.BaseObject.I18NDictionary = None, WWSFamilyName: nfsf.BaseObject.I18NDictionary = None, WWSSubfamilyName: nfsf.BaseObject.I18NDictionary = None, copyright: nfsf.BaseObject.I18NDictionary = None, styleMapFamilyName: nfsf.BaseObject.I18NDictionary = None, trademark: nfsf.BaseObject.I18NDictionary = None)
+A table of global, localizable names for the font.
 ## Names._formatspecific
 
 * Python type: `dict`
@@ -25,6 +25,7 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
 
 * Python type: `I18NDictionary`
 
+ *Localizable.*
 *If not provided, defaults to* `None`.
 
 
@@ -32,6 +33,7 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
 
 * Python type: `I18NDictionary`
 
+ *Localizable.*
 *If not provided, defaults to* `None`.
 
 
@@ -39,6 +41,7 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
 
 * Python type: `I18NDictionary`
 
+ *Localizable.*
 *If not provided, defaults to* `None`.
 
 
@@ -46,6 +49,7 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
 
 * Python type: `I18NDictionary`
 
+ *Localizable.*
 *If not provided, defaults to* `None`.
 
 
@@ -53,6 +57,7 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
 
 * Python type: `I18NDictionary`
 
+ *Localizable.*
 *If not provided, defaults to* `None`.
 
 
@@ -60,6 +65,7 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
 
 * Python type: `I18NDictionary`
 
+ *Localizable.*
 *If not provided, defaults to* `None`.
 
 
@@ -67,6 +73,7 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
 
 * Python type: `I18NDictionary`
 
+ *Localizable.*
 *If not provided, defaults to* `None`.
 
 
@@ -74,6 +81,7 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
 
 * Python type: `I18NDictionary`
 
+ *Localizable.*
 *If not provided, defaults to* `None`.
 
 
@@ -81,6 +89,7 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
 
 * Python type: `I18NDictionary`
 
+ *Localizable.*
 *If not provided, defaults to* `None`.
 
 
@@ -88,6 +97,7 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
 
 * Python type: `I18NDictionary`
 
+ *Localizable.*
 *If not provided, defaults to* `None`.
 
 
@@ -95,6 +105,7 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
 
 * Python type: `I18NDictionary`
 
+ *Localizable.*
 *If not provided, defaults to* `None`.
 
 
@@ -102,6 +113,7 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
 
 * Python type: `I18NDictionary`
 
+ *Localizable.*
 *If not provided, defaults to* `None`.
 
 
@@ -109,6 +121,7 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
 
 * Python type: `I18NDictionary`
 
+ *Localizable.*
 *If not provided, defaults to* `None`.
 
 
@@ -116,6 +129,7 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
 
 * Python type: `I18NDictionary`
 
+ *Localizable.*
 *If not provided, defaults to* `None`.
 
 
@@ -123,6 +137,7 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
 
 * Python type: `I18NDictionary`
 
+ *Localizable.*
 *If not provided, defaults to* `None`.
 
 
@@ -130,6 +145,7 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
 
 * Python type: `I18NDictionary`
 
+ *Localizable.*
 *If not provided, defaults to* `None`.
 
 
@@ -137,6 +153,7 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
 
 * Python type: `I18NDictionary`
 
+ *Localizable.*
 *If not provided, defaults to* `None`.
 
 
@@ -144,6 +161,7 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
 
 * Python type: `I18NDictionary`
 
+ *Localizable.*
 *If not provided, defaults to* `None`.
 
 
@@ -151,6 +169,7 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
 
 * Python type: `I18NDictionary`
 
+ *Localizable.*
 *If not provided, defaults to* `None`.
 
 

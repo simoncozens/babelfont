@@ -6,24 +6,27 @@ Anchor(x: int, y: int, name: str, _formatspecific: dict = <factory>, _: dict = N
 
 * Python type: `int`
 
+* **Required field**
 
-**Required field**
+
 
 
 ## Anchor.y
 
 * Python type: `int`
 
+* **Required field**
 
-**Required field**
+
 
 
 ## Anchor.name
 
 * Python type: `str`
 
+* **Required field**
 
-**Required field**
+
 
 
 ## Anchor._formatspecific

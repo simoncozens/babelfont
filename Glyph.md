@@ -7,13 +7,15 @@ Glyph(name: str, category: str = 'base', codepoints: [<class 'int'>] = <factory>
 
 * Python type: `str`
 
+* **Required field**
 
-**Required field**
+
 
 
 ## Glyph.category
 
 * Python type: `str`
+
 
 *If not provided, defaults to* `base`.
 
@@ -24,9 +26,11 @@ Glyph(name: str, category: str = 'base', codepoints: [<class 'int'>] = <factory>
 
 
 
+
 ## Glyph.layers
 
 * Python type: [[`Layer`](Layer.html)]
+
 
 
 

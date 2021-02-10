@@ -2,36 +2,32 @@
 title: Master
 ---
 A font master.
-
-    Attributes:
-        name (str): The user-facing master name.
-        id (str): An internal identifier for the master.
-        location (dict): A dictionary locating this master by mapping axis
-            name to designspace location.
-        guides ([Guide]): A list of master-level guidelines
-        metrics (dict): The master's metrics.
-        font (Font): The font that this master belongs to.
-    
 ## Master.name
 
 * Python type: `I18NDictionary`
 
+* **Required field**
 
-**Required field**
+ *Localizable.*
 
 
 ## Master.id
 
 * Python type: `str`
 
+* **Required field**
 
-**Required field**
+An ID used to refer to this master in the
+`Layer._master` field. (This is allows the user to change the master name
+without the layers becoming lost.)
 
 
 ## Master.location
 
 * Python type: `dict`
 
+A dictionary mapping axis tags to coordinates
+in order to locate this instance in the design space.
 *If not provided, defaults to* `None`.
 
 
@@ -41,12 +37,17 @@ A font master.
 
 * When writing to NFSF-JSON, each item in the list must be placed on a separate line.
 
+A list of guides.
 
 
 ## Master.metrics
 
 * Python type: `dict`
 
+A dictionary mapping metric names (string) to metric value (integer). The following
+metric names are reserved: `xHeight,capHeight,ascender,descender`. Other metrics may be added to this dictionary
+as needed by font clients, but their interpretation is not guaranteed to be
+compatible between clients.
 
 
 ## Master.kerning
@@ -55,6 +56,7 @@ A font master.
 
 * When writing to NFSF-JSON, each item in the list must be placed on a separate line.
 
+I'll be honest, I haven't worked out how this is meant to work.
 *If not provided, defaults to* `None`.
 
 
@@ -64,6 +66,7 @@ A font master.
 
 * This field only exists as an attribute of the the Python object and should not be written to NFSF-JSON.
 
+Within the Python object, provides a reference to the font object containing this master.
 *If not provided, defaults to* `None`.
 
 

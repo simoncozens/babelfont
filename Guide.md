@@ -6,13 +6,15 @@ Guide(pos: nfsf.BaseObject.Position, name: str = None, color: nfsf.BaseObject.Co
 
 * Python type: `Position`
 
+* **Required field**
 
-**Required field**
+
 
 
 ## Guide.name
 
 * Python type: `str`
+
 
 *If not provided, defaults to* `None`.
 
@@ -20,6 +22,7 @@ Guide(pos: nfsf.BaseObject.Position, name: str = None, color: nfsf.BaseObject.Co
 ## Guide.color
 
 * Python type: `Color`
+
 
 *If not provided, defaults to* `None`.
 

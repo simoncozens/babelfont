@@ -6,21 +6,24 @@ Layer(id: str, width: int, name: str = None, _master: str = None, guides: [<clas
 
 * Python type: `str`
 
+* **Required field**
 
-**Required field**
+
 
 
 ## Layer.width
 
 * Python type: `int`
 
+* **Required field**
 
-**Required field**
+
 
 
 ## Layer.name
 
 * Python type: `str`
+
 
 *If not provided, defaults to* `None`.
 
@@ -29,12 +32,14 @@ Layer(id: str, width: int, name: str = None, _master: str = None, guides: [<clas
 
 * Python type: `str`
 
+
 *If not provided, defaults to* `None`.
 
 
 ## Layer.guides
 
 * Python type: [[`Guide`](Guide.html)]
+
 
 
 
@@ -46,15 +51,18 @@ Layer(id: str, width: int, name: str = None, _master: str = None, guides: [<clas
 
 
 
+
 ## Layer.anchors
 
 * Python type: [[`Anchor`](Anchor.html)]
 
 
 
+
 ## Layer.color
 
 * Python type: `Color`
+
 
 *If not provided, defaults to* `None`.
 
@@ -63,12 +71,14 @@ Layer(id: str, width: int, name: str = None, _master: str = None, guides: [<clas
 
 * Python type: `int`
 
+
 *If not provided, defaults to* `0`.
 
 
 ## Layer._background
 
 * Python type: `str`
+
 
 *If not provided, defaults to* `None`.
 
@@ -77,12 +87,14 @@ Layer(id: str, width: int, name: str = None, _master: str = None, guides: [<clas
 
 * Python type: `bool`
 
+
 *If not provided, defaults to* `False`.
 
 
 ## Layer.location
 
 * Python type: `[float]`
+
 
 *If not provided, defaults to* `None`.
 
@@ -92,6 +104,7 @@ Layer(id: str, width: int, name: str = None, _master: str = None, guides: [<clas
 * Python type: `object`
 
 * This field only exists as an attribute of the the Python object and should not be written to NFSF-JSON.
+
 
 *If not provided, defaults to* `None`.
 
