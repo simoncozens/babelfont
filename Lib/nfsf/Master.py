@@ -2,31 +2,66 @@ from dataclasses import dataclass, field
 from .BaseObject import BaseObject, I18NDictionary
 from .Guide import Guide
 
+CORE_METRICS = ["xHeight", "capHeight", "ascender", "descender"]
+
+
 @dataclass
 class _MasterFields:
     name: I18NDictionary
-    id: str = field(repr=False)
-    location: dict = None
-    guides: [Guide] = field(default_factory=list, repr=False, metadata={"separate_items": True})
-    metrics: dict = field(default_factory=dict, repr=False)
-    kerning: dict = field(default=None, repr=False, metadata={"separate_items": True})
-    font: object = field(default=None, repr=False, metadata={"python_only": True})
+    id: str = field(
+        repr=False,
+        metadata={
+            "description": """An ID used to refer to this master in the
+`Layer._master` field. (This is allows the user to change the master name
+without the layers becoming lost.)"""
+        },
+    )
+    location: dict = field(
+        default=None,
+        metadata={
+            "description": """A dictionary mapping axis tags to coordinates
+in order to locate this instance in the design space."""
+        },
+    )
+    guides: [Guide] = field(
+        default_factory=list,
+        repr=False,
+        metadata={"separate_items": True, "description": "A list of guides."},
+    )
+    metrics: dict = field(
+        default_factory=dict,
+        repr=False,
+        metadata={
+            "description": """A dictionary mapping metric names (string) to metric value (integer). The following
+metric names are reserved: `%s`. Other metrics may be added to this dictionary
+as needed by font clients, but their interpretation is not guaranteed to be
+compatible between clients."""
+            % (",".join(CORE_METRICS))
+        },
+    )
+    kerning: dict = field(
+        default=None,
+        repr=False,
+        metadata={
+            "separate_items": True,
+            "description": "I'll be honest, I haven't worked out how this is meant to work.",
+        },
+    )
+    font: object = field(
+        default=None,
+        repr=False,
+        metadata={
+            "python_only": True,
+            "description": "Within the Python object, provides a reference to the font object containing this master.",
+        },
+    )
+
 
 @dataclass
 class Master(BaseObject, _MasterFields):
-    """A font master.
+    """A font master."""
 
-    Attributes:
-        name (str): The user-facing master name.
-        id (str): An internal identifier for the master.
-        location (dict): A dictionary locating this master by mapping axis
-            name to designspace location.
-        guides ([Guide]): A list of master-level guidelines
-        metrics (dict): The master's metrics.
-        font (Font): The font that this master belongs to.
-    """
-
-    CORE_METRICS = ["xHeight", "capHeight", "ascender", "descender"]
+    CORE_METRICS = CORE_METRICS
 
     def get_glyph_layer(self, glyphname):
         g = self.font.glyphs[glyphname]
@@ -36,7 +71,7 @@ class Master(BaseObject, _MasterFields):
 
     @property
     def normalized_location(self):
-        return { a.tag: a.normalize_value(self.location[a.name]) for a in self.font.axes }
+        return {a.tag: a.normalize_value(self.location[a.name]) for a in self.font.axes}
 
     @property
     def xHeight(self):

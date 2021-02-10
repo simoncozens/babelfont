@@ -4,6 +4,7 @@ from dataclasses import dataclass, asdict
 
 @dataclass
 class Names(BaseObject):
+    """A table of global, localizable names for the font."""
     familyName: I18NDictionary = None
     designer: I18NDictionary = None
     designerURL: I18NDictionary = None
