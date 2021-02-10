@@ -1,0 +1,23 @@
+markdown: kramdown
+include: ["_pages"]
+remote_theme: mmistakes/minimal-mistakes
+plugins:
+  - jekyll-paginate
+  - jekyll-sitemap
+  - jekyll-gist
+  - jekyll-feed
+  - jemoji
+  - jekyll-include-cache
+title: "Neutral Font Source Format"
+defaults:
+  # _posts
+  - values:
+      layout: single
+      author_profile: false
+      read_time: false
+      comments: true
+      share: false
+      related: true
+      toc: true
+      sidebar:
+        nav: "default"
