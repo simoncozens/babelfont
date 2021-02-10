@@ -1,10 +1,10 @@
 from dataclasses import dataclass, field
-from .BaseObject import BaseObject
+from .BaseObject import BaseObject, I18NDictionary
 from .Guide import Guide
 
 @dataclass
 class _MasterFields:
-    name: str
+    name: I18NDictionary
     id: str = field(repr=False)
     location: dict = None
     guides: [Guide] = field(default_factory=list, repr=False, metadata={"separate_items": True})
