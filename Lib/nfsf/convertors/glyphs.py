@@ -8,6 +8,18 @@ import math
 import uuid
 
 
+_rename_metrics = {"x-height": "xHeight", "cap height": "capHeight"}
+_reverse_rename_metrics = {v: k for k, v in _rename_metrics.items()}
+
+
+def _glyphs_metrics_to_ours(k):
+    return _rename_metrics.get(k, k)
+
+
+def _our_metrics_to_glyphs(k):
+    return _reverse_rename_metrics.get(k, k)
+
+
 class GlyphsTwo(BaseConvertor):
     suffix = ".glyphs"
 
@@ -255,6 +267,7 @@ class GlyphsTwo(BaseConvertor):
         _maybesetformatspecific(self.font, self.glyphs, "numbers")
         _maybesetformatspecific(self.font, self.glyphs, "stems")
         _maybesetformatspecific(self.font, self.glyphs, "userData")
+        _maybesetformatspecific(self.font, self.glyphs, "metrics")
 
 
 class GlyphsThree(GlyphsTwo):
@@ -279,7 +292,7 @@ class GlyphsThree(GlyphsTwo):
     def _default_master_id(self):
         # The default master in glyphs is either the first master or the
         # one selected by the Variable Font Origin custom parameter
-        for param in self.glyphs.get("customParameters",[]):
+        for param in self.glyphs.get("customParameters", []):
             if param["name"] == "Variable Font Origin":
                 return param["value"]
         return self.glyphs["fontMaster"][0]["id"]
@@ -306,12 +319,11 @@ class GlyphsThree(GlyphsTwo):
         metrics = self.glyphs["metrics"]
         master = Master(name=gmaster["name"], id=gmaster["id"], font=self.font)
         metric_types = [m["type"] for m in metrics]
-        metric_values = [x.get("pos", 0) for x in gmaster["metricValues"]]
-        master.metrics = {k: v for (k, v) in list(zip(metric_types, metric_values))}
-        master.ascender = master.metrics["ascender"]
-        master.descender = master.metrics["descender"]
-        if "x-height" in master.metrics:
-            master.xHeight = master.metrics["x-height"]
+        for k, v in zip(metric_types, gmaster["metricValues"]):
+            pos = v.get("pos", 0)
+            master.metrics[_glyphs_metrics_to_ours(k)] = pos
+            if v.get("over"):
+                master.metrics["%s overshoot" % _glyphs_metrics_to_ours(k)] = v["over"]
 
         master.location = {k.name: v for k, v in zip(self.font.axes, location)}
         master.guides = [self._load_guide(x) for x in gmaster.get("guides", [])]
@@ -355,12 +367,39 @@ class GlyphsThree(GlyphsTwo):
         if font.note:
             out["note"] = font.note
         if font.date:
-            out["date"] = font.date
+            out["date"] = font.date.strftime("%Y-%m-%d %H:%M:%S +0000")
+        out["familyName"] = font.names.familyName.default_or_dict()
         out["axes"] = [self._save_axis(ax) for ax in self.font.axes]
+
+        # Sort out the metrics order, using "my" names
+        metrics_order = []
+        if "com.glyphsapp" in font._formatspecific:
+            metrics_order = font._formatspecific["com.glyphsapp"].get("metrics", [])
+            metrics_order = [
+                _reverse_rename_metrics.get(x["type"], x["type"]) for x in metrics_order
+            ]
+        # Ensure we have all the metrics
+        for m in font.masters:
+            for k in m.metrics.keys():
+                if k.endswith(" overshoot"):
+                    continue  # We'll write it into the other metric
+                if _our_metrics_to_glyphs(k) not in metrics_order:
+                    metrics_order.append(_our_metrics_to_glyphs(k))
+        # Now inject missing ones into the "metrics" dict, using Glyphs names
+        if not "metrics" in out:
+            out["metrics"] = []
+        their_metrics = [x["type"] for x in out["metrics"]]
+        for our_metric in metrics_order:
+            their_name_for_our_metric = _our_metrics_to_glyphs(our_metric)
+            if their_name_for_our_metric not in their_metrics:
+                out["metrics"].append({"type": their_name_for_our_metric})
+        # Use this later when outputting metric values
+        self.metrics_order = metrics_order
         out["fontMaster"] = [self._save_master(m) for m in self.font.masters]
         out["glyphs"] = [self._save_glyph(g) for g in self.font.glyphs]
+
         with open(self.filename, "wb") as file:
-            openstep_plist.dump(out, file,indent=0)
+            openstep_plist.dump(out, file, indent=0)
             file.write(b"\n")
 
     def _save_axis(self, axis):
@@ -371,6 +410,16 @@ class GlyphsThree(GlyphsTwo):
     def _save_master(self, master):
         gmaster = _moveformatspecific(master)
         gmaster["axesValues"] = list(master.location.values())
+        gmaster["metricValues"] = []
+        for k in self.metrics_order:
+            metric = {}
+            pos = master.metrics.get(_glyphs_metrics_to_ours(k))
+            over = master.metrics.get(_glyphs_metrics_to_ours(k) + " overshoot")
+            if pos:
+                metric["pos"] = pos
+            if over:
+                metric["over"] = over
+            gmaster["metricValues"].append(metric)
         if master.guides:
             gmaster["guides"] = [self._save_guide(g) for g in master.guides]
         _copyattrs(master, gmaster, ["name", "id"])
@@ -413,17 +462,20 @@ class GlyphsThree(GlyphsTwo):
     def _save_node(self, node):
         return (node.x, node.y, node.type)
 
+
 def _maybesetformatspecific(item, glyphs, key):
     if glyphs.get(key):
         if "com.glyphsapp" not in item._formatspecific:
             item._formatspecific["com.glyphsapp"] = {}
         item._formatspecific["com.glyphsapp"][key] = glyphs.get(key)
 
+
 def _moveformatspecific(item):
     rv = {}
     if "com.glyphsapp" in item._formatspecific:
-        rv = {**item._formatspecific.get("com.glyphsapp",{})}
+        rv = {**item._formatspecific.get("com.glyphsapp", {})}
     return rv
+
 
 def _copyattrs(src, dst, attrs):
     for a in attrs:
