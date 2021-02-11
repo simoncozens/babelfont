@@ -74,6 +74,13 @@ class Layer(BaseObject, _LayerFields):
             return 0
         return self.width - self.bounds[2]
 
+    @property
+    def valid(self):
+        if not self._font:
+            return False
+        return True
+
+
     # Pen protocol support...
 
     def draw(self, pen):

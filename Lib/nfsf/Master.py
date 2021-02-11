@@ -63,6 +63,11 @@ class Master(BaseObject, _MasterFields):
 
     CORE_METRICS = CORE_METRICS
 
+    def __post_init__(self):
+        # If they smacked my name with a bare string, replace with I18NDict
+        if isinstance(self.name, str):
+            self.name = I18NDictionary.with_default(self.name)
+
     def get_glyph_layer(self, glyphname):
         g = self.font.glyphs[glyphname]
         for layer in g.layers:
@@ -88,3 +93,10 @@ class Master(BaseObject, _MasterFields):
     @property
     def descender(self):
         return self.metrics.get("descender", 0)
+
+    @property
+    def valid(self):
+        if not self.font: return False
+        if self.location and list(self.location.keys()) != [n.tag for n in self.font.axes]:
+            return False
+        return True
