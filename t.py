@@ -79,15 +79,16 @@ fb.setupFvar(
 
 # Calculate variations
 variations = {}
+model = f.variation_model()
 for g in f.glyphs.keys():
     default_g = f.default_master.ttglyphset._glyphs[g]
     default_width = metrics[g][0]
-    for m in f.masters:
+    for ix, m in enumerate(f.masters):
+        sup = model.supports[model.mapping[ix]]
+        print(m.location, sup)
         if m == f.default_master:
             continue
         thislayer = m.get_glyph_layer(g)
-        loc = {k:(0,v,1) for k,v in m.normalized_location.items() }
-
         this_g = m.ttglyphset._glyphs[g]
         if len(this_g.coordinates) != len(default_g.coordinates):
             warnings.warn("Could not interpolate glyph %s in master %s: %i != %i" % (g, m.name, len(this_g.coordinates), len(default_g.coordinates)))
@@ -96,7 +97,7 @@ for g in f.glyphs.keys():
         coords.extend([ (0,0), (thislayer.width-default_width,0), (0,0), (0,0) ])
         if g not in variations:
             variations[g] = []
-        variations[g].append(TupleVariation(loc, coords))
+        variations[g].append(TupleVariation(sup, coords))
 fb.setupGvar(variations)
 
 fb.setupPost()

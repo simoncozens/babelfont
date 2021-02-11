@@ -8,6 +8,7 @@ from .Master import Master
 from pathlib import Path
 from .Names import Names
 import functools
+from fontTools.varLib.models import VariationModel
 
 
 @dataclass
@@ -140,3 +141,9 @@ class Font(_FontFields, BaseObject):
             for u in g.codepoints:
                 unicodes[u] = g.name
         return unicodes
+
+    def variation_model(self):
+        return VariationModel(
+            [m.normalized_location for m in self.masters],
+            axisOrder=[a.name for a in self.axes],
+        )
