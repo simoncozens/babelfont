@@ -121,9 +121,9 @@ class Font(_FontFields, BaseObject):
     def master(self, mid):
         return self._master_map[mid]
 
-    @property
+    @functools.cached_property
     def default_master(self):
-        default_loc = {a.tag: a.default for a in self.axes}
+        default_loc = {a.tag: a.map_forward(a.default) for a in self.axes}
         for m in self.masters:
             if m.location == default_loc:
                 return m
@@ -139,7 +139,8 @@ class Font(_FontFields, BaseObject):
             if not g.codepoints:
                 continue
             for u in g.codepoints:
-                unicodes[u] = g.name
+                if u:
+                    unicodes[u] = g.name
         return unicodes
 
     def variation_model(self):

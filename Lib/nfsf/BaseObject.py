@@ -48,9 +48,10 @@ class I18NDictionary(dict):
     @property
     def as_fonttools_dict(self):
         rv = dict(self)
-        if "en" not in rv:
-            rv["en"] = rv["dflt"]
-        del rv["dflt"]
+        if "dflt" in rv:
+            if "en" not in rv:
+                rv["en"] = rv["dflt"]
+            del rv["dflt"]
         return rv
 
 @dataclass
