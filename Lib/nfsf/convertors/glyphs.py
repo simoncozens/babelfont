@@ -49,6 +49,9 @@ class GlyphsTwo(BaseConvertor):
 
     def _load(self):
         self.glyphs = self.scratch["plist"]
+        self.customParameters = {}
+        for param in self.glyphs.get("customParameters", []):
+            self.customParameters[param["name"]] = param["value"]
         self._load_axes()
 
         for gmaster in self.glyphs["fontMaster"]:
@@ -66,8 +69,12 @@ class GlyphsTwo(BaseConvertor):
         return self.font
 
     def _load_axes(self):
-        # XXX Synthesize axes
-        pass
+        if "Axes" in self.customParameters:
+            for ax in self.customParameters["Axes"]:
+                self.font.axes.append(Axis(name=ax["Name"], tag=ax["Tag"]))
+        else:
+            self.font.axes.append(Axis(name="Weight", tag="wght"))
+            self.font.axes.append(Axis(name="Width", tag="wdth"))
 
     def _fixup_axes(self):
         # XXX Synthesize axes
@@ -76,14 +83,33 @@ class GlyphsTwo(BaseConvertor):
     def _load_master(self, gmaster):
         # location = gmaster.get("axesValues", [])
         master = Master(
-            name=gmaster.get("name", ""),
+            name=gmaster.get("name", gmaster.get("custom", "")),
             id=gmaster.get("id"),
         )
         for metric in Master.CORE_METRICS:
             master.metrics[metric] = gmaster.get(_glyphs_metrics_to_ours(metric))
+        # Check for metrics in custom parameters
 
         master.font = self.font
+
+        masterCustomParameters = {}
+        for param in gmaster.get("customParameters", []):
+            masterCustomParameters[param["name"]] = param["value"]
+
+        if "Axis Location" in masterCustomParameters:
+            # I dunno, use that? Needs mapping? Check we are using tags/IDs
+            location = masterCustomParameters["Axis Location"]
+        else:
+            potential_locations = [ gmaster.get("weightValue", 0),
+                gmaster.get("widthValue", 0),
+                gmaster.get("customValue", 0)
+            ]
+            location = {}
+            for k, loc in zip(self.font.axes, potential_locations):
+                location[k.tag] = loc
         # XXX Synthesize location
+        import IPython;IPython.embed()
+
 
         master.guides = [self._load_guide(x) for x in gmaster.get("guides", [])]
 
@@ -171,6 +197,8 @@ class GlyphsTwo(BaseConvertor):
             l._background = background.id
             returns.append(background)
         # TODO backgroundImage, metricTop/Bottom/etc, vertOrigin, vertWidth.
+        for r in returns:
+            assert r.valid
         return returns
 
     def _load_guide(self, gguide):
@@ -344,6 +372,7 @@ class GlyphsThree(GlyphsTwo):
         _maybesetformatspecific(master, gmaster, "properties")
         _maybesetformatspecific(master, gmaster, "userData")
         _maybesetformatspecific(master, gmaster, "visible")
+        assert master.valid
         return master
 
     def _load_guide(self, gguide):
