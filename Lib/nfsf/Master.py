@@ -71,7 +71,7 @@ class Master(BaseObject, _MasterFields):
 
     @property
     def normalized_location(self):
-        return {a.tag: a.normalize_value(self.location[a.name]) for a in self.font.axes}
+        return {a.tag: a.normalize_value(self.location[a.tag]) for a in self.font.axes}
 
     @property
     def xHeight(self):

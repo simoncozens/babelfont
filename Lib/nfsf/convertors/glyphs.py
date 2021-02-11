@@ -181,14 +181,14 @@ class GlyphsTwo(BaseConvertor):
     def _load_instance(self, ginstance):
         if "axesValues" in ginstance:
             location = ginstance["axesValues"]
-            instance_location = {k.name: v for k, v in zip(self.font.axes, location)}
+            instance_location = {k.tag: v for k, v in zip(self.font.axes, location)}
         elif "instanceInterpolations" in ginstance:
             # All right then.
-            instance_location = {k.name: 0 for k in self.font.axes}
+            instance_location = {k.tag: 0 for k in self.font.axes}
             for mId, factor in ginstance["instanceInterpolations"].items():
                 master_loc = self.font.master(mId).location
                 for k in self.font.axes:
-                    instance_location[k.name] += master_loc[k.name] * factor
+                    instance_location[k.tag] += master_loc[k.tag] * factor
         else:
             raise ValueError("Need to Synthesize location")
         i = Instance(name=ginstance["name"], location = instance_location)
@@ -315,11 +315,11 @@ class GlyphsThree(GlyphsTwo):
     def _fixup_axes(self):
         for master in self.font.masters:
             for axis in self.font.axes:
-                thisLoc = master.location[axis.name]
+                thisLoc = master.location[axis.tag]
                 if axis.min is None or thisLoc < axis.min:
                     axis.min = thisLoc
                 if master.id == self._default_master_id():
-                    axis.default = master.location[axis.name]
+                    axis.default = master.location[axis.tag]
                 if axis.max is None or thisLoc > axis.max:
                     axis.max = thisLoc
 
@@ -334,7 +334,7 @@ class GlyphsThree(GlyphsTwo):
             if v.get("over"):
                 master.metrics["%s overshoot" % _glyphs_metrics_to_ours(k)] = v["over"]
 
-        master.location = {k.name: v for k, v in zip(self.font.axes, location)}
+        master.location = {k.tag: v for k, v in zip(self.font.axes, location)}
         master.guides = [self._load_guide(x) for x in gmaster.get("guides", [])]
 
         _maybesetformatspecific(master, gmaster, "customParameters")

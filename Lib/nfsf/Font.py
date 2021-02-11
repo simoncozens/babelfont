@@ -123,7 +123,7 @@ class Font(_FontFields, BaseObject):
 
     @property
     def default_master(self):
-        default_loc = {a.name: a.default for a in self.axes}
+        default_loc = {a.tag: a.default for a in self.axes}
         for m in self.masters:
             if m.location == default_loc:
                 return m
@@ -145,5 +145,5 @@ class Font(_FontFields, BaseObject):
     def variation_model(self):
         return VariationModel(
             [m.normalized_location for m in self.masters],
-            axisOrder=[a.name for a in self.axes],
+            axisOrder=[a.tag for a in self.axes],
         )
