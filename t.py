@@ -83,20 +83,20 @@ model = f.variation_model()
 for g in f.glyphs.keys():
     default_g = f.default_master.ttglyphset._glyphs[g]
     default_width = metrics[g][0]
+    all_coords = []
     for ix, m in enumerate(f.masters):
-        sup = model.supports[model.mapping[ix]]
-        if m == f.default_master:
-            continue
-        thislayer = m.get_glyph_layer(g)
-        this_g = m.ttglyphset._glyphs[g]
-        if len(this_g.coordinates) != len(default_g.coordinates):
-            warnings.warn("Could not interpolate glyph %s in master %s: %i != %i" % (g, m.name, len(this_g.coordinates), len(default_g.coordinates)))
-            continue
-        coords = this_g.coordinates - default_g.coordinates
-        coords.extend([ (0,0), (thislayer.width-default_width,0), (0,0), (0,0) ])
-        if g not in variations:
-            variations[g] = []
-        variations[g].append(TupleVariation(sup, coords))
+        basedelta  = m.ttglyphset._glyphs[g].coordinates - default_g.coordinates
+        deltawidth = m.get_glyph_layer(g).width - default_width
+        phantomdelta = [ (0,0), (deltawidth,0), (0,0), (0,0),  ]
+        all_coords.append(list(basedelta) + phantomdelta)
+    deltas = []
+    for coord in zip(*all_coords):
+        x_deltas = model.getDeltas([c[0] for c in coord])
+        y_deltas = model.getDeltas([c[1] for c in coord])
+        deltas.append(zip(x_deltas, y_deltas))
+    variations[g] = []
+    for deltaset,sup in zip(zip(*deltas), model.supports):
+        variations[g].append(TupleVariation(sup,deltaset))
 fb.setupGvar(variations)
 
 fb.setupPost()
