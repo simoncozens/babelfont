@@ -54,6 +54,7 @@ class Designspace(BaseConvertor):
                     min=a.minimum,
                     max=a.maximum,
                     default=a.default,
+                    map=a.map
                 )
             )
 

@@ -21,17 +21,30 @@ automatically generated on import from a UUID."""
         },
     )
     min: int = field(
-        default=None, metadata={"description": "The minimum value of this axis."}
+        default=None,
+        metadata={
+            "description": "The minimum value of this axis, in user space coordinates."
+        },
     )
     max: int = field(
-        default=None, metadata={"description": "The maximum value of this axis."}
+        default=None,
+        metadata={
+            "description": "The maximum value of this axis, in user space coordinates."
+        },
     )
     default: int = field(
         default=None,
         metadata={
-            "description": """The default value of this axis (center of interpolation).
-Note that if the min/max/default values are not supplied, they are returned as `None`
-in the Python object, and should be computed from the master locations on export."""
+            "description": """The default value of this axis (center of interpolation),
+in user space coordinates. Note that if the min/max/default values are not supplied,
+they are returned as `None` in the Python object, and should be computed from the
+master locations on export."""
+        },
+    )
+    map: [(int, int)] = field(
+        default=None,
+        metadata={
+            "description": """The mapping between userspace and designspace coordinates."""
         },
     )
 
@@ -48,4 +61,22 @@ class Axis(BaseObject, _AxisFields):
             self.name = I18NDictionary.with_default(self.name)
 
     def normalize_value(self, value):
-        return normalizeValue(value, (self.min, self.default, self.max))
+        return normalizeValue(
+            self.map_backward(value), (self.min, self.default, self.max)
+        )
+
+    # Stolen from fontTools.designspaceLib
+
+    def map_forward(self, v):
+        from fontTools.varLib.models import piecewiseLinearMap
+
+        if not self.map:
+            return v
+        return piecewiseLinearMap(v, {k: v for k, v in self.map})
+
+    def map_backward(self, v):
+        from fontTools.varLib.models import piecewiseLinearMap
+
+        if not self.map:
+            return v
+        return piecewiseLinearMap(v, {v: k for k, v in self.map})
