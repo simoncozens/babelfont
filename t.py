@@ -73,7 +73,7 @@ fb.setupHorizontalHeader(
 fb.setupNameTable(f.names.as_nametable_dict())
 
 fb.setupFvar(
-    [(ax.tag, ax.min, ax.default, ax.max, ax.name) for ax in f.axes],
+    [(ax.tag, ax.min, ax.default, ax.max, ax.name.as_fonttools_dict) for ax in f.axes],
     []
 )
 

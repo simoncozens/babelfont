@@ -10,6 +10,12 @@ Position = namedtuple("Position", "x,y,angle", defaults=[0, 0, 0])
 
 
 class I18NDictionary(dict):
+    @classmethod
+    def with_default(cls, s):
+        inst = cls()
+        inst.set_default(s)
+        return inst
+
     def copy_in(self, other):
         if isinstance(other, dict):
             for k, v in other.items():
@@ -39,6 +45,13 @@ class I18NDictionary(dict):
         else:
             stream.write('"{0}"'.format(self.get_default()).encode())
 
+    @property
+    def as_fonttools_dict(self):
+        rv = dict(self)
+        if "en" not in rv:
+            rv["en"] = rv["dflt"]
+        del rv["dflt"]
+        return rv
 
 @dataclass
 class BaseObject:

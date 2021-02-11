@@ -42,5 +42,10 @@ class Axis(BaseObject, _AxisFields):
 
     _write_one_line = True
 
+    def __post_init__(self):
+        # If they smacked my name with a bare string, replace with I18NDict
+        if isinstance(self.name, str):
+            self.name = I18NDictionary.with_default(self.name)
+
     def normalize_value(self, value):
         return normalizeValue(value, (self.min, self.default, self.max))
