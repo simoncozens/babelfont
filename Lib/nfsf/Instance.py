@@ -10,6 +10,9 @@ class _InstanceFields:
             "description": """A dictionary mapping axis tags to coordinates in order to locate this instance in the design space."""
         }
     )
+    styleName: I18NDictionary = field(default_factory=I18NDictionary,
+        metadata={"description": "The style name of this instance."})
+
 
 
 @dataclass
@@ -17,3 +20,17 @@ class Instance(BaseObject, _InstanceFields):
     """An object representing a named or static instance."""
 
     _write_one_line = True
+
+
+    def __post_init__(self):
+        # If they smacked my name with a bare string, replace with I18NDict
+        if isinstance(self.name, str):
+            self.name = I18NDictionary.with_default(self.name)
+
+    @property
+    def localisedStyleName(self):
+        return self.name.as_fonttools_dict # XXX
+
+    @property
+    def postScriptFontName(self):
+        return None

@@ -65,6 +65,15 @@ class Axis(BaseObject, _AxisFields):
             self.map_backward(value), (self.min, self.default, self.max)
         )
 
+    # Compatibility with designspaceLib. Our names are smaller for serialization.
+    @property
+    def maximum(self):
+        return self.max
+
+    @property
+    def minimum(self):
+        return self.min
+
     # Stolen from fontTools.designspaceLib
 
     def map_forward(self, v):
