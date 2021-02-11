@@ -1,12 +1,13 @@
 from dataclasses import dataclass, field
 from functools import cached_property
 
-from fontTools.ufoLib.pointPen import PointToSegmentPen
+from fontTools.ufoLib.pointPen import PointToSegmentPen, SegmentToPointPen, AbstractPointPen
 from fontTools.pens.boundsPen import BoundsPen
 
 from .BaseObject import BaseObject, Color
 from .Guide import Guide
 from .Anchor import Anchor
+from .Node import Node
 from .Shape import Shape
 
 
@@ -52,20 +53,6 @@ class Layer(BaseObject, _LayerFields):
             theirs |= self.master.get_glyph_layer(c).recursiveComponentSet()
         return mine | theirs
 
-    def draw(self, pen):
-        pen = PointToSegmentPen(pen)
-        for path in self.paths:
-            pen.beginPath()
-            for node in path.nodes:
-                pen.addPoint(
-                    pt=(node.x, node.y),
-                    segmentType=node.pen_type,
-                    smooth=node.is_smooth,
-                )
-            pen.endPath()
-        for component in self.components:
-            pen.addComponent(component.ref, component.transform)
-
     @cached_property
     def bounds(self):
         glyphset = {}
@@ -86,3 +73,51 @@ class Layer(BaseObject, _LayerFields):
         if not self.bounds:  # Space glyph
             return 0
         return self.width - self.bounds[2]
+
+    # Pen protocol support...
+
+    def draw(self, pen):
+        pen = PointToSegmentPen(pen)
+        return self.drawPoints(pen)
+
+    def drawPoints(self, pen):
+        for path in self.paths:
+            pen.beginPath()
+            for node in path.nodes:
+                pen.addPoint(
+                    pt=(node.x, node.y),
+                    segmentType=node.pen_type,
+                    smooth=node.is_smooth,
+                )
+            pen.endPath()
+        for component in self.components:
+            pen.addComponent(component.ref, component.transform)
+
+    def clearContours(self):
+        self.shapes = []
+
+    def getPen(self):
+        return SegmentToPointPen(LayerPen(self))
+
+class LayerPen(AbstractPointPen):
+    def __init__(self, target):
+        self.target = target
+        self.curPath = []
+
+    def beginPath(self, identifier=None, **kwargs):
+        self.curPath = []
+
+    def endPath(self):
+        """End the current sub path."""
+        self.target.shapes.append(Shape(nodes=self.curPath))
+
+    def addPoint(self, pt, segmentType=None, smooth=False, name=None,
+                 identifier=None, **kwargs):
+        ourtype = Node._from_pen_type[segmentType]
+        if smooth:
+            ourtype = ourtype + "s"
+        self.curPath.append(Node(pt[0], pt[1], ourtype))
+
+    def addComponent(self, baseGlyphName, transformation, identifier=None,
+                     **kwargs):
+        self.target.shapes.append(Shape(ref=baseGlyphName, transformation=transformation))
