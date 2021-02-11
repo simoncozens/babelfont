@@ -81,12 +81,17 @@ fb.setupFvar(f.axes, f.instances)
 variations = {}
 model = f.variation_model()
 for g in f.glyphs.keys():
+    master_layer = f.default_master.get_glyph_layer(g)
     default_g = f.default_master.ttglyphset._glyphs[g]
     default_width = metrics[g][0]
     all_coords = []
     for ix, m in enumerate(f.masters):
-        basedelta  = m.ttglyphset._glyphs[g].coordinates - default_g.coordinates
-        deltawidth = m.get_glyph_layer(g).width - default_width
+        layer = m.get_glyph_layer(g)
+        basedelta = m.ttglyphset._glyphs[g].coordinates - default_g.coordinates
+        deltawidth = layer.width - default_width
+        for layer_comp, master_comp in zip(layer.components, master_layer.components):
+            basedelta.append( (layer_comp.pos[0] - master_comp.pos[0], layer_comp.pos[1] - master_comp.pos[1]))
+
         phantomdelta = [ (0,0), (deltawidth,0), (0,0), (0,0),  ]
         all_coords.append(list(basedelta) + phantomdelta)
     deltas = []
@@ -95,8 +100,8 @@ for g in f.glyphs.keys():
         y_deltas = model.getDeltas([c[1] for c in coord])
         deltas.append(zip(x_deltas, y_deltas))
     variations[g] = []
-    for deltaset,sup in zip(zip(*deltas), model.supports):
-        variations[g].append(TupleVariation(sup,deltaset))
+    for deltaset, sup in zip(zip(*deltas), model.supports):
+        variations[g].append(TupleVariation(sup, deltaset))
 fb.setupGvar(variations)
 fb.setupAvar(f.axes)
 
