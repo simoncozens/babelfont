@@ -72,10 +72,10 @@ fb.setupHorizontalHeader(
 
 fb.setupNameTable(f.names.as_nametable_dict())
 
-fb.setupFvar(
-    [(ax.tag, ax.min, ax.default, ax.max, ax.name.as_fonttools_dict) for ax in f.axes],
-    []
-)
+for ax in f.axes:
+    ax.name = ax.name.as_fonttools_dict
+
+fb.setupFvar(f.axes, f.instances)
 
 # Calculate variations
 variations = {}
@@ -98,6 +98,7 @@ for g in f.glyphs.keys():
     for deltaset,sup in zip(zip(*deltas), model.supports):
         variations[g].append(TupleVariation(sup,deltaset))
 fb.setupGvar(variations)
+fb.setupAvar(f.axes)
 
 fb.setupPost()
 
