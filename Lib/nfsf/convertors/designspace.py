@@ -63,12 +63,15 @@ class Designspace(BaseConvertor):
         master = Master(
             name=source.name,
             id=(source.name or uuid.uuid1()),
-            xHeight=i.xHeight,
-            capHeight=i.capHeight,
-            ascender=i.ascender,
-            descender=i.descender,
         )
-        master.location = source.location
+        for metric in Master.CORE_METRICS:
+            master.metrics[metric]=getattr(i, metric)
+        _axis_name_to_id = {
+            a.name.get_default(): a.tag for a in self.font.axes
+        }
+        master.location = { _axis_name_to_id[k]: v for k,v in source.location.items() }
+        master.font = self.font
+        assert master.valid
         return master
 
     def _load_glyph(self, ufo_glyph):
@@ -86,7 +89,10 @@ class Designspace(BaseConvertor):
         width = ufo_glyph.width
         l = Layer(width=width, id=uuid.uuid1())
         l._master = source._nfsf_master.id
+        l._font = self.font
         # XXX load shapes, anchors, metrics, etc.
+        assert l.valid
+        return l
 
     def _load_instance(self, ufo_instance):
         instance = Instance(name=ufo_instance.name, location=ufo_instance.location)
