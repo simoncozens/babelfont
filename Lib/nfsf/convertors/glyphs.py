@@ -78,11 +78,10 @@ class GlyphsTwo(BaseConvertor):
         master = Master(
             name=gmaster.get("name", ""),
             id=gmaster.get("id"),
-            xHeight=gmaster.get("xHeight"),
-            capHeight=gmaster.get("capHeight"),
-            ascender=gmaster.get("ascender"),
-            descender=gmaster.get("descender"),
         )
+        for metric in Master.CORE_METRICS:
+            master.metrics[metric] = gmaster.get(_glyphs_metrics_to_ours(metric))
+
         master.font = self.font
         # XXX Synthesize location
 
@@ -180,14 +179,19 @@ class GlyphsTwo(BaseConvertor):
         return Guide(pos=[int(m[1]), int(m[2]), int(gguide.get("angle", 0))])
 
     def _load_instance(self, ginstance):
-        instance = Instance(name=ginstance["name"])
         if "axesValues" in ginstance:
             location = ginstance["axesValues"]
-            instance.location = {k.name: v for k, v in zip(self.font.axes, location)}
+            instance_location = {k.name: v for k, v in zip(self.font.axes, location)}
+        elif "instanceInterpolations" in ginstance:
+            # All right then.
+            instance_location = {k.name: 0 for k in self.font.axes}
+            for mId, factor in ginstance["instanceInterpolations"].items():
+                master_loc = self.font.master(mId).location
+                for k in self.font.axes:
+                    instance_location[k.name] += master_loc[k.name] * factor
         else:
-            # XXX synthesize
-            pass
-        return instance
+            raise ValueError("Need to Synthesize location")
+        return Instance(name=ginstance["name"], location = instance_location)
 
     def _load_path(self, path):
         shape = Shape()
@@ -200,7 +204,7 @@ class GlyphsTwo(BaseConvertor):
             n = Node(x=float(m[1]), y=float(m[2]), type=ntype)
             shape.nodes.append(n)
         shape.closed = path["closed"]
-        _maybesetformatspecific(path, shape, "attr")
+        _maybesetformatspecific(shape, path, "attr")
         return shape
 
     def _load_component(self, shape):
