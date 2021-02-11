@@ -85,7 +85,6 @@ for g in f.glyphs.keys():
     default_width = metrics[g][0]
     for ix, m in enumerate(f.masters):
         sup = model.supports[model.mapping[ix]]
-        print(m.location, sup)
         if m == f.default_master:
             continue
         thislayer = m.get_glyph_layer(g)

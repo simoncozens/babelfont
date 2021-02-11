@@ -191,7 +191,9 @@ class GlyphsTwo(BaseConvertor):
                     instance_location[k.name] += master_loc[k.name] * factor
         else:
             raise ValueError("Need to Synthesize location")
-        return Instance(name=ginstance["name"], location = instance_location)
+        i = Instance(name=ginstance["name"], location = instance_location)
+        _maybesetformatspecific(i, ginstance, "customParameters")
+        return i
 
     def _load_path(self, path):
         shape = Shape()
