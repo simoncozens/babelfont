@@ -121,7 +121,7 @@ def _load_gslayer(gslayer, layer):  # -> Glyph
         glyph._lib["com.schriftgestaltung.Glyphs.subcategory"] = sc
     if sc == "Ligature":
         glyph._lib["public.openTypeCategory"] = "ligature"
-    if c == "Mark":
+    elif c == "Mark":
         glyph._lib["public.openTypeCategory"] = "mark"
     else:
         glyph._lib["public.openTypeCategory"] = "base"
