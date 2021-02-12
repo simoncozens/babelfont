@@ -39,6 +39,10 @@ class Designspace(BaseConvertor):
         for source in self.ds.sources:
             for ufo_layer in source.font.layers:
                 for g in source.font.glyphOrder:
+                    if g not in glyphs_dict:
+                        import warnings
+                        warnings.warn("Incompatible glyph set: %s appears in %s but is not in default" % (g, source.filename))
+                        continue
                     if g not in ufo_layer:
                         continue
                     glyphs_dict[g].layers.append(self._load_layer(source, ufo_layer, g))
@@ -91,8 +95,22 @@ class Designspace(BaseConvertor):
         l._master = source._nfsf_master.id
         l._font = self.font
         # XXX load shapes, anchors, metrics, etc.
+        for contour in ufo_glyph:
+            l.shapes.append(self._load_contour(contour))
         assert l.valid
         return l
+
+    def _load_contour(self, contour):
+        shape = Shape()
+        shape.nodes = []
+        for p in contour:
+            if p.segmentType == "move":
+                p.segmentType = "line"
+            ourtype = Node._from_pen_type[p.segmentType]
+            if p.smooth:
+                ourtype = ourtype + "s"
+            shape.nodes.append(Node(p.x, p.y, ourtype))
+        return shape
 
     def _load_instance(self, ufo_instance):
         instance = Instance(name=ufo_instance.name, location=ufo_instance.location)
