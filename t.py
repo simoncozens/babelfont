@@ -8,11 +8,18 @@ from fontTools.ttLib.ttFont import _TTGlyphGlyf, _TTGlyphSet
 from fontTools.ttLib.tables.TupleVariation import TupleVariation
 import warnings
 
+
+def warning_on_one_line(message, category, filename, lineno, file=None, line=None):
+    return "# [warning] %s\n" % (message)
+
+
+warnings.formatwarning = warning_on_one_line
+
 # f = Convert("Truculenta[opsz,wdth,wght].glyphs").load()
 # f = Convert("tests/data/GlyphsFileFormatv3.glyphs").load()
-#f = Convert("/Users/simon/others-repos/Amstelvar/sources/Roman/AmstelvarDB.designspace").load()
-#f = Convert("/Users/simon/others-repos/glyphsLib/master_ufo/GlyphsUnitTestSans.designspace").load()
-f = Convert("Nunito3.glyphs").load()
+f = Convert("/Users/simon/others-repos/Amstelvar/sources/Roman/AmstelvarDB.designspace").load()
+# f = Convert("/Users/simon/others-repos/glyphsLib/tests/data/master_ufo/GlyphsUnitTestSans.designspace").load()
+# f = Convert("Nunito3.glyphs").load()
 f.save("output/test.nfsf")
 
 fb = FontBuilder(f.upm, isTTF=True)
@@ -21,47 +28,41 @@ fb.setupCharacterMap(f.unicode_map)
 
 metrics = {}
 all_outlines = {}
+
 for g in f.glyphs.keys():
+    all_outlines[g] = []
     layer = f.default_master.get_glyph_layer(g)
     metrics[g] = (layer.width, layer.lsb)
-    all_outlines[g] = []
-    for m in f.masters:
-        all_outlines[g].append(m.get_glyph_layer(g))
-
-# Now convert to quadratic, all outlines of each glyph at once
-for g in f.glyphs.keys():
-    glyphs_to_quadratic(all_outlines[g])
-
 fb.setupHorizontalMetrics(metrics)
 
 for m in f.masters:
     glyf = {}
     m.ttglyphset = _TTGlyphSet(fb.font, glyf, _TTGlyphGlyf)
 
-def do_a_glyph(g, master, ttglyphset):
-    if g in ttglyphset._glyphs:
+
+done = {}
+def do_a_glyph(g):
+    if g in done:
         return
-    layer = master.get_glyph_layer(g)
+    layer = f.default_master.get_glyph_layer(g)
     for c in layer.components:
-        do_a_glyph(c.ref, master, ttglyphset)
-    pen = TTGlyphPen(ttglyphset)
-    layer.draw(pen)
-    ttglyphset._glyphs[g] = pen.glyph()
-    all_outlines[g].append(pen.glyph())
+        do_a_glyph(c.ref)
+    for m in f.masters:
+        all_outlines[g].append(m.get_glyph_layer(g))
+    glyphs_to_quadratic(all_outlines[g])
+    for m in f.masters:
+        layer = m.get_glyph_layer(g)
+        pen = TTGlyphPen(m.ttglyphset)
+        layer.draw(pen)
+        m.ttglyphset._glyphs[g] = pen.glyph()
 
-for m in f.masters:
-    glyf = {}
-    m.ttglyphset = _TTGlyphSet(fb.font, glyf, _TTGlyphGlyf)
-    for g in f.glyphs.keys():
-        do_a_glyph(g, m, m.ttglyphset)
+for g in f.glyphs.keys():
+    do_a_glyph(g)
 
-
-versionMajor =  1
-versionMinor =  0
 fb.updateHead(
-    fontRevision=versionMajor
-    + versionMinor / 10 ** len(str(versionMinor)),
-    created=timestampSinceEpoch(1234567890),
+    fontRevision=f.version[0]
+    + f.version[1] / 10 ** len(str(f.version[1])),
+    created=timestampSinceEpoch(f.date.timestamp()),
     lowestRecPPEM=10
 )
 fb.setupGlyf(f.default_master.ttglyphset._glyphs)
