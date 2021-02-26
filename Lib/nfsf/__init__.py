@@ -9,7 +9,7 @@ from nfsf.Layer import Layer
 from nfsf.Shape import Shape
 from nfsf.Node import Node
 from nfsf.Names import Names
-from nfsf.BaseObject import Color, Position
+from nfsf.BaseObject import Color, Position, OTValue
 from nfsf.convertors import Convert
 
 

@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from datetime import datetime
-from .BaseObject import BaseObject
+from .BaseObject import BaseObject, OTValue
 from .Glyph import GlyphList
 from .Axis import Axis
 from .Instance import Instance
@@ -83,6 +83,12 @@ to the current date/time*.""",
         },
     )
     names: Names = field(default_factory=Names, metadata={"skip_serialize": True})
+    customOpenTypeValues: [OTValue] = field(
+        default_factory=list,
+        metadata={
+            "description": "Any values to be placed in OpenType tables on export to override defaults"
+        },
+    )
 
 
 @dataclass

@@ -7,6 +7,18 @@ import re
 import math
 import uuid
 
+opentype_custom_parameters = {
+    "typoAscender":  ("OS/2", "sTypoAscender"),
+    "typoDescender": ("OS/2", "sTypoDescender"),
+    "typoLineGap": ("OS/2", "sTypoLineGap"),
+    "winAscent": ("OS/2", "usWinAscent"),
+    "winDescent": ("OS/2", "usWinDescent"),
+    "hheaAscender": ("hhea", "ascent"),
+    "hheaDescender": ("hhea", "descent"),
+    "hheaLineGap": ("hhea", "lineGap"),
+    "underlinePosition": ("post", "underlinePosition"),
+    "underlineThickness": ("post", "underlineThickness")
+}
 
 _rename_metrics = {"x-height": "xHeight", "cap height": "capHeight"}
 _reverse_rename_metrics = {v: k for k, v in _rename_metrics.items()}
@@ -117,7 +129,10 @@ class GlyphsTwo(BaseConvertor):
         else:
             potential_locations = [ gmaster.get("weightValue", 0),
                 gmaster.get("widthValue", 0),
-                gmaster.get("customValue", 0)
+                gmaster.get("customValue", 0),
+                gmaster.get("custom1Value", 0),
+                gmaster.get("custom2Value", 0),
+                gmaster.get("custom3Value", 0),
             ]
             location = {}
             for k, loc in zip(self.font.axes, potential_locations):
@@ -306,6 +321,15 @@ class GlyphsTwo(BaseConvertor):
                     getattr(self.font.names, attrname).set_default(thing)
             # Do other properties here
 
+        # Any customparameters in the default master which look like
+        # custom OT values need to move there.
+        cp = self.font.default_master._formatspecific.get("com.glyphsapp",{}).get("customParameters", {})
+        for param in cp:
+            ot_param = opentype_custom_parameters.get(param["name"])
+            if not ot_param:
+                continue
+            self.font.customOpenTypeValues.append(OTValue(ot_param[0], ot_param[1], param["value"]))
+
         self.font.note = self.glyphs.get("note")
         self.font.date = datetime.strptime(
             self.glyphs.get("date"), "%Y-%m-%d %H:%M:%S +0000"
@@ -335,10 +359,6 @@ class GlyphsThree(GlyphsTwo):
             return False
         if format == 3:
             return True
-
-    def _load(self):
-        super()._load()
-        return self.font
 
     def _load_axes(self):
         for gaxis in self.glyphs.get("axes", []):
