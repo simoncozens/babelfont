@@ -4,7 +4,7 @@
 DisplayStrings = (
 A,
 "",
-"A O"
+AO
 );
 axes = (
 {
@@ -464,6 +464,28 @@ width = 300;
 unicode = 32;
 }
 );
+kerningLTR = {
+m01 = {
+A = {
+O = -50;
+};
+};
+"E19B15C8-AA55-4D47-A3C2-22890ACDA449" = {
+A = {
+O = 50;
+};
+};
+m003 = {
+A = {
+O = -25;
+};
+};
+m004 = {
+A = {
+O = 75;
+};
+};
+};
 metrics = (
 {
 type = ascender;
