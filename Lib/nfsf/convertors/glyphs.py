@@ -6,6 +6,7 @@ from nfsf.convertors import BaseConvertor
 import re
 import math
 import uuid
+from collections import OrderedDict
 
 opentype_custom_parameters = {
     "typoAscender":  ("OS/2", "sTypoAscender"),
@@ -139,8 +140,10 @@ class GlyphsTwo(BaseConvertor):
                 location[k.tag] = loc
         master.location = location
 
-
         master.guides = [self._load_guide(x) for x in gmaster.get("guides", [])]
+
+        kerntable = self.glyphs.get("kerning", {}).get(master.id, {})
+        master.kerning = self._load_kerning(kerntable)
 
         _maybesetformatspecific(master, gmaster, "customParameters")
         _maybesetformatspecific(master, gmaster, "iconName")
@@ -294,6 +297,9 @@ class GlyphsTwo(BaseConvertor):
             _maybesetformatspecific(c, shape, entry)
         return c
 
+    def _load_kerning(self, kerndict):
+        return kerndict # XXX classes
+
     def _load_metadata(self):
         self.font.upm = self.glyphs["unitsPerEm"]
         self.font.version = (self.glyphs["versionMajor"], self.glyphs["versionMinor"])
@@ -379,6 +385,9 @@ class GlyphsThree(GlyphsTwo):
 
         master.location = {k.tag: v for k, v in zip(self.font.axes, location)}
         master.guides = [self._load_guide(x) for x in gmaster.get("guides", [])]
+        kerntable = self.glyphs.get("kerningLTR", {}).get(master.id, {})
+        master.kerning = self._load_kerning(kerntable)
+        # XXX support RTL kerning etc.
 
         _maybesetformatspecific(master, gmaster, "customParameters")
         _maybesetformatspecific(master, gmaster, "iconName")
@@ -453,15 +462,25 @@ class GlyphsThree(GlyphsTwo):
         self.metrics_order = metrics_order
         out["fontMaster"] = [self._save_master(m) for m in self.font.masters]
         out["glyphs"] = [self._save_glyph(g) for g in self.font.glyphs]
-
+        kerntables = OrderedDict()
+        for master in self.font.masters:
+            table = self._save_kerning(master.kerning)
+            if table:
+                kerntables[master.id] = table
+        if kerntables:
+            out["kerningLTR"] = kerntables
         with open(self.filename, "wb") as file:
-            openstep_plist.dump(out, file, indent=0)
+            openstep_plist.dump(out, file, indent=0, single_line_tuples=True)
             file.write(b"\n")
 
     def _save_axis(self, axis):
         gaxis = _moveformatspecific(axis)
         _copyattrs(axis, gaxis, ["name", "tag"])
         return gaxis
+
+    def _save_kerning(self, kerntable):
+        # XXX
+        return kerntable
 
     def _save_master(self, master):
         gmaster = _moveformatspecific(master)
