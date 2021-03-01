@@ -502,7 +502,7 @@ class GlyphsThree(GlyphsTwo):
 
     def _save_guide(self, guide):
         gguide = _moveformatspecific(guide)
-        gguide["pos"] = guide.pos[0:2]
+        gguide["pos"] = tuple(guide.pos[0:2])
         if guide.pos[2]:
             gguide["angle"] = guide.pos[2]
         return gguide
