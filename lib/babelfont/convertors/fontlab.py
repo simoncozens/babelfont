@@ -76,10 +76,10 @@ def _load_vfj(vfj, master):
 
     bbf.info.unitsPerEm = vfj["upm"]
 
-    _load_groups(bbf.groups, vfj["classes"])
+    _load_groups(bbf.groups, vfj.get("classes", []))
 
     # XXX Add groups here
-    bbf.features.text = "\n".join([f["feature"] for f in vfj["openTypeFeatures"]])
+    bbf.features.text = "\n".join([f["feature"] for f in vfj.get("openTypeFeatures",[])])
 
     # Only support one layer for now
     layer = Layer()
