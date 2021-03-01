@@ -9,7 +9,7 @@ from babelfont.component import Component
 from babelfont.anchor import Anchor
 import json
 from babelfont.utils import _toFlagBits
-
+import re
 
 def can_load(filename):
     return filename.endswith(".vfj")
@@ -167,6 +167,7 @@ def _load_contour(glyph, segments):
     contour._points = []
 
     for s in segments:
+        s = re.sub(r"\s+\{.*\}$", "", s) # Ignore for now
         if s[-1] == "x":  # sx?
             s = s[:-3]
 
