@@ -64,6 +64,7 @@ class Master(BaseObject, _MasterFields):
     CORE_METRICS = CORE_METRICS
 
     def __post_init__(self):
+        super().__post_init__()
         # If they smacked my name with a bare string, replace with I18NDict
         if isinstance(self.name, str):
             self.name = I18NDictionary.with_default(self.name)
