@@ -559,5 +559,7 @@ def _moveformatspecific(item):
 def _copyattrs(src, dst, attrs):
     for a in attrs:
         v = getattr(src, a)
+        if isinstance(v, I18NDictionary):
+            v = v.get_default()
         if v:
             dst[a] = v
