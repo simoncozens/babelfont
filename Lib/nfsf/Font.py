@@ -160,3 +160,30 @@ class Font(_FontFields, BaseObject):
             [m.normalized_location for m in self.masters],
             axisOrder=[a.tag for a in self.axes],
         )
+
+    def build_cursive(self):
+        self._anchors_to_fontfeatures()
+        entries, exits = {}, {}
+        for glyph, anchors in self.features.anchors.items():
+            if "entry" in anchors:
+                entries[glyph] = anchors["entry"]
+            if "exit" in anchors:
+                exits[glyph] = anchors["exit"]
+        r = fontFeatures.Routine(
+            rules=[
+                fontFeatures.Attachment("entry", "exit", entries, exits)
+            ],
+            flags=(0x8 | 0x1)
+        )
+        self.features.addFeature("curs", [r])
+
+    def _anchors_to_fontfeatures(self):
+        master = self.default_master # XXX
+        for g in self.glyphs.keys():
+            layer = master.get_glyph_layer(g)
+            if not layer.anchors:
+                continue
+            self.features.anchors[g] = {}
+            for a in layer.anchors:
+                self.features.anchors[g][a.name] = (a.x, a.y)
+

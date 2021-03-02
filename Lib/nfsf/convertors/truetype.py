@@ -118,5 +118,10 @@ class TrueType(BaseConvertor):
         for table, field, value in f.customOpenTypeValues:
             setattr(fb.font[table], field, value)
 
+        # Move glyph categories to fontfeatures
+        for g in f.glyphs.values():
+            f.features.glyphclasses[g.name] = g.category
+        f.build_cursive()
+        f.features.buildBinaryFeatures(fb.font)
         fb.font.save(self.filename)
 
