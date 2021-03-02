@@ -9,6 +9,8 @@ from pathlib import Path
 from .Names import Names
 import functools
 from fontTools.varLib.models import VariationModel
+from fontFeatures import FontFeatures
+import fontFeatures
 
 
 @dataclass
@@ -89,6 +91,10 @@ to the current date/time*.""",
             "description": "Any values to be placed in OpenType tables on export to override defaults"
         },
     )
+    features: FontFeatures = field(default_factory=FontFeatures, metadata={
+        "skip_serialize": True,
+        "description": "A representation of the font's OpenType features"
+        })
 
 
 @dataclass

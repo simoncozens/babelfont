@@ -2,6 +2,7 @@ from datetime import datetime
 from nfsf import *
 import openstep_plist
 from fontTools.misc.transform import Transform
+from fontFeatures.feaLib import FeaParser
 from nfsf.convertors import BaseConvertor
 import re
 import math
@@ -79,6 +80,7 @@ class GlyphsTwo(BaseConvertor):
             self.font.instances.append(self._load_instance(ginstance))
 
         self._load_metadata()
+        self._load_features()
         return self.font
 
     def _load_axes(self):
@@ -214,6 +216,8 @@ class GlyphsTwo(BaseConvertor):
             l.shapes.append(self._load_path(shape))
         for shape in layer.get("components", []):
             l.shapes.append(self._load_component(shape))
+        for anchor in layer.get("anchors", []):
+            l.anchors.append(self._load_anchor(anchor))
 
         _maybesetformatspecific(l, layer, "hints")
         _maybesetformatspecific(l, layer, "partSelection")
@@ -237,6 +241,10 @@ class GlyphsTwo(BaseConvertor):
         pos = gguide.get("position", "{0, 0}")
         m = re.match(r"^\{(\S+), (\S+)\}", pos)
         return Guide(pos=[int(m[1]), int(m[2]), int(gguide.get("angle", 0))])
+
+    def _load_anchor(self, ganchor):
+        x,y = ganchor.get("pos", [0,0])
+        return Anchor(name=ganchor["name"], x=x, y=y)
 
     def _load_instance(self, ginstance):
         if "axesValues" in ginstance:
@@ -349,6 +357,19 @@ class GlyphsTwo(BaseConvertor):
         _maybesetformatspecific(self.font, self.glyphs, "stems")
         _maybesetformatspecific(self.font, self.glyphs, "userData")
         _maybesetformatspecific(self.font, self.glyphs, "metrics")
+
+    def _load_features(self):
+        for f in self.glyphs.get("featurePrefixes", []):
+            feaparser = FeaParser(f.get("code"))
+            feaparser.ff = self.font.features
+            feaparser.parse()
+
+        for f in self.glyphs.get("features", []):
+            tag = f["tag"]
+            feacode = "feature %s { %s\n} %s;" % (f["tag"], f["code"], f["tag"]);
+            feaparser = FeaParser(feacode)
+            feaparser.ff = self.font.features
+            feaparser.parse()
 
 
 class GlyphsThree(GlyphsTwo):
