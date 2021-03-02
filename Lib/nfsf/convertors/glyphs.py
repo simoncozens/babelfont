@@ -397,7 +397,7 @@ class GlyphsThree(GlyphsTwo):
         location = gmaster.get("axesValues", [])
         metrics = self.glyphs["metrics"]
         master = Master(name=gmaster["name"], id=gmaster["id"], font=self.font)
-        metric_types = [m["type"] for m in metrics]
+        metric_types = [m.get("type", m.get("name", "")) for m in metrics]
         for k, v in zip(metric_types, gmaster["metricValues"]):
             pos = v.get("pos", 0)
             master.metrics[_glyphs_metrics_to_ours(k)] = pos
