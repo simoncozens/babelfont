@@ -122,6 +122,6 @@ class TrueType(BaseConvertor):
         for g in f.glyphs.values():
             f.features.glyphclasses[g.name] = g.category
         f.build_cursive()
-        f.features.buildBinaryFeatures(fb.font)
+        f.features.buildBinaryFeatures(fb.font, f.axes)
         fb.font.save(self.filename)
 

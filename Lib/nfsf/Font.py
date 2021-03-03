@@ -10,6 +10,7 @@ from .Names import Names
 import functools
 from fontTools.varLib.models import VariationModel
 from fontFeatures import FontFeatures
+from fontFeatures.variableScalar import VariableScalar
 import fontFeatures
 
 
@@ -162,13 +163,26 @@ class Font(_FontFields, BaseObject):
         )
 
     def build_cursive(self):
-        self._anchors_to_fontfeatures()
         entries, exits = {}, {}
-        for glyph, anchors in self.features.anchors.items():
-            if "entry" in anchors:
-                entries[glyph] = anchors["entry"]
-            if "exit" in anchors:
-                exits[glyph] = anchors["exit"]
+        for g in self.glyphs.keys():
+            default_layer = self.default_master.get_glyph_layer(g)
+            if "entry" in default_layer.anchors_dict:
+                x_vs = VariableScalar(self.axes)
+                y_vs = VariableScalar(self.axes)
+                for ix, m in enumerate(self.masters):
+                    entry = m.get_glyph_layer(g).anchors_dict["entry"]
+                    x_vs.add_value(m.location, entry.x)
+                    y_vs.add_value(m.location, entry.y)
+                entries[g] = (x_vs, y_vs)
+            if "exit" in default_layer.anchors_dict:
+                x_vs = VariableScalar(self.axes)
+                y_vs = VariableScalar(self.axes)
+                for ix, m in enumerate(self.masters):
+                    exit = m.get_glyph_layer(g).anchors_dict["exit"]
+                    x_vs.add_value(m.location, exit.x)
+                    y_vs.add_value(m.location, exit.y)
+                exits[g] = (x_vs, y_vs)
+
         r = fontFeatures.Routine(
             rules=[
                 fontFeatures.Attachment("entry", "exit", entries, exits)
@@ -177,13 +191,12 @@ class Font(_FontFields, BaseObject):
         )
         self.features.addFeature("curs", [r])
 
-    def _anchors_to_fontfeatures(self):
-        master = self.default_master # XXX
-        for g in self.glyphs.keys():
-            layer = master.get_glyph_layer(g)
-            if not layer.anchors:
-                continue
-            self.features.anchors[g] = {}
-            for a in layer.anchors:
-                self.features.anchors[g][a.name] = (a.x, a.y)
-
+    # def _anchors_to_fontfeatures(self):
+    #     master = self.default_master # XXX
+    #     for g in self.glyphs.keys():
+    #         layer = master.get_glyph_layer(g)
+    #         if not layer.anchors:
+    #             continue
+    #         self.features.anchors[g] = {}
+    #         for a in layer.anchors:
+    #             self.features.anchors[g][a.name] = (a.x, a.y)

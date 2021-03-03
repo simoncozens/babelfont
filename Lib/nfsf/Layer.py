@@ -80,6 +80,9 @@ class Layer(BaseObject, _LayerFields):
             return False
         return True
 
+    @property
+    def anchors_dict(self):
+        return { a.name: a for a in self.anchors }
 
     # Pen protocol support...
 
