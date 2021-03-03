@@ -162,26 +162,23 @@ class Font(_FontFields, BaseObject):
             axisOrder=[a.tag for a in self.axes],
         )
 
+    def _get_variable_anchor(self, glyph, anchorname):
+        x_vs = VariableScalar(self.axes)
+        y_vs = VariableScalar(self.axes)
+        for ix, m in enumerate(self.masters):
+            entry = m.get_glyph_layer(glyph).anchors_dict[anchorname]
+            x_vs.add_value(m.location, entry.x)
+            y_vs.add_value(m.location, entry.y)
+        return (x_vs, y_vs)
+
     def build_cursive(self):
         entries, exits = {}, {}
         for g in self.glyphs.keys():
             default_layer = self.default_master.get_glyph_layer(g)
             if "entry" in default_layer.anchors_dict:
-                x_vs = VariableScalar(self.axes)
-                y_vs = VariableScalar(self.axes)
-                for ix, m in enumerate(self.masters):
-                    entry = m.get_glyph_layer(g).anchors_dict["entry"]
-                    x_vs.add_value(m.location, entry.x)
-                    y_vs.add_value(m.location, entry.y)
-                entries[g] = (x_vs, y_vs)
+                entries[g] = self._get_variable_anchor(g, "entry")
             if "exit" in default_layer.anchors_dict:
-                x_vs = VariableScalar(self.axes)
-                y_vs = VariableScalar(self.axes)
-                for ix, m in enumerate(self.masters):
-                    exit = m.get_glyph_layer(g).anchors_dict["exit"]
-                    x_vs.add_value(m.location, exit.x)
-                    y_vs.add_value(m.location, exit.y)
-                exits[g] = (x_vs, y_vs)
+                exits[g] = self._get_variable_anchor(g, "exit")
 
         r = fontFeatures.Routine(
             rules=[
