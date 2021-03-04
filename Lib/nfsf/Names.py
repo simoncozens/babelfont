@@ -15,8 +15,8 @@ class Names(BaseObject):
     version: I18NDictionary = None
     uniqueID: I18NDictionary = None
     description: I18NDictionary = None
-    preferredFamilyName: I18NDictionary = None
-    preferredSubfamilyName: I18NDictionary = None
+    typographicFamily: I18NDictionary = None
+    typographicSubfamily: I18NDictionary = None
     compatibleFullName: I18NDictionary = None
     sampleText: I18NDictionary = None
     WWSFamilyName: I18NDictionary = None

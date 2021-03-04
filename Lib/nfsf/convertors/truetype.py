@@ -77,6 +77,8 @@ class TrueType(BaseConvertor):
             descent=int(f.default_master.descender),
         )
 
+        f.names.typographicSubfamily = f.default_master.name
+        f.names.typographicFamily = f.names.familyName
         fb.setupNameTable(f.names.as_nametable_dict())
 
         fb.setupOS2(
