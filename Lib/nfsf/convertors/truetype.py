@@ -41,12 +41,16 @@ class TrueType(BaseConvertor):
             layer = f.default_master.get_glyph_layer(g)
             for c in layer.components:
                 do_a_glyph(c.ref)
+            save_components = []
             for m in f.masters:
-                all_outlines[g].append(m.get_glyph_layer(g))
+                layer = m.get_glyph_layer(g)
+                all_outlines[g].append(layer)
+                save_components.append(layer.components)
             try:
                 glyphs_to_quadratic(all_outlines[g])
-                for m in f.masters:
+                for ix,m in enumerate(f.masters):
                     layer = m.get_glyph_layer(g)
+                    layer.shapes.extend(save_components[ix])
                     pen = TTGlyphPen(m.ttglyphset)
                     layer.draw(pen)
                     m.ttglyphset._glyphs[g] = pen.glyph()
@@ -55,6 +59,7 @@ class TrueType(BaseConvertor):
                 print("Problem converting glyph %s to quadratic. (Probably incompatible) " % g)
                 for m in f.masters:
                     m.ttglyphset._glyphs[g] = TTGlyphPen(m.ttglyphset).glyph()
+            done[g] = True
 
         for g in f.glyphs.keys():
             do_a_glyph(g)
