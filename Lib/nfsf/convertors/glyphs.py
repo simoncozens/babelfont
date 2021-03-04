@@ -366,7 +366,7 @@ class GlyphsTwo(BaseConvertor):
             feaparser.parse()
 
         for f in self.glyphs.get("features", []):
-            tag = f.get("tag", f["name"])
+            tag = f.get("tag", f.get("name", ""))
             feacode = "feature %s { %s\n} %s;" % (tag, f["code"], tag)
             feaparser = FeaParser(feacode)
             feaparser.ff = self.font.features
@@ -428,7 +428,7 @@ class GlyphsThree(GlyphsTwo):
         return g
 
     def _load_anchor(self, ganchor):
-        x,y = ganchor.get("position", [0,0])
+        x,y = ganchor.get("pos", [0,0])
         return Anchor(name=ganchor["name"], x=x, y=y)
 
     def _load_shape(self, shape):
