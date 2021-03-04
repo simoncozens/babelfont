@@ -165,30 +165,46 @@ class Font(_FontFields, BaseObject):
             axisOrder=[a.tag for a in self.axes],
         )
 
+    @functools.cached_property
+    def _all_anchors(self):
+        _all_anchors_dict = {}
+        for g in sorted(self.glyphs.keys()):
+            default_layer = self.default_master.get_glyph_layer(g)
+            for a in default_layer.anchors_dict.keys():
+                if not a in _all_anchors_dict:
+                    _all_anchors_dict[a] = {}
+                _all_anchors_dict[a][g] = self._get_variable_anchor(g, a)
+        return _all_anchors_dict
+
     def _get_variable_anchor(self, glyph, anchorname):
         x_vs = VariableScalar(self.axes)
         y_vs = VariableScalar(self.axes)
         for ix, m in enumerate(self.masters):
-            entry = m.get_glyph_layer(glyph).anchors_dict[anchorname]
-            x_vs.add_value(m.location, entry.x)
-            y_vs.add_value(m.location, entry.y)
+            layer = m.get_glyph_layer(glyph)
+            if anchorname not in layer.anchors_dict:
+                raise IncompatibleMastersError(
+                    "Anchor %s not found on glyph %s in master %s"
+                    % (anchorname, glyph, m)
+                )
+            anchor = m.get_glyph_layer(glyph).anchors_dict[anchorname]
+            x_vs.add_value(m.location, anchor.x)
+            y_vs.add_value(m.location, anchor.y)
         return (x_vs, y_vs)
 
     def build_cursive(self):
-        entries, exits = {}, {}
-        for g in self.glyphs.keys():
-            default_layer = self.default_master.get_glyph_layer(g)
-            if "entry" in default_layer.anchors_dict:
-                entries[g] = self._get_variable_anchor(g, "entry")
-            if "exit" in default_layer.anchors_dict:
-                exits[g] = self._get_variable_anchor(g, "exit")
-
-        r = fontFeatures.Routine(
-            rules=[
-                fontFeatures.Attachment("entry", "exit", entries, exits)
-            ],
-            flags=(0x8 | 0x1)
-        )
+        anchors = self._all_anchors
+        if "entry" in anchors and "exit" in anchors:
+            r = fontFeatures.Routine(
+                rules=[
+                    fontFeatures.Attachment(
+                        "entry",
+                        "exit",
+                        anchors["entry"],
+                        anchors["exit"],
+                    )
+                ],
+                flags=(0x8 | 0x1),
+            )
         self.features.addFeature("curs", [r])
 
     # def _anchors_to_fontfeatures(self):
