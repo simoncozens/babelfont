@@ -240,3 +240,6 @@ class Font(_FontFields, BaseObject):
     #         self.features.anchors[g] = {}
     #         for a in layer.anchors:
     #             self.features.anchors[g][a.name] = (a.x, a.y)
+
+    def exportedGlyphs(self):
+        return [g.name for g in self.glyphs if g.exported]
