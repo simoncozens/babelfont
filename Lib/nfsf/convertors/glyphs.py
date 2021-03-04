@@ -243,8 +243,9 @@ class GlyphsTwo(BaseConvertor):
         return Guide(pos=[int(m[1]), int(m[2]), int(gguide.get("angle", 0))])
 
     def _load_anchor(self, ganchor):
-        x,y = ganchor.get("pos", [0,0])
-        return Anchor(name=ganchor["name"], x=x, y=y)
+        pos = ganchor.get("position", "{0, 0}")
+        m = re.match(r"^\{(\S+), (\S+)\}", pos)
+        return Anchor(name=ganchor["name"], x=int(m[1]), y=int(m[2]))
 
     def _load_instance(self, ginstance):
         if "axesValues" in ginstance:
@@ -365,8 +366,8 @@ class GlyphsTwo(BaseConvertor):
             feaparser.parse()
 
         for f in self.glyphs.get("features", []):
-            tag = f["tag"]
-            feacode = "feature %s { %s\n} %s;" % (f["tag"], f["code"], f["tag"]);
+            tag = f.get("tag", f["name"])
+            feacode = "feature %s { %s\n} %s;" % (tag, f["code"], tag)
             feaparser = FeaParser(feacode)
             feaparser.ff = self.font.features
             feaparser.parse()
@@ -425,6 +426,10 @@ class GlyphsThree(GlyphsTwo):
         _maybesetformatspecific(g, gguide, "lockAngle")
         _maybesetformatspecific(g, gguide, "showMeasurement")
         return g
+
+    def _load_anchor(self, ganchor):
+        x,y = ganchor.get("position", [0,0])
+        return Anchor(name=ganchor["name"], x=x, y=y)
 
     def _load_shape(self, shape):
         if "nodes" in shape:  # It's a path
