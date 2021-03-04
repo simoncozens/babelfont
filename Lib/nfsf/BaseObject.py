@@ -5,6 +5,9 @@ from collections import namedtuple
 import datetime
 
 
+class IncompatibleMastersError(ValueError):
+    pass
+
 Color = namedtuple("Color", "r,g,b,a", defaults=[0, 0, 0, 0])
 Position = namedtuple("Position", "x,y,angle", defaults=[0, 0, 0])
 OTValue = namedtuple("OTValue", "table,field,value")

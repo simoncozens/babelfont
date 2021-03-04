@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from datetime import datetime
-from .BaseObject import BaseObject, OTValue
+from .BaseObject import BaseObject, OTValue, IncompatibleMastersError
 from .Glyph import GlyphList
 from .Axis import Axis
 from .Instance import Instance
