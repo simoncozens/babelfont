@@ -50,7 +50,8 @@ class TrueType(BaseConvertor):
                 glyphs_to_quadratic(all_outlines[g])
                 for ix,m in enumerate(f.masters):
                     layer = m.get_glyph_layer(g)
-                    layer.shapes.extend(save_components[ix])
+                    if save_components[ix]:
+                        layer.shapes.extend(save_components[ix])
                     pen = TTGlyphPen(m.ttglyphset)
                     layer.draw(pen)
                     m.ttglyphset._glyphs[g] = pen.glyph()
@@ -103,9 +104,9 @@ class TrueType(BaseConvertor):
                     layer = m.get_glyph_layer(g)
                     basedelta = m.ttglyphset._glyphs[g].coordinates - default_g.coordinates
                     deltawidth = layer.width - default_width
-                    for layer_comp, master_comp in zip(layer.components, master_layer.components):
-                        basedelta.append( (layer_comp.pos[0] - master_comp.pos[0], layer_comp.pos[1] - master_comp.pos[1]))
-
+                    if m.ttglyphset._glyphs[g].isComposite():
+                        for layer_comp, master_comp in zip(layer.components, master_layer.components):
+                            basedelta.append( (layer_comp.pos[0] - master_comp.pos[0], layer_comp.pos[1] - master_comp.pos[1]))
                     phantomdelta = [ (0,0), (deltawidth,0), (0,0), (0,0),  ]
                     all_coords.append(list(basedelta) + phantomdelta)
                 deltas = []
