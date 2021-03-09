@@ -245,7 +245,7 @@ class GlyphsTwo(BaseConvertor):
     def _load_anchor(self, ganchor):
         pos = ganchor.get("position", "{0, 0}")
         m = re.match(r"^\{(\S+), (\S+)\}", pos)
-        return Anchor(name=ganchor["name"], x=int(m[1]), y=int(m[2]))
+        return Anchor(name=ganchor["name"], x=float(m[1]), y=float(m[2]))
 
     def _load_instance(self, ginstance):
         if "axesValues" in ginstance:
