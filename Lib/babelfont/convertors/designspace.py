@@ -1,5 +1,5 @@
-from nfsf import *
-from nfsf.convertors import BaseConvertor
+from babelfont import *
+from babelfont.convertors import BaseConvertor
 from fontTools.designspaceLib import DesignSpaceDocument
 import defcon
 import uuid

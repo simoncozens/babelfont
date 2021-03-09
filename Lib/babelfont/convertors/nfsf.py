@@ -1,7 +1,7 @@
 from datetime import datetime
-from nfsf import *
+from babelfont import *
 from fontTools.misc.transform import Transform
-from nfsf.convertors import BaseConvertor
+from babelfont.convertors import BaseConvertor
 import re
 import math
 import uuid

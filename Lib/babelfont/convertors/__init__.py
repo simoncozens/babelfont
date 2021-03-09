@@ -2,7 +2,7 @@ import os
 import sys
 import pkgutil
 import inspect
-from nfsf import Font
+from babelfont import Font
 
 class BaseConvertor:
     suffix = ".XXX"

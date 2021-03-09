@@ -1,4 +1,4 @@
-from nfsf import load
+from babelfont import load
 import pytest
 import os
 import re

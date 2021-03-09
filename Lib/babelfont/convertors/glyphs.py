@@ -1,9 +1,9 @@
 from datetime import datetime
-from nfsf import *
+from babelfont import *
 import openstep_plist
 from fontTools.misc.transform import Transform
 from fontFeatures.feaLib import FeaParser
-from nfsf.convertors import BaseConvertor
+from babelfont.convertors import BaseConvertor
 import re
 import math
 import uuid

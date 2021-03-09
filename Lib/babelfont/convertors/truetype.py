@@ -1,11 +1,12 @@
 from datetime import datetime
-from nfsf import *
+from babelfont import *
 from fontTools.fontBuilder import FontBuilder
 from fontTools.pens.ttGlyphPen import TTGlyphPen
 from fontTools.cu2qu.ufo import glyphs_to_quadratic
 from fontTools.misc.timeTools import epoch_diff, timestampSinceEpoch
 from fontTools.ttLib.ttFont import _TTGlyphGlyf, _TTGlyphSet
 from fontTools.ttLib.tables.TupleVariation import TupleVariation
+from babelfont.fontFilters.featureWriters import build_cursive, build_mark_mkmk
 
 class TrueType(BaseConvertor):
     suffix = ".ttf"
@@ -129,9 +130,9 @@ class TrueType(BaseConvertor):
         # Move glyph categories to fontfeatures
         for g in f.glyphs.values():
             f.features.glyphclasses[g.name] = g.category
-        f.build_mark_mkmk()
-        f.build_mark_mkmk("mkmk")
-        f.build_cursive()
+        build_cursive(font)
+        build_mark_mkmk(font)
+        build_mark_mkmk(font, "mkmk")
 
         f.features.buildBinaryFeatures(fb.font, f.axes)
         fb.font.save(self.filename)

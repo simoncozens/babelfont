@@ -1,4 +1,4 @@
-from nfsf.convertors import Convert
+from babelfont.convertors import Convert
 import argparse
 import sys
 

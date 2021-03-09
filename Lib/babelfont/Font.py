@@ -191,55 +191,5 @@ class Font(_FontFields, BaseObject):
             y_vs.add_value(m.location, anchor.y)
         return (x_vs, y_vs)
 
-    def build_cursive(self):
-        anchors = self._all_anchors
-        if "entry" in anchors and "exit" in anchors:
-            attach = fontFeatures.Attachment(
-                "entry", "exit", anchors["entry"], anchors["exit"]
-            )
-            r = fontFeatures.Routine(rules=[attach], flags=(0x8 | 0x1))
-            self.features.addFeature("curs", [r])
-
-    def build_mark_mkmk(self, which="mark"):
-        # Find matching pairs of foo/_foo anchors
-        anchors = self._all_anchors
-        r = fontFeatures.Routine(rules=[])
-        if which == "mark":
-            basecategory = "base"
-        else:
-            basecategory = "mark"
-        for baseanchor in anchors:
-            markanchor = "_" + baseanchor
-            if markanchor not in anchors:
-                continue
-            # Filter glyphs to those which are baseanchors
-            bases = {
-                k: v
-                for k, v in anchors[baseanchor].items()
-                if self.glyphs[k].category == basecategory
-            }
-            marks = {
-                k: v
-                for k, v in anchors[markanchor].items()
-                if self.glyphs[k].category == "mark"
-            }
-            if not (bases and marks):
-                continue
-            attach = fontFeatures.Attachment(baseanchor, markanchor, bases, marks)
-            attach.fontfeatures = self.features # THIS IS A TERRIBLE HACK
-            r.rules.append(attach)
-        if r.rules:
-            self.features.addFeature(which, [r])
-
-    # def _anchors_to_fontfeatures(self):
-    #     master = self.default_master # XXX
-    #     for g in self.glyphs.keys():
-    #         layer = master.get_glyph_layer(g)
-    #         if not layer.anchors:
-    #             continue
-    #         self.features.anchors[g] = {}
-    #         for a in layer.anchors:
-    #             self.features.anchors[g][a.name] = (a.x, a.y)
-
     def exportedGlyphs(self):
         return [g.name for g in self.glyphs if g.exported]
