@@ -360,9 +360,16 @@ class GlyphsTwo(BaseConvertor):
         _maybesetformatspecific(self.font, self.glyphs, "metrics")
 
     def _load_features(self):
+        for c in self.glyphs.get("classes", []):
+            self.font.features.namedClasses[c["name"]] = tuple(c["code"].split())
+
         for f in self.glyphs.get("featurePrefixes", []):
             feaparser = FeaParser(f.get("code"))
             feaparser.ff = self.font.features
+            ast = feaparser.parser.ast
+            for name, members in self.font.features.namedClasses.items():
+                glyphclass = ast.GlyphClassDefinition(name, ast.GlyphClass([ ast.GlyphName(m) for m in members]))
+                feaparser.parser.glyphclasses_.define(name, glyphclass)
             feaparser.parse()
 
         for f in self.glyphs.get("features", []):
@@ -370,6 +377,10 @@ class GlyphsTwo(BaseConvertor):
             feacode = "feature %s { %s\n} %s;" % (tag, f["code"], tag)
             feaparser = FeaParser(feacode)
             feaparser.ff = self.font.features
+            ast = feaparser.parser.ast
+            for name, members in self.font.features.namedClasses.items():
+                glyphclass = ast.GlyphClassDefinition(name, ast.GlyphClass([ ast.GlyphName(m) for m in members]))
+                feaparser.parser.glyphclasses_.define(name, glyphclass)
             feaparser.parse()
 
 
