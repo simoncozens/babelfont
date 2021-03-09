@@ -5,7 +5,6 @@ from .Glyph import GlyphList
 from .Axis import Axis
 from .Instance import Instance
 from .Master import Master
-from pathlib import Path
 from .Names import Names
 import functools
 from fontTools.varLib.models import VariationModel
@@ -111,28 +110,10 @@ class Font(_FontFields, BaseObject):
             len(self.masters),
         )
 
-    def export(self, filename, **kwargs):
+    def save(self, filename, **kwargs):
         from .convertors import Convert
 
         return Convert(filename).save(self, **kwargs)
-
-    def save(self, pathname):
-        path = Path(pathname)
-        path.mkdir(parents=True, exist_ok=True)
-
-        with open(path / "info.json", "wb") as f:
-            self.write(stream=f)
-
-        with open(path / "names.json", "wb") as f:
-            self._write_value(f, "glyphs", self.names)
-
-        with open(path / "glyphs.json", "wb") as f:
-            for g in self.glyphs:
-                glyphpath = path / "glyphs"
-                glyphpath.mkdir(parents=True, exist_ok=True)
-                with open(path / g.nfsf_filename, "wb") as f2:
-                    g._write_value(f2, "layers", g.layers)
-            self._write_value(f, "glyphs", self.glyphs)
 
     def master(self, mid):
         return self._master_map[mid]

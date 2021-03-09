@@ -2,9 +2,7 @@ from datetime import datetime
 from babelfont import *
 from fontTools.misc.transform import Transform
 from babelfont.convertors import BaseConvertor
-import re
-import math
-import uuid
+from pathlib import Path
 import orjson
 import os
 
@@ -73,3 +71,21 @@ class NFSF(BaseConvertor):
             if k in info:
                 setattr(self.font, k, info[k])
         self.font.date = datetime.strptime(self.font.date, "%Y-%m-%d %H:%M:%S")
+
+    def _save(self):
+        path = Path(self.filename)
+        path.mkdir(parents=True, exist_ok=True)
+
+        with open(path / "info.json", "wb") as f:
+            self.font.write(stream=f)
+
+        with open(path / "names.json", "wb") as f:
+            self.font._write_value(f, "glyphs", self.font.names)
+
+        with open(path / "glyphs.json", "wb") as f:
+            for g in self.font.glyphs:
+                glyphpath = path / "glyphs"
+                glyphpath.mkdir(parents=True, exist_ok=True)
+                with open(path / g.nfsf_filename, "wb") as f2:
+                    g._write_value(f2, "layers", g.layers)
+            self.font._write_value(f, "glyphs", self.font.glyphs)
