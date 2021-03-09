@@ -130,9 +130,9 @@ class TrueType(BaseConvertor):
         # Move glyph categories to fontfeatures
         for g in f.glyphs.values():
             f.features.glyphclasses[g.name] = g.category
-        build_cursive(font)
-        build_mark_mkmk(font)
-        build_mark_mkmk(font, "mkmk")
+        build_cursive(f)
+        build_mark_mkmk(f)
+        build_mark_mkmk(f, "mkmk")
 
         f.features.buildBinaryFeatures(fb.font, f.axes)
         fb.font.save(self.filename)
