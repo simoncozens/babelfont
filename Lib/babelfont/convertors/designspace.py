@@ -108,8 +108,14 @@ class Designspace(BaseConvertor):
         # XXX load shapes, anchors, metrics, etc.
         for contour in ufo_glyph:
             l.shapes.append(self._load_contour(contour))
+        for component in ufo_glyph.components:
+            l.shapes.append(self._load_component(component))
         assert l.valid
         return l
+
+    def _load_component(self, shape):
+        c = Shape(ref=shape.baseGlyph, transform=shape.transformation)
+        return c
 
     def _load_contour(self, contour):
         shape = Shape()
