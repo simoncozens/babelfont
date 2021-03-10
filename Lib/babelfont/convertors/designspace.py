@@ -96,7 +96,8 @@ class Designspace(BaseConvertor):
         g = Glyph(name=ufo_glyph.name, codepoints=cp, category=category)
         if "public.postscriptNames" in lib and g.name in lib["public.postscriptNames"]:
             g.production_name = lib["public.postscriptNames"][g.name]
-
+        if "public.skipExportGlyphs" in lib and g.name in lib["public.skipExportGlyphs"]:
+            g.exported = False
         return g
 
     def _load_layer(self, source, ufo_layer, glyphname):
