@@ -3,6 +3,7 @@ from functools import cached_property
 
 from fontTools.ufoLib.pointPen import PointToSegmentPen, SegmentToPointPen, AbstractPointPen
 from fontTools.pens.boundsPen import BoundsPen
+from fontTools.pens.recordingPen import DecomposingRecordingPen
 
 from .BaseObject import BaseObject, Color
 from .Guide import Guide
@@ -108,6 +109,24 @@ class Layer(BaseObject, _LayerFields):
 
     def getPen(self):
         return SegmentToPointPen(LayerPen(self))
+
+    def _nestedComponentDict(self):
+        result = {}
+        todo = [x.ref for x in self.components]
+        while todo:
+            current = todo.pop()
+            if current in result:
+                continue
+            result[current] = self.master.get_glyph_layer(current)
+            todo.extend([x.ref for x in result[current].components])
+        return result
+
+    def decompose(self):
+        pen = DecomposingRecordingPen(self._nestedComponentDict())
+        self.draw(pen)
+        self.clearContours()
+        pen.replay(self.getPen())
+
 
 class LayerPen(AbstractPointPen):
     def __init__(self, target):
