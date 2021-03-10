@@ -19,8 +19,6 @@ class Designspace(BaseConvertor):
     def _load(self):
         self._load_axes()
 
-        glyphs_dict = {}
-
         for source in self.ds.sources:
             source._nfsf_master = self._load_master(source)
             self.font.masters.append(source._nfsf_master)
@@ -28,12 +26,9 @@ class Designspace(BaseConvertor):
         for instance in self.ds.instances:
             self.font.instances.append(self._load_instance(instance))
 
-        self._load_metadata()
-
-        # Load glyphs from the first master, because everything is awful
-        for g in self.ds.sources[0].font.glyphOrder:
-            glyphs_dict[g] = self._load_glyph(self.ds.sources[0].font[g])
-            self.font.glyphs.append(glyphs_dict[g])
+        firstmaster = self.ds.sources[0].font
+        self._load_metadata(firstmaster)
+        glyphs_dict = self._load_glyphs(firstmaster)
 
         # Right, let's find all the layers. This will be messy.
         for source in self.ds.sources:
@@ -48,6 +43,13 @@ class Designspace(BaseConvertor):
                     glyphs_dict[g].layers.append(self._load_layer(source, ufo_layer, g))
 
         return self.font
+
+    def _load_glyphs(self, master):
+        glyphs_dict = {}
+        for g in master.glyphOrder:
+            glyphs_dict[g] = self._load_glyph(master[g])
+            self.font.glyphs.append(glyphs_dict[g])
+        return glyphs_dict
 
     def _load_axes(self):
         for a in self.ds.axes:
@@ -73,19 +75,28 @@ class Designspace(BaseConvertor):
         _axis_name_to_id = {
             a.name.get_default(): a.tag for a in self.font.axes
         }
+        # italic angle
+        # names XXX
+        # guidelines
+        master.guides = [ self._load_guide(g) for g in (i.guidelines or []) ]
         master.location = { _axis_name_to_id[k]: v for k,v in source.location.items() }
         master.font = self.font
         assert master.valid
         return master
 
+    def _load_guide(self, ufo_guide):
+        return Guide(pos=[ufo_guide.x, ufo_guide.y, ufo_guide.angle], name=ufo_guide.name, color=ufo_guide.color)
+
     def _load_glyph(self, ufo_glyph):
         cp = ufo_glyph.unicodes or [ufo_glyph.unicode]
+        lib = self.ds.sources[0].font.lib
         category = (
-            self.ds.sources[0]
-            .font.lib.get("public.openTypeCategories", {})
-            .get(ufo_glyph.name, "base")
+            lib.get("public.openTypeCategories", {}).get(ufo_glyph.name, "base")
         )
         g = Glyph(name=ufo_glyph.name, codepoints=cp, category=category)
+        if "public.postscriptNames" in lib and g.name in lib["public.postscriptNames"]:
+            g.production_name = lib["public.postscriptNames"][g.name]
+
         return g
 
     def _load_layer(self, source, ufo_layer, glyphname):
@@ -113,12 +124,19 @@ class Designspace(BaseConvertor):
         return shape
 
     def _load_instance(self, ufo_instance):
-        instance = Instance(name=ufo_instance.name, location=ufo_instance.location)
+        _axis_tag = { axis.name.get_default(): axis.tag for axis in self.font.axes }
+        location = { _axis_tag[k]: v for k,v in ufo_instance.location.items() }
+        instance = Instance(name=ufo_instance.name, location=location)
         return instance
 
-    def _load_metadata(self):
-        firstfontinfo = self.ds.sources[0].font.info
+    def _load_metadata(self, ufo):
+        firstfontinfo = ufo.info
         self.font.names.familyName.set_default(firstfontinfo.familyName)
         self.font.upm = firstfontinfo.unitsPerEm
         self.font.version = (firstfontinfo.versionMajor, firstfontinfo.versionMinor)
         self.font.note = firstfontinfo.note
+
+        # copyright
+        # stylename
+        # opentype head/hhea/etc. table fields
+
