@@ -16,19 +16,29 @@ class TrueType(BaseConvertor):
     def can_load(cls, convertor):
         return False  # Not *yet*
 
+    def _decompose_mixed_layer(self, layer, exportable):
+        if (layer.paths and layer.components) or any(c.ref not in exportable for c in layer.components):
+            layer.decompose()
+
+
     def _save(self):
         f = self.font
         fb = FontBuilder(f.upm, isTTF=True)
-        fb.setupGlyphOrder(list(f.glyphs.keys()))
-        fb.setupCharacterMap(f.unicode_map)
 
         metrics = {}
         all_outlines = {}
 
-        for g in f.glyphs.keys():
+        # Find all exportable glyphs
+        exportable = [ k for k,v in f.glyphs.items() if v.exported ]
+
+        fb.setupGlyphOrder(exportable)
+        fb.setupCharacterMap(f.unicode_map)
+
+        for g in exportable:
             all_outlines[g] = []
             layer = f.default_master.get_glyph_layer(g)
             metrics[g] = (layer.width, layer.lsb)
+
         fb.setupHorizontalMetrics(metrics)
 
         for m in f.masters:
@@ -41,11 +51,14 @@ class TrueType(BaseConvertor):
             if g in done:
                 return
             layer = f.default_master.get_glyph_layer(g)
+            self._decompose_mixed_layer(layer, exportable)
             for c in layer.components:
                 do_a_glyph(c.ref)
+
             save_components = []
             for m in f.masters:
                 layer = m.get_glyph_layer(g)
+                self._decompose_mixed_layer(layer, exportable)
                 all_outlines[g].append(layer)
                 save_components.append(layer.components)
             try:
@@ -56,6 +69,7 @@ class TrueType(BaseConvertor):
                         layer.shapes.extend(save_components[ix])
                     pen = TTGlyphPen(m.ttglyphset)
                     layer.draw(pen)
+
                     m.ttglyphset._glyphs[g] = pen.glyph()
 
             except Exception as e:
@@ -64,8 +78,8 @@ class TrueType(BaseConvertor):
                     m.ttglyphset._glyphs[g] = TTGlyphPen(m.ttglyphset).glyph()
             done[g] = True
 
-        for g in f.glyphs.keys():
-            do_a_glyph(g)
+        for g in exportable:
+                do_a_glyph(g)
 
         fb.updateHead(
             fontRevision=f.version[0]
@@ -99,8 +113,10 @@ class TrueType(BaseConvertor):
             # Calculate variations
             variations = {}
             model = f.variation_model()
-            for g in f.glyphs.keys():
+            for g in exportable:
                 master_layer = f.default_master.get_glyph_layer(g)
+                if not g in f.default_master.ttglyphset._glyphs:
+                    continue
                 default_g = f.default_master.ttglyphset._glyphs[g]
                 default_width = metrics[g][0]
                 all_coords = []
@@ -129,7 +145,8 @@ class TrueType(BaseConvertor):
 
         # Move glyph categories to fontfeatures
         for g in f.glyphs.values():
-            f.features.glyphclasses[g.name] = g.category
+            if g.exported:
+                f.features.glyphclasses[g.name] = g.category
         build_cursive(f)
         build_mark_mkmk(f)
         build_mark_mkmk(f, "mkmk")
