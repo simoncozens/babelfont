@@ -1,7 +1,7 @@
 from babelfont import *
 from babelfont.convertors import BaseConvertor
 from fontTools.designspaceLib import DesignSpaceDocument
-import defcon
+import ufoLib2
 import uuid
 
 
@@ -12,7 +12,7 @@ class Designspace(BaseConvertor):
     def load(cls, convertor):
         self = cls()
         self.ds = DesignSpaceDocument.fromfile(convertor.filename)
-        self.ds.loadSourceFonts(defcon.Font)
+        self.ds.loadSourceFonts(ufoLib2.Font)
         self.font = Font()
         return self._load()
 

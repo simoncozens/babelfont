@@ -37,6 +37,7 @@ class GlyphList(dict):
 @dataclass
 class _GlyphFields:
     name: str
+    production_name: str = None
     category: str = "base"
     codepoints: [int] = field(default_factory=list)
     layers: [Layer] = field(default_factory=list, repr=False, metadata={"skip_serialize": True})
