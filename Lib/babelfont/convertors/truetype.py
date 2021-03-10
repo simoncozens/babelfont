@@ -7,6 +7,7 @@ from fontTools.misc.timeTools import epoch_diff, timestampSinceEpoch
 from fontTools.ttLib.ttFont import _TTGlyphGlyf, _TTGlyphSet
 from fontTools.ttLib.tables.TupleVariation import TupleVariation
 from babelfont.fontFilters.featureWriters import build_cursive, build_mark_mkmk
+from fontTools.ttLib import TTFont
 
 class TrueType(BaseConvertor):
     suffix = ".ttf"
@@ -123,7 +124,6 @@ class TrueType(BaseConvertor):
             fb.setupGvar(variations)
             fb.setupAvar(f.axes)
 
-        fb.setupPost()
         for table, field, value in f.customOpenTypeValues:
             setattr(fb.font[table], field, value)
 
@@ -135,5 +135,13 @@ class TrueType(BaseConvertor):
         build_mark_mkmk(f, "mkmk")
 
         f.features.buildBinaryFeatures(fb.font, f.axes)
+        fb.setupPost()
+
         fb.font.save(self.filename)
+
+        # Rename to production
+        font = TTFont(self.filename)
+        rename_map = { g.name: g.production_name or g.name for g in f.glyphs }
+        font.setGlyphOrder([rename_map.get(n, n) for n in font.getGlyphOrder()])
+        font.save(self.filename)
 
