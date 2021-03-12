@@ -163,7 +163,7 @@ class GlyphsTwo(BaseConvertor):
             return []
         if isinstance(cp, int):
             return [int("%04i" % cp, 16)]
-        return [int(cp, 16)]
+        return [int(x, 16) for x in cp.split(",")]
 
     def _load_glyph(self, gglyph):
         name = gglyph["glyphname"]
