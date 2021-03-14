@@ -2,7 +2,7 @@ from datetime import datetime
 from babelfont import *
 from fontTools.fontBuilder import FontBuilder
 from fontTools.pens.ttGlyphPen import TTGlyphPen
-from fontTools.cu2qu.ufo import glyphs_to_quadratic
+from cu2qu.ufo import glyphs_to_quadratic
 from fontTools.misc.timeTools import epoch_diff, timestampSinceEpoch
 from fontTools.ttLib.ttFont import _TTGlyphGlyf, _TTGlyphSet
 from fontTools.ttLib.tables.TupleVariation import TupleVariation
