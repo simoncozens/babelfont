@@ -10,7 +10,7 @@ def build_cursive(font):
         r = Routine(rules=[attach], flags=(0x8 | 0x1))
         font.features.addFeature("curs", [r])
 
-def build_mark_mkmk(font, which="mark"):
+def build_mark_mkmk(font, which="mark", strict=False):
     # Find matching pairs of foo/_foo anchors
     anchors = font._all_anchors
     r = Routine(rules=[])
@@ -26,12 +26,12 @@ def build_mark_mkmk(font, which="mark"):
         bases = {
             k: v
             for k, v in anchors[baseanchor].items()
-            if font.glyphs[k].category == basecategory
+            if font.glyphs[k].exported and (font.glyphs[k].category == basecategory)
         }
         marks = {
             k: v
             for k, v in anchors[markanchor].items()
-            if font.glyphs[k].category == "mark"
+            if font.glyphs[k].exported and (not strict or font.glyphs[k].category == "mark")
         }
         if not (bases and marks):
             continue
