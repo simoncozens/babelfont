@@ -109,34 +109,11 @@ class TrueType(BaseConvertor):
 
         if f.axes:
             fb.setupFvar(f.axes, f.instances)
-
-            # Calculate variations
-            variations = {}
             model = f.variation_model()
+            variations = {}
             for g in exportable:
-                master_layer = f.default_master.get_glyph_layer(g)
-                if not g in f.default_master.ttglyphset._glyphs:
-                    continue
-                default_g = f.default_master.ttglyphset._glyphs[g]
-                default_width = metrics[g][0]
-                all_coords = []
-                for ix, m in enumerate(f.masters):
-                    layer = m.get_glyph_layer(g)
-                    basedelta = m.ttglyphset._glyphs[g].coordinates - default_g.coordinates
-                    deltawidth = layer.width - default_width
-                    if m.ttglyphset._glyphs[g].isComposite():
-                        for layer_comp, master_comp in zip(layer.components, master_layer.components):
-                            basedelta.append( (layer_comp.pos[0] - master_comp.pos[0], layer_comp.pos[1] - master_comp.pos[1]))
-                    phantomdelta = [ (0,0), (deltawidth,0), (0,0), (0,0),  ]
-                    all_coords.append(list(basedelta) + phantomdelta)
-                deltas = []
-                for coord in zip(*all_coords):
-                    x_deltas = model.getDeltas([c[0] for c in coord])
-                    y_deltas = model.getDeltas([c[1] for c in coord])
-                    deltas.append(zip(x_deltas, y_deltas))
-                variations[g] = []
-                for deltaset, sup in zip(zip(*deltas), model.supports):
-                    variations[g].append(TupleVariation(sup, deltaset))
+                variations[g] = self.calculate_a_gvar(f, model, g, metrics[g][0])
+
             fb.setupGvar(variations)
             fb.setupAvar(f.axes)
 
@@ -160,5 +137,33 @@ class TrueType(BaseConvertor):
         font = TTFont(self.filename)
         rename_map = { g.name: g.production_name or g.name for g in f.glyphs }
         font.setGlyphOrder([rename_map.get(n, n) for n in font.getGlyphOrder()])
+        if "post" in font and font["post"].formatType == 2.0:
+            font["post"].extraNames = []
+            font["post"].compile(font)
         font.save(self.filename)
+
+    def calculate_a_gvar(self, f, model, g, default_width):
+        master_layer = f.default_master.get_glyph_layer(g)
+        if not g in f.default_master.ttglyphset._glyphs:
+            return None
+        default_g = f.default_master.ttglyphset._glyphs[g]
+        all_coords = []
+        for ix, m in enumerate(f.masters):
+            layer = m.get_glyph_layer(g)
+            basedelta = m.ttglyphset._glyphs[g].coordinates - default_g.coordinates
+            deltawidth = layer.width - default_width
+            if m.ttglyphset._glyphs[g].isComposite():
+                for layer_comp, master_comp in zip(layer.components, master_layer.components):
+                    basedelta.append( (layer_comp.pos[0] - master_comp.pos[0], layer_comp.pos[1] - master_comp.pos[1]))
+            phantomdelta = [ (0,0), (deltawidth,0), (0,0), (0,0),  ]
+            all_coords.append(list(basedelta) + phantomdelta)
+        deltas = []
+        for coord in zip(*all_coords):
+            x_deltas = model.getDeltas([c[0] for c in coord])
+            y_deltas = model.getDeltas([c[1] for c in coord])
+            deltas.append(zip(x_deltas, y_deltas))
+        gvar_entry = []
+        for deltaset, sup in zip(zip(*deltas), model.supports):
+            gvar_entry.append(TupleVariation(sup, deltaset))
+        return gvar_entry
 
