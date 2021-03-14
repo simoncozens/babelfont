@@ -12,7 +12,7 @@ class Designspace(BaseConvertor):
     def load(cls, convertor):
         self = cls()
         self.ds = DesignSpaceDocument.fromfile(convertor.filename)
-        self.ds.loadSourceFonts(ufoLib2.Font)
+        self.ds.loadSourceFonts(ufoLib2.Font.open)
         self.font = Font()
         return self._load()
 
