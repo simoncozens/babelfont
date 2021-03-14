@@ -127,9 +127,10 @@ class Designspace(BaseConvertor):
         shape = Shape()
         shape.nodes = []
         for p in contour:
+            segtype = p.segmentType
             if p.segmentType == "move":
-                p.segmentType = "line"
-            ourtype = Node._from_pen_type[p.segmentType]
+                segtype = "line"
+            ourtype = Node._from_pen_type[segtype]
             if p.smooth:
                 ourtype = ourtype + "s"
             shape.nodes.append(Node(p.x, p.y, ourtype))
