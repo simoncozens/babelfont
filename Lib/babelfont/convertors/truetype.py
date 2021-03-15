@@ -116,10 +116,6 @@ class TrueType(BaseConvertor):
 
             fb.setupGvar(variations)
             fb.setupAvar(f.axes)
-
-        for table, field, value in f.customOpenTypeValues:
-            setattr(fb.font[table], field, value)
-
         # Move glyph categories to fontfeatures
         for g in f.glyphs.values():
             if g.exported:
@@ -127,6 +123,9 @@ class TrueType(BaseConvertor):
 
         build_all_features(f, fb.font)
         fb.setupPost()
+
+        for table, field, value in f.customOpenTypeValues:
+            setattr(fb.font[table], field, value)
 
         fb.font.save(self.filename)
 
