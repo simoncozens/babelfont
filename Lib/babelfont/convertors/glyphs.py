@@ -10,7 +10,7 @@ import uuid
 from collections import OrderedDict
 
 opentype_custom_parameters = {
-    "typoAscender":  ("OS/2", "sTypoAscender"),
+    "typoAscender": ("OS/2", "sTypoAscender"),
     "typoDescender": ("OS/2", "sTypoDescender"),
     "typoLineGap": ("OS/2", "sTypoLineGap"),
     "winAscent": ("OS/2", "usWinAscent"),
@@ -19,7 +19,7 @@ opentype_custom_parameters = {
     "hheaDescender": ("hhea", "descent"),
     "hheaLineGap": ("hhea", "lineGap"),
     "underlinePosition": ("post", "underlinePosition"),
-    "underlineThickness": ("post", "underlineThickness")
+    "underlineThickness": ("post", "underlineThickness"),
 }
 
 _rename_metrics = {"x-height": "xHeight", "cap height": "capHeight"}
@@ -132,7 +132,8 @@ class GlyphsTwo(BaseConvertor):
             # I dunno, use that? Needs mapping? Check we are using tags/IDs
             location = masterCustomParameters["Axis Location"]
         else:
-            potential_locations = [ gmaster.get("weightValue", 0),
+            potential_locations = [
+                gmaster.get("weightValue", 0),
                 gmaster.get("widthValue", 0),
                 gmaster.get("customValue", 0),
                 gmaster.get("custom1Value", 0),
@@ -262,7 +263,7 @@ class GlyphsTwo(BaseConvertor):
                     instance_location[k.tag] += master_loc[k.tag] * factor
         else:
             raise ValueError("Need to Synthesize location")
-        i = Instance(name=ginstance["name"], location = instance_location)
+        i = Instance(name=ginstance["name"], location=instance_location)
         _maybesetformatspecific(i, ginstance, "customParameters")
         return i
 
@@ -358,12 +359,16 @@ class GlyphsTwo(BaseConvertor):
 
         # Any customparameters in the default master which look like
         # custom OT values need to move there.
-        cp = self.font.default_master._formatspecific.get("com.glyphsapp",{}).get("customParameters", {})
+        cp = self.font.default_master._formatspecific.get("com.glyphsapp", {}).get(
+            "customParameters", {}
+        )
         for param in cp:
             ot_param = opentype_custom_parameters.get(param["name"])
             if not ot_param:
                 continue
-            self.font.customOpenTypeValues.append(OTValue(ot_param[0], ot_param[1], param["value"]))
+            self.font.customOpenTypeValues.append(
+                OTValue(ot_param[0], ot_param[1], param["value"])
+            )
 
         self.font.note = self.glyphs.get("note")
         self.font.date = datetime.strptime(
@@ -388,7 +393,9 @@ class GlyphsTwo(BaseConvertor):
             feaparser.ff = self.font.features
             ast = feaparser.parser.ast
             for name, members in self.font.features.namedClasses.items():
-                glyphclass = ast.GlyphClassDefinition(name, ast.GlyphClass([ ast.GlyphName(m) for m in members]))
+                glyphclass = ast.GlyphClassDefinition(
+                    name, ast.GlyphClass([ast.GlyphName(m) for m in members])
+                )
                 feaparser.parser.glyphclasses_.define(name, glyphclass)
             feaparser.parse()
 
@@ -399,7 +406,9 @@ class GlyphsTwo(BaseConvertor):
             feaparser.ff = self.font.features
             ast = feaparser.parser.ast
             for name, members in self.font.features.namedClasses.items():
-                glyphclass = ast.GlyphClassDefinition(name, ast.GlyphClass([ ast.GlyphName(m) for m in members]))
+                glyphclass = ast.GlyphClassDefinition(
+                    name, ast.GlyphClass([ast.GlyphName(m) for m in members])
+                )
                 feaparser.parser.glyphclasses_.define(name, glyphclass)
             feaparser.parse()
 
@@ -459,7 +468,7 @@ class GlyphsThree(GlyphsTwo):
         return g
 
     def _load_anchor(self, ganchor):
-        x,y = ganchor.get("pos", [0,0])
+        x, y = ganchor.get("pos", [0, 0])
         return Anchor(name=ganchor["name"], x=x, y=y)
 
     def _load_shape(self, shape):
