@@ -167,3 +167,29 @@ class TrueType(BaseConvertor):
             gvar_entry.append(TupleVariation(sup, deltaset))
         return gvar_entry
 
+
+    # import numpy as np
+    # def calculate_a_gvar(self, f, model, g, default_width):
+    #     if not g in f.default_master.ttglyphset._glyphs:
+    #         return None
+
+    #     all_coords = []
+    #     master_ix = f.masters.index(f.default_master)
+
+    #     for m in f.masters:
+    #         coords = list(m.ttglyphset._glyphs[g].coordinates)
+    #         layer = m.get_glyph_layer(g)
+    #         if m.ttglyphset._glyphs[g].isComposite():
+    #             coords.extend([c.pos for c in layer.components])
+    #         coords.extend( [ (0,0), (layer.width,0), (0,0), (0,0) ] )
+    #         all_coords.append(np.array(coords))
+    #     stacked = np.array(all_coords)
+    #     defaults = stacked[np.newaxis,master_ix,:,:].repeat(len(f.masters),axis=0)
+    #     base_deltas = stacked-defaults
+    #     x_deltas = np.apply_along_axis(model.getDeltas, 1, base_deltas[:,:,0].transpose())
+    #     y_deltas = np.apply_along_axis(model.getDeltas, 1, base_deltas[:,:,1].transpose())
+    #     alldeltas = np.array([x_deltas, y_deltas]).transpose()
+    #     gvar_entry = []
+    #     for deltaset, sup in zip(alldeltas, model.supports):
+    #         gvar_entry.append(TupleVariation(sup, list(map(tuple, deltaset))))
+    #     return gvar_entry
