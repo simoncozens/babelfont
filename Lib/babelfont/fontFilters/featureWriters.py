@@ -1,4 +1,5 @@
 from fontFeatures import Attachment, Routine, Positioning, ValueRecord
+import warnings
 
 
 def build_all_features(font, ttFont):
@@ -15,13 +16,17 @@ def build_kern(font):
         if c[0] != "@":
             return [c]
         if c[1:] not in font.features.namedClasses:
-            raise ValueError("Attempted to use undefined kerning class %s" % c)
+            warnings.warn("Attempted to use undefined kerning class %s" % c)
+            return None
         return font.features.namedClasses[c[1:]]
 
     kernroutine = Routine()
     for (l,r), kern in font._all_kerning.items():
+        l, r = _expand_class(l), _expand_class(r)
+        if l is None or r is None:
+            continue
         kernroutine.rules.append(Positioning(
-            [ _expand_class(l), _expand_class(r) ],
+            [ l, r ],
             [ ValueRecord(xAdvance=kern), ValueRecord() ]
         ))
     font.features.addFeature("kern", [kernroutine])
