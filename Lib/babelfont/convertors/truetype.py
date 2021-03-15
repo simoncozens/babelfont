@@ -32,7 +32,7 @@ class TrueType(BaseConvertor):
         exportable = [ k for k,v in f.glyphs.items() if v.exported ]
 
         fb.setupGlyphOrder(exportable)
-        fb.setupCharacterMap(f.unicode_map)
+        fb.setupCharacterMap({ k:v for k,v in f.unicode_map.items() if v in exportable})
 
         for g in exportable:
             all_outlines[g] = []
