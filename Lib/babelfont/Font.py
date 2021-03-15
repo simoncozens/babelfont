@@ -11,6 +11,7 @@ from fontTools.varLib.models import VariationModel
 from fontFeatures import FontFeatures
 from fontFeatures.variableScalar import VariableScalar
 import fontFeatures
+import warnings
 
 
 @dataclass
@@ -145,6 +146,23 @@ class Font(_FontFields, BaseObject):
             [m.normalized_location for m in self.masters],
             axisOrder=[a.tag for a in self.axes],
         )
+
+    @functools.cached_property
+    def _all_kerning(self):
+        all_keys = [set(m.kerning.keys()) for m in self.masters]
+        kerndict = {}
+        for (l, r) in list(set().union(*all_keys)):
+            kern = VariableScalar(self.axes)
+            for m in self.masters:
+                thiskern = m.kerning.get((l, r), 0)
+                if (l, r) not in m.kerning:
+                    warnings.warn(
+                        "Master %s did not define a kern pair for (%s, %s), using 0"
+                        % (m.name.get_default(), l, r)
+                    )
+                kern.add_value(m.location, thiskern)
+            kerndict[(l, r)] = kern
+        return kerndict
 
     @functools.cached_property
     def _all_anchors(self):
