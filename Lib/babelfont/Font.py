@@ -155,11 +155,11 @@ class Font(_FontFields, BaseObject):
             kern = VariableScalar(self.axes)
             for m in self.masters:
                 thiskern = m.kerning.get((l, r), 0)
-                if (l, r) not in m.kerning:
-                    warnings.warn(
-                        "Master %s did not define a kern pair for (%s, %s), using 0"
-                        % (m.name.get_default(), l, r)
-                    )
+                # if (l, r) not in m.kerning:
+                #     warnings.warn(
+                #         "Master %s did not define a kern pair for (%s, %s), using 0"
+                #         % (m.name.get_default(), l, r)
+                #     )
                 kern.add_value(m.location, thiskern)
             kerndict[(l, r)] = kern
         return kerndict
