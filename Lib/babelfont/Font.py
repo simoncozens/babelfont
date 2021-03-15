@@ -169,7 +169,13 @@ class Font(_FontFields, BaseObject):
         _all_anchors_dict = {}
         for g in sorted(self.glyphs.keys()):
             default_layer = self.default_master.get_glyph_layer(g)
+            has_mark = None
             for a in default_layer.anchors_dict.keys():
+                if a[0] == "_":
+                    if has_mark:
+                        warnings.warn("Glyph %s tried to be in two mark classes (%s, %s). The first one will win." % (g, has_mark, a))
+                        continue
+                    has_mark = a
                 if not a in _all_anchors_dict:
                     _all_anchors_dict[a] = {}
                 _all_anchors_dict[a][g] = self._get_variable_anchor(g, a)
