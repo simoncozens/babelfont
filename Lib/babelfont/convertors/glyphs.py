@@ -68,6 +68,8 @@ class GlyphsTwo(BaseConvertor):
             self.customParameters[param["name"]] = param["value"]
         self._load_axes()
 
+        self._load_kern_groups(self.glyphs["glyphs"])
+
         for gmaster in self.glyphs["fontMaster"]:
             self.font.masters.append(self._load_master(gmaster))
         self._fixup_axes()
@@ -306,8 +308,26 @@ class GlyphsTwo(BaseConvertor):
             _maybesetformatspecific(c, shape, entry)
         return c
 
+    def _load_kern_groups(self, glyphs):
+        kerngroups = {}
+        for g in glyphs:
+            if "leftKerningGroup" in g:
+                kerngroups.setdefault("MMK_L_" + g["leftKerningGroup"], []).append(
+                    g["glyphname"]
+                )
+            if "rightKerningGroup" in g:
+                kerngroups.setdefault("MMK_R_" + g["rightKerningGroup"], []).append(
+                    g["glyphname"]
+                )
+        for k, v in kerngroups.items():
+            self.font.features.namedClasses[k] = tuple(v)
+
     def _load_kerning(self, kerndict):
-        return kerndict # XXX classes
+        return {
+            (l, r): value
+            for l, level2 in kerndict.items()
+            for r, value in level2.items()
+        }
 
     def _load_metadata(self):
         self.font.upm = self.glyphs["unitsPerEm"]
