@@ -6,7 +6,7 @@ from cu2qu.ufo import glyphs_to_quadratic
 from fontTools.misc.timeTools import epoch_diff, timestampSinceEpoch
 from fontTools.ttLib.ttFont import _TTGlyphGlyf, _TTGlyphSet
 from fontTools.ttLib.tables.TupleVariation import TupleVariation
-from babelfont.fontFilters.featureWriters import build_cursive, build_mark_mkmk
+from babelfont.fontFilters.featureWriters import build_all_features
 from fontTools.ttLib import TTFont
 
 class TrueType(BaseConvertor):
@@ -124,11 +124,8 @@ class TrueType(BaseConvertor):
         for g in f.glyphs.values():
             if g.exported:
                 f.features.glyphclasses[g.name] = g.category
-        build_cursive(f)
-        build_mark_mkmk(f)
-        build_mark_mkmk(f, "mkmk")
 
-        f.features.buildBinaryFeatures(fb.font, f.axes)
+        build_all_features(f, fb.font)
         fb.setupPost()
 
         fb.font.save(self.filename)

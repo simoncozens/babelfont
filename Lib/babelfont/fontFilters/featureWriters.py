@@ -1,4 +1,30 @@
-from fontFeatures import Attachment, Routine
+from fontFeatures import Attachment, Routine, Positioning, ValueRecord
+
+
+def build_all_features(font, ttFont):
+    build_cursive(font)
+    build_mark_mkmk(font)
+    build_mark_mkmk(font, "mkmk")
+    build_kern(font)
+
+    font.features.buildBinaryFeatures(ttFont, font.axes)
+
+
+def build_kern(font):
+    def _expand_class(c):
+        if c[0] != "@":
+            return [c]
+        if c[1:] not in font.features.namedClasses:
+            raise ValueError("Attempted to use undefined kerning class %s" % c)
+        return font.features.namedClasses[c[1:]]
+
+    kernroutine = Routine()
+    for (l,r), kern in font._all_kerning.items():
+        kernroutine.rules.append(Positioning(
+            [ _expand_class(l), _expand_class(r) ],
+            [ ValueRecord(xAdvance=kern), ValueRecord() ]
+        ))
+    font.features.addFeature("kern", [kernroutine])
 
 
 def build_cursive(font):
