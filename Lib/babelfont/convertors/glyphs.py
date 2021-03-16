@@ -119,6 +119,11 @@ class GlyphsTwo(BaseConvertor):
             if not axis.map:
                 continue
             axis.map = list(sorted(set(axis.map)))
+            axis.min, axis.max, axis.default = (
+                axis.map_backward(axis.min),
+                axis.map_backward(axis.max),
+                axis.map_backward(axis.default),
+            )
 
     def _custom_parameter(self, thing, name):
         for param in thing.get("customParameters", []):
@@ -297,7 +302,12 @@ class GlyphsTwo(BaseConvertor):
             ax = self.axis_name_map[loc["Axis"]]
             if not ax.map:
                 ax.map = []
-            ax.map.append((instance_location[ax.tag], int(loc["Location"])))
+            ax.map.append(
+                (
+                    int(loc["Location"]),
+                    instance_location[ax.tag],
+                )
+            )
 
         _maybesetformatspecific(i, ginstance, "customParameters")
         return i
