@@ -81,17 +81,25 @@ class GlyphsTwo(BaseConvertor):
         for ginstance in self.glyphs.get("instances", []):
             self.font.instances.append(self._load_instance(ginstance))
 
+        self._fixup_axis_mappings()
+
         self._load_metadata()
         self._load_features()
         return self.font
 
     def _load_axes(self):
+        self.axis_name_map = {}
         if "Axes" in self.customParameters:
             for ax in self.customParameters["Axes"]:
                 self.font.axes.append(Axis(name=ax["Name"], tag=ax["Tag"]))
+                self.axis_name_map[ax["Name"]] = self.font.axes[-1]
         else:
             self.font.axes.append(Axis(name="Weight", tag="wght"))
             self.font.axes.append(Axis(name="Width", tag="wdth"))
+            self.axis_name_map = {
+                "Weight": self.font.axes[-1],
+                "Width": self.font.axes[-1],
+            }
 
     def _fixup_axes(self):
         for master in self.font.masters:
@@ -104,13 +112,25 @@ class GlyphsTwo(BaseConvertor):
                 if axis.max is None or thisLoc > axis.max:
                     axis.max = thisLoc
 
+    def _fixup_axis_mappings(self):
+        for axis in self.font.axes:
+            if not axis.map:
+                continue
+            axis.map = list(sorted(set(axis.map)))
+
+    def _custom_parameter(self, thing, name):
+        for param in thing.get("customParameters", []):
+            if param["name"] == name:
+                return param["value"]
+        return None
+
     def _default_master_id(self):
         # The default master in glyphs is either the first master or the
         # one selected by the Variable Font Origin custom parameter
-        for param in self.glyphs.get("customParameters", []):
-            if param["name"] == "Variable Font Origin":
-                return param["value"]
-        return self.glyphs["fontMaster"][0]["id"]
+        return (
+            self._custom_parameter(self.glyphs, "Variable Font Origin")
+            or self.glyphs["fontMaster"][0]["id"]
+        )
 
     def _load_master(self, gmaster):
         # location = gmaster.get("axesValues", [])
@@ -124,13 +144,10 @@ class GlyphsTwo(BaseConvertor):
 
         master.font = self.font
 
-        masterCustomParameters = {}
-        for param in gmaster.get("customParameters", []):
-            masterCustomParameters[param["name"]] = param["value"]
-
-        if "Axis Location" in masterCustomParameters:
+        axisloc = self._custom_parameter(gmaster, "Axis Location")
+        if axisloc:
             # I dunno, use that? Needs mapping? Check we are using tags/IDs
-            location = masterCustomParameters["Axis Location"]
+            location = axisloc
         else:
             potential_locations = [
                 gmaster.get("weightValue", 0),
@@ -263,7 +280,18 @@ class GlyphsTwo(BaseConvertor):
                     instance_location[k.tag] += master_loc[k.tag] * factor
         else:
             raise ValueError("Need to Synthesize location")
-        i = Instance(name=ginstance["name"], location=instance_location)
+        i = Instance(
+            name=ginstance["name"],
+            styleName=ginstance["name"],
+            location=instance_location,
+        )
+        c = self._custom_parameter(ginstance, "Axis Location") or []
+        for loc in c:
+            ax = self.axis_name_map[loc["Axis"]]
+            if not ax.map:
+                ax.map = []
+            ax.map.append((instance_location[ax.tag], int(loc["Location"])))
+
         _maybesetformatspecific(i, ginstance, "customParameters")
         return i
 
@@ -429,8 +457,10 @@ class GlyphsThree(GlyphsTwo):
             return True
 
     def _load_axes(self):
+        self.axis_name_map = {}
         for gaxis in self.glyphs.get("axes", []):
             axis = Axis(name=gaxis["name"], tag=gaxis["tag"])
+            self.axis_name_map[gaxis["name"]] = axis
             _maybesetformatspecific(axis, gaxis, "hidden")
             self.font.axes.append(axis)
 
