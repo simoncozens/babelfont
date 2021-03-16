@@ -47,8 +47,12 @@ class Designspace(BaseConvertor):
                     if g not in ufo_layer:
                         continue
                     glyphs_dict[g].layers.append(self._load_layer(source, ufo_layer, g))
-
+        self._fixup_glyph_exported(self.ds.sources[0].font)
         return self.font
+
+    def _fixup_glyph_exported(self, ufo):
+        for glyph in ufo.lib.get("public.skipExportGlyphs", []):
+            self.font.glyphs[glyph].exported = False
 
     def _load_glyphs(self, master):
         glyphs_dict = {}
@@ -102,8 +106,6 @@ class Designspace(BaseConvertor):
         g = Glyph(name=ufo_glyph.name, codepoints=cp, category=category)
         if "public.postscriptNames" in lib and g.name in lib["public.postscriptNames"]:
             g.production_name = lib["public.postscriptNames"][g.name]
-        if "public.skipExportGlyphs" in lib and g.name in lib["public.skipExportGlyphs"]:
-            g.exported = False
         return g
 
     def _load_layer(self, source, ufo_layer, glyphname):
