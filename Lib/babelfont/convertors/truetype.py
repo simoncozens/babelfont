@@ -104,15 +104,20 @@ class TrueType(BaseConvertor):
             sxHeight=f.default_master.xHeight,
         )
 
-        for ax in f.axes:
-            ax.name = ax.name.as_fonttools_dict
 
         if f.axes:
-            fb.setupFvar(f.axes, f.instances)
             model = f.variation_model()
+            axis_map = {}
             variations = {}
             for g in exportable:
                 variations[g] = self.calculate_a_gvar(f, model, g, metrics[g][0])
+
+            for ax in f.axes:
+                ax.name = ax.name.as_fonttools_dict
+                axis_map[ax.tag] = ax
+            for instance in f.instances:
+                instance.location = {k : axis_map[k].map_backward(v) for k,v in instance.location.items() }
+            fb.setupFvar(f.axes, f.instances)
 
             fb.setupGvar(variations)
             fb.setupAvar(f.axes)

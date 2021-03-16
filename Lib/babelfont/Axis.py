@@ -62,7 +62,7 @@ class Axis(BaseObject, _AxisFields):
 
     def normalize_value(self, value):
         return normalizeValue(
-            self.map_backward(value), (self.min, self.default, self.max)
+            value, (self.map_forward(self.min), self.map_forward(self.default), self.map_forward(self.max))
         )
 
     # Compatibility with designspaceLib. Our names are smaller for serialization.
