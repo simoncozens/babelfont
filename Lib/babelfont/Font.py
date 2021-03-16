@@ -11,8 +11,10 @@ from fontTools.varLib.models import VariationModel
 from fontFeatures import FontFeatures
 from fontFeatures.variableScalar import VariableScalar
 import fontFeatures
-import warnings
+import logging
 
+
+log = logging.getLogger(__name__)
 
 @dataclass
 class _FontFields:
@@ -155,11 +157,11 @@ class Font(_FontFields, BaseObject):
             kern = VariableScalar(self.axes)
             for m in self.masters:
                 thiskern = m.kerning.get((l, r), 0)
-                # if (l, r) not in m.kerning:
-                #     warnings.warn(
-                #         "Master %s did not define a kern pair for (%s, %s), using 0"
-                #         % (m.name.get_default(), l, r)
-                #     )
+                if (l, r) not in m.kerning:
+                    log.debug(
+                        "Master %s did not define a kern pair for (%s, %s), using 0"
+                        % (m.name.get_default(), l, r)
+                    )
                 kern.add_value(m.location, thiskern)
             kerndict[(l, r)] = kern
         return kerndict
@@ -173,7 +175,7 @@ class Font(_FontFields, BaseObject):
             for a in default_layer.anchors_dict.keys():
                 if a[0] == "_":
                     if has_mark:
-                        warnings.warn("Glyph %s tried to be in two mark classes (%s, %s). The first one will win." % (g, has_mark, a))
+                        log.warning("Glyph %s tried to be in two mark classes (%s, %s). The first one will win." % (g, has_mark, a))
                         continue
                     has_mark = a
                 if not a in _all_anchors_dict:

@@ -1,5 +1,8 @@
 from fontFeatures import Attachment, Routine, Positioning, ValueRecord
-import warnings
+import logging
+
+
+log = logging.getLogger(__name__)
 
 
 def build_all_features(font, ttFont):
@@ -16,9 +19,9 @@ def build_kern(font):
         if c[0] != "@":
             return [c]
         if c[1:] not in font.features.namedClasses:
-            warnings.warn("Attempted to use undefined kerning class %s" % c)
+            logging.info("Attempted to use undefined kerning class %s" % c)
             return None
-        return font.features.namedClasses[c[1:]]
+        return [x for x in font.features.namedClasses[c[1:]] if font.glyphs[x].exported]
 
     kernroutine = Routine()
     for (l,r), kern in font._all_kerning.items():

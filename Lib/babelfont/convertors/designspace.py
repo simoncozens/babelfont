@@ -3,6 +3,10 @@ from babelfont.convertors import BaseConvertor
 from fontTools.designspaceLib import DesignSpaceDocument
 import ufoLib2
 import uuid
+import logging
+
+
+log = logging.getLogger(__name__)
 
 
 class Designspace(BaseConvertor):
@@ -35,8 +39,10 @@ class Designspace(BaseConvertor):
             for ufo_layer in source.font.layers:
                 for g in source.font.glyphOrder:
                     if g not in glyphs_dict:
-                        import warnings
-                        warnings.warn("Incompatible glyph set: %s appears in %s but is not in default" % (g, source.filename))
+                        logger.warn(
+                            "Incompatible glyph set: %s appears in %s but is not in default"
+                            % (g, source.filename)
+                        )
                         continue
                     if g not in ufo_layer:
                         continue
