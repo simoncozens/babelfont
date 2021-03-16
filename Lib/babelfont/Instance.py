@@ -26,10 +26,12 @@ class Instance(BaseObject, _InstanceFields):
         # If they smacked my name with a bare string, replace with I18NDict
         if isinstance(self.name, str):
             self.name = I18NDictionary.with_default(self.name)
+        if isinstance(self.styleName, str):
+            self.styleName = I18NDictionary.with_default(self.styleName)
 
     @property
     def localisedStyleName(self):
-        return self.name.as_fonttools_dict # XXX
+        return self.styleName.as_fonttools_dict or self.name.as_fonttools_dict
 
     @property
     def postScriptFontName(self):
