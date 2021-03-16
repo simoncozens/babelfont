@@ -55,18 +55,14 @@ class TrueType(BaseConvertor):
             for c in layer.components:
                 do_a_glyph(c.ref)
 
-            save_components = []
             for m in f.masters:
                 layer = m.get_glyph_layer(g)
                 self._decompose_mixed_layer(layer, exportable)
                 all_outlines[g].append(layer)
-                save_components.append(layer.components)
             try:
-                glyphs_to_quadratic(all_outlines[g])
+                glyphs_to_quadratic(all_outlines[g], reverse_direction=True)
                 for ix,m in enumerate(f.masters):
                     layer = m.get_glyph_layer(g)
-                    if save_components[ix]:
-                        layer.shapes.extend(save_components[ix])
                     pen = TTGlyphPen(m.ttglyphset)
                     layer.draw(pen)
 
@@ -149,7 +145,7 @@ class TrueType(BaseConvertor):
             return None
         default_g = f.default_master.ttglyphset._glyphs[g]
         all_coords = []
-        for ix, m in enumerate(f.masters):
+        for m in f.masters:
             layer = m.get_glyph_layer(g)
             basedelta = m.ttglyphset._glyphs[g].coordinates - default_g.coordinates
             deltawidth = layer.width - default_width
@@ -165,6 +161,8 @@ class TrueType(BaseConvertor):
             deltas.append(zip(x_deltas, y_deltas))
         gvar_entry = []
         for deltaset, sup in zip(zip(*deltas), model.supports):
+            if not sup:
+                continue
             gvar_entry.append(TupleVariation(sup, deltaset))
         return gvar_entry
 
