@@ -70,7 +70,7 @@ class Designspace(BaseConvertor):
                     min=a.minimum,
                     max=a.maximum,
                     default=a.default,
-                    map=a.map
+                    map=a.map,
                 )
             )
 
@@ -81,28 +81,51 @@ class Designspace(BaseConvertor):
             id=(source.name or uuid.uuid1()),
         )
         for metric in Master.CORE_METRICS:
-            master.metrics[metric]=getattr(i, metric)
-        _axis_name_to_id = {
-            a.name.get_default(): a.tag for a in self.font.axes
-        }
+            master.metrics[metric] = getattr(i, metric)
+        _axis_name_to_id = {a.name.get_default(): a.tag for a in self.font.axes}
         # italic angle
         # names XXX
         # guidelines
-        master.guides = [ self._load_guide(g) for g in (i.guidelines or []) ]
-        master.location = { _axis_name_to_id[k]: v for k,v in source.location.items() }
+        master.guides = [self._load_guide(g) for g in (i.guidelines or [])]
+        master.location = {_axis_name_to_id[k]: v for k, v in source.location.items()}
         master.font = self.font
+        master.kerning = self._load_kerning(source)
+        self._load_groups(source.name, source.font.groups)
         assert master.valid
         return master
 
+    def _load_groups(self, sourcename, groups):
+        for name, value in groups.items():
+            if (
+                name in self.font.features.namedClasses
+                and self.font.features.namedClasses[name] != value
+            ):
+                logger.warn(
+                    "Inconsistent definition of glyph class @%s found in %s"
+                ) % (name, sourcename)
+            self.font.features.namedClasses[name] = value
+
     def _load_guide(self, ufo_guide):
-        return Guide(pos=[ufo_guide.x, ufo_guide.y, ufo_guide.angle], name=ufo_guide.name, color=ufo_guide.color)
+        return Guide(
+            pos=[ufo_guide.x, ufo_guide.y, ufo_guide.angle],
+            name=ufo_guide.name,
+            color=ufo_guide.color,
+        )
+
+    def _load_kerning(self, source):
+        kerning = {}
+        for (l, r), value in source.font.kerning.items():
+            if l.startswith("public.kern"):
+                l = "@" + l
+            if r.startswith("public.kern"):
+                r = "@" + r
+            kerning[(l, r)] = value
+        return kerning
 
     def _load_glyph(self, ufo_glyph):
         cp = ufo_glyph.unicodes or [ufo_glyph.unicode]
         lib = self.ds.sources[0].font.lib
-        category = (
-            lib.get("public.openTypeCategories", {}).get(ufo_glyph.name, "base")
-        )
+        category = lib.get("public.openTypeCategories", {}).get(ufo_glyph.name, "base")
         g = Glyph(name=ufo_glyph.name, codepoints=cp, category=category)
         if "public.postscriptNames" in lib and g.name in lib["public.postscriptNames"]:
             g.production_name = lib["public.postscriptNames"][g.name]
@@ -145,8 +168,8 @@ class Designspace(BaseConvertor):
         return shape
 
     def _load_instance(self, ufo_instance):
-        _axis_tag = { axis.name.get_default(): axis.tag for axis in self.font.axes }
-        location = { _axis_tag[k]: v for k,v in ufo_instance.location.items() }
+        _axis_tag = {axis.name.get_default(): axis.tag for axis in self.font.axes}
+        location = {_axis_tag[k]: v for k, v in ufo_instance.location.items()}
         instance = Instance(name=ufo_instance.name, location=location)
         return instance
 
@@ -160,4 +183,3 @@ class Designspace(BaseConvertor):
         # copyright
         # stylename
         # opentype head/hhea/etc. table fields
-
