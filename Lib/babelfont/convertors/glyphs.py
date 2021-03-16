@@ -8,6 +8,8 @@ import re
 import math
 import uuid
 from collections import OrderedDict
+from glyphsLib.glyphdata import get_glyph
+
 
 opentype_custom_parameters = {
     "typoAscender": ("OS/2", "sTypoAscender"),
@@ -196,14 +198,19 @@ class GlyphsTwo(BaseConvertor):
         else:
             category = "base"
         cp = self._get_codepoint(gglyph)
-        g = Glyph(name=name, codepoints=cp, category=category)
+        g = Glyph(
+            name=name,
+            codepoints=cp,
+            category=category,
+            exported=gglyph.get("export", True),
+        )
+        g.production_name = gglyph.get("production", get_glyph(name).production_name)
         for entry in [
             "case",
             "category",
             "subCategory",
             "color",
             "direction",
-            "export",
             "locked",
             "partsSettings",
             "script",
