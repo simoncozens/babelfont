@@ -10,14 +10,15 @@ from .Guide import Guide
 from .Anchor import Anchor
 from .Node import Node
 from .Shape import Shape
+import uuid
 
 
 @dataclass
 class _LayerFields:
-    id: str
     width: int
     name: str = None
     _master: str = None
+    id: str = field(default_factory = lambda: str(uuid.uuid1()))
     guides: [Guide] = field(default_factory = list, repr=False)
     shapes: [Shape] = field(default_factory=list, repr=False, metadata={"separate_items": True})
     anchors: [Anchor] = field(default_factory = list, repr=False)
