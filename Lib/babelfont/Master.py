@@ -39,8 +39,8 @@ compatible between clients."""
             % (",".join(CORE_METRICS))
         },
     )
-    kerning: dict = field(
-        default=None,
+    kerning: dict = field( # I think I want this to be UFO-style (l,r) -> value
+        default_factory=dict,
         repr=False,
         metadata={
             "separate_items": True,
