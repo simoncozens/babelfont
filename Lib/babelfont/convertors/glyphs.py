@@ -9,6 +9,8 @@ import math
 import uuid
 from collections import OrderedDict
 from glyphsLib.glyphdata import get_glyph
+from fontTools.misc.filenames import userNameToFileName
+import os
 
 
 opentype_custom_parameters = {
@@ -653,6 +655,35 @@ class GlyphsThree(GlyphsTwo):
 
     def _save_node(self, node):
         return (node.x, node.y, node.type)
+
+
+class GlyphsPackage(GlyphsThree):
+    suffix = ".glyphspackage"
+
+    @classmethod
+    def can_save(cls, convertor):
+        return False
+
+    @classmethod
+    def can_load(self, other, **kwargs):
+        return other.filename.endswith(self.suffix)
+
+    def _load(self):
+        infofile = os.path.join(self.filename, "fontinfo.plist")
+        orderfile = os.path.join(self.filename, "order.plist")
+        glyphorder = openstep_plist.load(open(orderfile, "r"))
+        self.scratch["plist"] = openstep_plist.load(
+            open(infofile, "r"), use_numbers=True
+        )
+        self.scratch["plist"]["glyphs"] = []
+        for g in glyphorder:
+            glyphname = userNameToFileName(g) + ".glyph"
+            glyphfile = os.path.join(self.filename, "glyphs", glyphname)
+            self.scratch["plist"]["glyphs"].append(
+                openstep_plist.load(open(glyphfile, "r"), use_numbers=True)
+            )
+
+        return super()._load()
 
 
 def _maybesetformatspecific(item, glyphs, key):
