@@ -9,6 +9,7 @@ from fontTools.ttLib.tables.TupleVariation import TupleVariation
 from babelfont.fontFilters.featureWriters import build_all_features
 from fontTools.ttLib import TTFont
 from fontTools.ttLib.tables._g_l_y_f import GlyphCoordinates
+from fontTools.varLib.iup import iup_delta_optimize
 
 
 class TrueType(BaseConvertor):
@@ -158,12 +159,21 @@ class TrueType(BaseConvertor):
             all_coords.append(basecoords)
         deltas = model.getDeltas(all_coords)
         gvar_entry = []
-        for deltaset, sup in zip(deltas, model.supports):
+        if default_g.isComposite():
+            endPts = list(range(len(default_g.components)))
+        else:
+            endPts = default_g.endPtsOfContours
+
+        for delta, sup in zip(deltas, model.supports):
             if not sup:
                 continue
-            gvar_entry.append(TupleVariation(sup, deltaset))
+            var = TupleVariation(sup, delta)
+            # This assumes we do the default master first, which may not be true
+            delta_opt = iup_delta_optimize(delta, deltas[0], endPts, tolerance=0.5)
+            if None in delta_opt:
+                var = TupleVariation(sup, delta_opt)
+            gvar_entry.append(var)
         return gvar_entry
-
 
     # import numpy as np
     # def calculate_a_gvar(self, f, model, g, default_width):
