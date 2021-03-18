@@ -8,6 +8,8 @@ from fontTools.ttLib.ttFont import _TTGlyphGlyf, _TTGlyphSet
 from fontTools.ttLib.tables.TupleVariation import TupleVariation
 from babelfont.fontFilters.featureWriters import build_all_features
 from fontTools.ttLib import TTFont
+from fontTools.ttLib.tables._g_l_y_f import GlyphCoordinates
+
 
 class TrueType(BaseConvertor):
     suffix = ".ttf"
@@ -147,20 +149,16 @@ class TrueType(BaseConvertor):
         all_coords = []
         for m in f.masters:
             layer = m.get_glyph_layer(g)
-            basedelta = m.ttglyphset._glyphs[g].coordinates - default_g.coordinates
-            deltawidth = layer.width - default_width
+            basecoords = GlyphCoordinates(m.ttglyphset._glyphs[g].coordinates)
             if m.ttglyphset._glyphs[g].isComposite():
-                for layer_comp, master_comp in zip(layer.components, master_layer.components):
-                    basedelta.append( (layer_comp.pos[0] - master_comp.pos[0], layer_comp.pos[1] - master_comp.pos[1]))
-            phantomdelta = [ (0,0), (deltawidth,0), (0,0), (0,0),  ]
-            all_coords.append(list(basedelta) + phantomdelta)
-        deltas = []
-        for coord in zip(*all_coords):
-            x_deltas = model.getDeltas([c[0] for c in coord])
-            y_deltas = model.getDeltas([c[1] for c in coord])
-            deltas.append(zip(x_deltas, y_deltas))
+                component_point = GlyphCoordinates([ (layer_comp.pos[0], layer_comp.pos[1]) for layer_comp in layer.components ])
+                basecoords.extend( component_point)
+            phantomcoords = GlyphCoordinates([(0,0), (layer.width,0), (0,0), (0,0) ])
+            basecoords.extend(phantomcoords)
+            all_coords.append(basecoords)
+        deltas = model.getDeltas(all_coords)
         gvar_entry = []
-        for deltaset, sup in zip(zip(*deltas), model.supports):
+        for deltaset, sup in zip(deltas, model.supports):
             if not sup:
                 continue
             gvar_entry.append(TupleVariation(sup, deltaset))
