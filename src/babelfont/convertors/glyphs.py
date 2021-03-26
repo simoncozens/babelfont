@@ -441,7 +441,7 @@ class GlyphsTwo(BaseConvertor):
             ast = feaparser.parser.ast
             for name, members in self.font.features.namedClasses.items():
                 glyphclass = ast.GlyphClassDefinition(
-                    name, ast.GlyphClass([ast.GlyphName(m) for m in members])
+                    name, ast.GlyphClass([m for m in members])
                 )
                 feaparser.parser.glyphclasses_.define(name, glyphclass)
             feaparser.parse()
@@ -454,7 +454,7 @@ class GlyphsTwo(BaseConvertor):
             ast = feaparser.parser.ast
             for name, members in self.font.features.namedClasses.items():
                 glyphclass = ast.GlyphClassDefinition(
-                    name, ast.GlyphClass([ast.GlyphName(m) for m in members])
+                    name, ast.GlyphClass([m for m in members])
                 )
                 feaparser.parser.glyphclasses_.define(name, glyphclass)
             feaparser.parse()
