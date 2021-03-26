@@ -30,7 +30,7 @@ def build_kern(font):
             continue
         kernroutine.rules.append(Positioning(
             [ l, r ],
-            [ ValueRecord(xAdvance=kern), ValueRecord() ]
+            [ ValueRecord(xAdvance=kern), ValueRecord() ],
         ))
     font.features.addFeature("kern", [kernroutine])
 

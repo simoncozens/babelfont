@@ -539,6 +539,20 @@ class GlyphsThree(GlyphsTwo):
         if cp:
             return [int(x) for x in cp]
 
+    def _load_kern_groups(self, glyphs):
+        kerngroups = {}
+        for g in glyphs:
+            if "kernLeft" in g:
+                kerngroups.setdefault("MMK_L_" + g["kernLeft"], []).append(
+                    g["glyphname"]
+                )
+            if "kernRight" in g:
+                kerngroups.setdefault("MMK_R_" + g["kernRight"], []).append(
+                    g["glyphname"]
+                )
+        for k, v in kerngroups.items():
+            self.font.features.namedClasses[k] = tuple(v)
+
     def _save(self):
         font = self.font
         out = _moveformatspecific(font)
