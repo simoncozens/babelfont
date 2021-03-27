@@ -35,8 +35,10 @@ class I18NDictionary(dict):
     def get_default(self):
         if "dflt" in self:
             return self["dflt"]
-        else:
+        elif len(list(self.values())):
             return list(self.values())[0]
+        else:
+            return "unknown"
 
     def set_default(self, value):
         if value:
