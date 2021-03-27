@@ -435,29 +435,22 @@ class GlyphsTwo(BaseConvertor):
         for c in self.glyphs.get("classes", []):
             self.font.features.namedClasses[c["name"]] = tuple(c["code"].split())
 
+        featurefile = ""
         for f in self.glyphs.get("featurePrefixes", []):
-            feaparser = FeaParser(f.get("code"))
-            feaparser.ff = self.font.features
-            ast = feaparser.parser.ast
-            for name, members in self.font.features.namedClasses.items():
-                glyphclass = ast.GlyphClassDefinition(
-                    name, ast.GlyphClass([m for m in members])
-                )
-                feaparser.parser.glyphclasses_.define(name, glyphclass)
-            feaparser.parse()
-
+            featurefile = featurefile + f.get("code")
         for f in self.glyphs.get("features", []):
             tag = f.get("tag", f.get("name", ""))
             feacode = "feature %s { %s\n} %s;" % (tag, f["code"], tag)
-            feaparser = FeaParser(feacode)
-            feaparser.ff = self.font.features
-            ast = feaparser.parser.ast
-            for name, members in self.font.features.namedClasses.items():
-                glyphclass = ast.GlyphClassDefinition(
-                    name, ast.GlyphClass([m for m in members])
-                )
-                feaparser.parser.glyphclasses_.define(name, glyphclass)
-            feaparser.parse()
+            featurefile = featurefile + feacode
+
+        feaparser = FeaParser(featurefile)
+        ast = feaparser.parser.ast
+        for name, members in self.font.features.namedClasses.items():
+            glyphclass = ast.GlyphClassDefinition(
+                name, ast.GlyphClass([m for m in members])
+            )
+            feaparser.parser.glyphclasses_.define(name, glyphclass)
+        feaparser.parse()
 
 
 class GlyphsThree(GlyphsTwo):
