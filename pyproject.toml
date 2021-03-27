@@ -2,7 +2,7 @@
 name = "babelfont"
 version = "2.0.1"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = ["Simon Cozens <simon@simon-cozens.org>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
@@ -12,7 +12,7 @@ ufoLib2 = "^0.11.1"
 openstep-plist = "^0.2.2"
 glyphsLib = "^5.3.2"
 cu2qu = "^1.6.7"
-fontfeatures = {git = "https://github.com/simoncozens/fontFeatures", rev = "9bee774"}
+fontfeatures = {git = "https://github.com/simoncozens/fontFeatures", rev = "eca1d07"}
 
 [tool.poetry.dev-dependencies]
 
