@@ -35,7 +35,7 @@ automatically generated on import from a UUID.
 
 * Python type: `int`
 
-The minimum value of this axis.
+The minimum value of this axis, in user space coordinates.
 *If not provided, defaults to* `None`.
 
 
@@ -43,7 +43,7 @@ The minimum value of this axis.
 
 * Python type: `int`
 
-The maximum value of this axis.
+The maximum value of this axis, in user space coordinates.
 *If not provided, defaults to* `None`.
 
 
@@ -51,9 +51,18 @@ The maximum value of this axis.
 
 * Python type: `int`
 
-The default value of this axis (center of interpolation).
-Note that if the min/max/default values are not supplied, they are returned as `None`
-in the Python object, and should be computed from the master locations on export.
+The default value of this axis (center of interpolation),
+in user space coordinates. Note that if the min/max/default values are not supplied,
+they are returned as `None` in the Python object, and should be computed from the
+master locations on export.
+*If not provided, defaults to* `None`.
+
+
+## Axis.map
+
+* Python type: `[(int, int)]`
+
+The mapping between userspace and designspace coordinates.
 *If not provided, defaults to* `None`.
 
 

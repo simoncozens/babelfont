@@ -101,7 +101,7 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
 *If not provided, defaults to* `None`.
 
 
-## Names.preferredFamilyName
+## Names.typographicFamily
 
 * Python type: `I18NDictionary`
 
@@ -109,7 +109,7 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
 *If not provided, defaults to* `None`.
 
 
-## Names.preferredSubfamilyName
+## Names.typographicSubfamily
 
 * Python type: `I18NDictionary`
 

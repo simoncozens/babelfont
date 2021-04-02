@@ -122,3 +122,17 @@ to the current date/time*.
 
 
 
+## Font.customOpenTypeValues
+
+* Python type: `[OTValue]`
+
+Any values to be placed in OpenType tables on export to override defaults
+
+
+## Font.features
+
+* Python type: `FontFeatures`
+
+A representation of the font's OpenType features
+
+

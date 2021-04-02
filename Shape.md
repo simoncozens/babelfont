@@ -1,7 +1,7 @@
 ---
 title: Shape
 ---
-Shape(ref: str = None, transform: fontTools.misc.transform.Transform = None, nodes: [<class 'nfsf.Node.Node'>] = None, closed: bool = True, direction: int = 1, _formatspecific: dict = <factory>, _: dict = None)
+Shape(ref: str = None, transform: fontTools.misc.transform.Transform = None, nodes: [<class 'babelfont.Node.Node'>] = None, closed: bool = True, direction: int = 1, _formatspecific: dict = <factory>, _: dict = None)
 * When writing to NFSF-JSON, this class must be serialized without newlines
 ## Shape.ref
 

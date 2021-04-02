@@ -21,6 +21,13 @@ The name of this instance. *Localizable.*
 A dictionary mapping axis tags to coordinates in order to locate this instance in the design space.
 
 
+## Instance.styleName
+
+* Python type: `I18NDictionary`
+
+The style name of this instance. *Localizable.*
+
+
 ## Instance._formatspecific
 
 * Python type: `dict`

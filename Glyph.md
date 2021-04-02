@@ -1,7 +1,7 @@
 ---
 title: Glyph
 ---
-Glyph(name: str, category: str = 'base', codepoints: [<class 'int'>] = <factory>, layers: [<class 'nfsf.Layer.Layer'>] = <factory>, _formatspecific: dict = <factory>, _: dict = None)
+Glyph(name: str, production_name: str = None, category: str = 'base', codepoints: [<class 'int'>] = <factory>, layers: [<class 'babelfont.Layer.Layer'>] = <factory>, exported: bool = True, direction: str = 'LTR', _formatspecific: dict = <factory>, _: dict = None)
 * When writing to NFSF-JSON, this class must be serialized without newlines
 ## Glyph.name
 
@@ -10,6 +10,14 @@ Glyph(name: str, category: str = 'base', codepoints: [<class 'int'>] = <factory>
 * **Required field**
 
 
+
+
+## Glyph.production_name
+
+* Python type: `str`
+
+
+*If not provided, defaults to* `None`.
 
 
 ## Glyph.category
@@ -32,6 +40,22 @@ Glyph(name: str, category: str = 'base', codepoints: [<class 'int'>] = <factory>
 * Python type: [[`Layer`](Layer.html)]
 
 
+
+
+## Glyph.exported
+
+* Python type: `bool`
+
+
+*If not provided, defaults to* `True`.
+
+
+## Glyph.direction
+
+* Python type: `str`
+
+
+*If not provided, defaults to* `LTR`.
 
 
 ## Glyph._formatspecific

@@ -57,7 +57,6 @@ compatible between clients.
 * When writing to NFSF-JSON, each item in the list must be placed on a separate line.
 
 I'll be honest, I haven't worked out how this is meant to work.
-*If not provided, defaults to* `None`.
 
 
 ## Master.font

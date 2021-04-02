@@ -1,16 +1,7 @@
 ---
 title: Layer
 ---
-Layer(id: str, width: int, name: str = None, _master: str = None, guides: [<class 'nfsf.Guide.Guide'>] = <factory>, shapes: [<class 'nfsf.Shape.Shape'>] = <factory>, anchors: [<class 'nfsf.Anchor.Anchor'>] = <factory>, color: nfsf.BaseObject.Color = None, layerIndex: int = 0, _background: str = None, isBackground: bool = False, location: [<class 'float'>] = None, _font: object = None, _formatspecific: dict = <factory>, _: dict = None)
-## Layer.id
-
-* Python type: `str`
-
-* **Required field**
-
-
-
-
+Layer(width: int, name: str = None, _master: str = None, id: str = <factory>, guides: [<class 'babelfont.Guide.Guide'>] = <factory>, shapes: [<class 'babelfont.Shape.Shape'>] = <factory>, anchors: [<class 'babelfont.Anchor.Anchor'>] = <factory>, color: babelfont.BaseObject.Color = None, layerIndex: int = 0, _background: str = None, isBackground: bool = False, location: [<class 'float'>] = None, _font: object = None, _formatspecific: dict = <factory>, _: dict = None)
 ## Layer.width
 
 * Python type: `int`
@@ -34,6 +25,13 @@ Layer(id: str, width: int, name: str = None, _master: str = None, guides: [<clas
 
 
 *If not provided, defaults to* `None`.
+
+
+## Layer.id
+
+* Python type: `str`
+
+
 
 
 ## Layer.guides

@@ -1,7 +1,7 @@
 ---
 title: Guide
 ---
-Guide(pos: nfsf.BaseObject.Position, name: str = None, color: nfsf.BaseObject.Color = None, _formatspecific: dict = <factory>, _: dict = None)
+Guide(pos: babelfont.BaseObject.Position, name: str = None, color: babelfont.BaseObject.Color = None, _formatspecific: dict = <factory>, _: dict = None)
 ## Guide.pos
 
 * Python type: `Position`
