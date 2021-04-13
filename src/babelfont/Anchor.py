@@ -4,9 +4,9 @@ from .BaseObject import BaseObject
 
 @dataclass
 class _AnchorFields():
-    x: int
-    y: int
     name: str
+    x: int = 0
+    y: int = 0
 
 @dataclass
 class Anchor(BaseObject, _AnchorFields):

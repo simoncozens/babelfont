@@ -15,7 +15,7 @@ import uuid
 
 @dataclass
 class _LayerFields:
-    width: int
+    width: int = 0
     name: str = None
     _master: str = None
     id: str = field(default_factory = lambda: str(uuid.uuid1()))
