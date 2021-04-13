@@ -17,7 +17,7 @@ class NFSFExport(FileFormatPlugin):
     @objc.python_method
     def settings(self):
         self.name = "NFSF"
-        self.icon = "ExportIcon"
+        self.icon = "ExportIconTemplate"
         self.toolbarPosition = 100
         # Load .nib dialog (with .extension)
         # self.loadNib("IBdialog", __file__)
