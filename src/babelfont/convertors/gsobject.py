@@ -182,7 +182,7 @@ class GSObject(BaseConvertor):
     def _load_layer(self, layer, width=None):
         if width is None:
             width = layer.width
-        l = Layer(width=width, id=layer.layerId, _font=self.font)
+        l = Layer(width=width, id=str(layer.layerId), _font=self.font)
         l.name = layer.name
         if [x for x in self.font.masters if x.id == l.id]:
             l._master = l.id
@@ -203,8 +203,12 @@ class GSObject(BaseConvertor):
         if "Background" not in str(type(layer)) and layer.background:
             (background,) = self._load_layer(layer.background, width=l.width)
             # If it doesn't have an ID, we need to generate one
-            background.id = background.id or str(uuid.uuid1())
-            background.isBackground = True
+            background.id = str(uuid.uuid1())
+            # XXX
+            # For some INSANE REASON orjson is serializing this to `True` in json,
+            # not `true`.
+            #background.isBackground = True
+            del(background._master)
 
             l._background = background.id
             returns.append(background)
@@ -363,7 +367,7 @@ class GSObject(BaseConvertor):
 
     def _load_path(self, path):
         shape = Shape()
-        shape.nodes = [Node(n.position.x, n.position.y, n.type) for n in path.nodes]
+        shape.nodes = [Node(n.position.x, n.position.y, n.type[0]) for n in path.nodes]
         shape.closed = path.closed
         return shape
 
@@ -389,10 +393,9 @@ def _maybesetformatspecific(item, glyphs, key):
         value = getattr(glyphs, key) # XXX
         try:
             orjson.dumps(value)
+            item._formatspecific["com.glyphsapp"][key] = value
         except Exception as e:
             print("%s.%s cannot be serialized!" % (glyphs, key))
-        else:
-            item._formatspecific["com.glyphsapp"][key] = value
 
 
 def _moveformatspecific(item):
