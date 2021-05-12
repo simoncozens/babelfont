@@ -39,9 +39,10 @@ def build_cursive(font):
     anchors = font._all_anchors
     if "entry" in anchors and "exit" in anchors:
         attach = Attachment(
-            "entry", "exit", anchors["entry"], anchors["exit"]
+            "entry", "exit", anchors["entry"], anchors["exit"],
+            flags=(0x8 | 0x1)
         )
-        r = Routine(rules=[attach], flags=(0x8 | 0x1))
+        r = Routine(rules=[attach], )
         font.features.addFeature("curs", [r])
 
 def build_mark_mkmk(font, which="mark", strict=False):
