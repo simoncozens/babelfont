@@ -451,6 +451,7 @@ class GlyphsTwo(BaseConvertor):
             )
             feaparser.parser.glyphclasses_.define(name, glyphclass)
         feaparser.parse()
+        self.font.features += feaparser.ff
 
 
 class GlyphsThree(GlyphsTwo):
