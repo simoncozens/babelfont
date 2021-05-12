@@ -39,7 +39,7 @@ class Designspace(BaseConvertor):
             for ufo_layer in source.font.layers:
                 for g in source.font.glyphOrder:
                     if g not in glyphs_dict:
-                        logger.warn(
+                        log.warn(
                             "Incompatible glyph set: %s appears in %s but is not in default"
                             % (g, source.filename)
                         )
@@ -100,9 +100,9 @@ class Designspace(BaseConvertor):
                 name in self.font.features.namedClasses
                 and self.font.features.namedClasses[name] != value
             ):
-                logger.warn(
+                log.warn(
                     "Inconsistent definition of glyph class @%s found in %s"
-                ) % (name, sourcename)
+                 % (name, sourcename))
             self.font.features.namedClasses[name] = value
 
     def _load_guide(self, ufo_guide):
