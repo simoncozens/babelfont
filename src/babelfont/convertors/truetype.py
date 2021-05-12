@@ -134,13 +134,14 @@ class TrueType(BaseConvertor):
         fb.font.save(self.filename)
 
         # Rename to production
-        # font = TTFont(self.filename)
-        # rename_map = { g.name: g.production_name or g.name for g in f.glyphs }
-        # font.setGlyphOrder([rename_map.get(n, n) for n in font.getGlyphOrder()])
-        # if "post" in font and font["post"].formatType == 2.0:
-        #     font["post"].extraNames = []
-        #     font["post"].compile(font)
-        # font.save(self.filename)
+        rename_map = { g.name: g.production_name or g.name for g in f.glyphs }
+        if rename_map:
+            font = TTFont(self.filename)
+            font.setGlyphOrder([rename_map.get(n, n) for n in font.getGlyphOrder()])
+            if "post" in font and font["post"].formatType == 2.0:
+                font["post"].extraNames = []
+                font["post"].compile(font)
+            font.save(self.filename)
 
     def calculate_a_gvar(self, f, model, g, default_width):
         master_layer = f.default_master.get_glyph_layer(g)
