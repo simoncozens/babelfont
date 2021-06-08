@@ -207,7 +207,7 @@ class GlyphsTwo(BaseConvertor):
         cp = self._get_codepoint(gglyph)
         g = Glyph(
             name=name,
-            codepoints=cp,
+            codepoints=cp or [],
             category=category,
             exported=gglyph.get("export", True),
         )
@@ -551,6 +551,7 @@ class GlyphsThree(GlyphsTwo):
         font = self.font
         out = _moveformatspecific(font)
         out["versionMajor"], out["versionMinor"] = font.version
+        out[".formatVersion"] = 3
         out["unitsPerEm"] = font.upm
         if font.note:
             out["note"] = font.note
@@ -634,7 +635,7 @@ class GlyphsThree(GlyphsTwo):
         gglyph = _moveformatspecific(glyph)
         gglyph["glyphname"] = glyph.name
         if len(glyph.codepoints) == 1:
-            gglyph["unicode"] = glyph.codepoints[0]
+            gglyph["unicode"] = "%04x" % glyph.codepoints[0]
         elif len(glyph.codepoints) > 1:
             gglyph["unicode"] = glyph.codepoints
         gglyph["layers"] = [self._save_layer(l) for l in glyph.layers]
