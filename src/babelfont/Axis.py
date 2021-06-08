@@ -65,6 +65,14 @@ class Axis(BaseObject, _AxisFields):
             value, (self.map_forward(self.min), self.map_forward(self.default), self.map_forward(self.max))
         )
 
+    def denormalize_value(self, value):
+        if value == 0:
+            return self.default
+        elif value > 0:
+            return self.default + (self.max - self.default) * value
+        else:
+            return self.default + (self.default - self.min) * value
+
     # Compatibility with designspaceLib. Our names are smaller for serialization.
     @property
     def maximum(self):
