@@ -2,6 +2,7 @@ from datetime import datetime
 from babelfont import *
 from fontTools.fontBuilder import FontBuilder
 from fontTools.pens.ttGlyphPen import TTGlyphPen
+from fontTools.pens.recordingPen import RecordingPen
 from cu2qu.ufo import glyphs_to_quadratic
 from fontTools.misc.timeTools import epoch_diff, timestampSinceEpoch
 from fontTools.ttLib.ttFont import _TTGlyphGlyf, _TTGlyphSet
@@ -12,6 +13,8 @@ from fontTools.ttLib.tables._g_l_y_f import GlyphCoordinates
 from fontTools.varLib.iup import iup_delta_optimize
 from fontTools.misc.fixedTools import otRound
 import uuid
+from itertools import chain
+
 
 def _categorize_glyph(font,glyphname):
     if "GDEF" not in font: return None
@@ -70,13 +73,23 @@ class TrueType(BaseConvertor):
                 )
 
     def _load_masters(self):
-        if "fvar" not in self.tt:
-            # Single master font
-            m = Master(location={},name="Default", id=uuid.uuid1())
-            m.font = self.font
-            self.font.masters = [m]
-        else:
-            raise NotImplementedError
+        m = Master(location={},name="Default", id=uuid.uuid1())
+        # Metrics
+        m.metrics = {
+            "xHeight": self.tt["OS/2"].sxHeight,
+            "capHeight": self.tt["OS/2"].sCapHeight,
+            "ascender": self.tt["hhea"].ascender,
+            "descender": self.tt["hhea"].descender
+        }
+        m.font = self.font
+        self.font.masters = [m]
+        if "fvar" in self.tt:
+            m.location = {axis.tag: axis.default for axis in self.font.axes}
+            all_masters = [frozenset(x.axes.items()) for x in chain(*font["gvar"].variations.values())]
+            all_masters = [{k:v[1] for k,v in dict(m1).items()} for m1 in all_masters]
+            # Now denormalize.
+            # XXX
+            pass
 
     def _load_head(self):
         head = self.tt["head"]
@@ -89,6 +102,7 @@ class TrueType(BaseConvertor):
 
     def _load_names(self):
         names = self.tt["name"]
+        # XXX
 
     def _load_glyphs(self):
         mapping = self.tt["cmap"].buildReversed()
@@ -346,3 +360,40 @@ class TrueType(BaseConvertor):
 
 class OpenType(TrueType):
     suffix = ".otf"
+
+    def _load_layers(self, g):
+        ttglyph = self.tt.getGlyphSet()[g]
+        width = self.tt["hmtx"][g][0]
+        layer = Layer(width=width, id=uuid.uuid1())
+        layer._master = self.font.masters[0].id
+        layer._font = self.font
+        pen = RecordingPen()
+        ttglyph.draw(pen)
+        contours = pen.value
+        lastcontour = []
+        startPt = (0,0)
+        lastPt = (0,0)
+        index = 0
+        for operation, segment in contours:
+            if operation == "moveTo":
+                startPt = segment[0]
+            elif operation == "closePath":
+                if startPt != lastPt:
+                    lastcontour.append(Node(x=startPt[0], y=startPt[1],type = "l"))
+                contour = Shape()
+                contour.nodes = lastcontour
+                layer.shapes.append(contour)
+                lastcontour = []
+            elif operation == "curveTo":
+                lastcontour.append(Node(x=segment[0][0],y=segment[0][1],type = "o"))
+                lastcontour.append(Node(x=segment[1][0],y=segment[1][1],type = "o"))
+                lastcontour.append(Node(x=segment[2][0],y=segment[2][1],type = "c"))
+                lastPt = segment[2]
+            elif operation == "lineTo":
+                lastcontour.append(Node(x=segment[0][0],y=segment[0][1],type = "l"))
+                lastPt = segment[0]
+            elif operation == "qCurveTo":
+                lastcontour.append(Node(x=segment[0][0],y=segment[0][1],type = "o"))
+                lastcontour.append(Node(x=segment[1][0],y=segment[1][1],type = "q"))
+
+        return [layer]
