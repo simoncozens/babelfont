@@ -10,19 +10,151 @@ from babelfont.fontFilters.featureWriters import build_all_features
 from fontTools.ttLib import TTFont
 from fontTools.ttLib.tables._g_l_y_f import GlyphCoordinates
 from fontTools.varLib.iup import iup_delta_optimize
+from fontTools.misc.fixedTools import otRound
+import uuid
 
+def _categorize_glyph(font,glyphname):
+    if "GDEF" not in font: return None
+    classdefs = font["GDEF"].table.GlyphClassDef.classDefs
+    if glyphname not in classdefs:
+        return None
+    if classdefs[glyphname] == 1: return "base"
+    if classdefs[glyphname] == 2: return "ligature"
+    if classdefs[glyphname] == 3: return "mark"
+    if classdefs[glyphname] == 4: return "component"
 
 class TrueType(BaseConvertor):
     suffix = ".ttf"
 
-    @classmethod
-    def can_load(cls, convertor):
-        return False  # Not *yet*
-
     def _decompose_mixed_layer(self, layer, exportable):
-        if (layer.paths and layer.components) or any(c.ref not in exportable for c in layer.components):
+        if (layer.paths and layer.components) or any(
+            c.ref not in exportable for c in layer.components
+        ):
             layer.decompose()
 
+    def _load(self):
+        self.tt = TTFont(self.filename)
+        self._load_fvar()
+        self._load_head()
+        self._load_masters()
+        self._load_names()
+        self._load_glyphs()
+        return self.font
+
+    def _load_fvar(self):
+        avar = self.tt.get("avar")
+        if "fvar" in self.tt:
+            for axis in self.tt["fvar"].axes:
+                name = self.tt["name"].getDebugName(axis.axisNameID)  # XXX multilingual
+                bb_axis = Axis(
+                    tag=axis.axisTag,
+                    min=axis.minValue,
+                    max=axis.maxValue,
+                    default=axis.defaultValue,
+                    name=name,
+                )
+                self.font.axes.append(bb_axis)
+                if avar:
+                    segs = avar.segments[axis.axisTag]
+                    mapping = {
+                        bb_axis.denormalize_value(k): bb_axis.denormalize_value(v)
+                        for k, v in segs.items()
+                    }
+                    bb_axis.map = mapping
+            for instance in self.tt["fvar"].instances:
+                self.font.instances.append(
+                    Instance(
+                        name=self.tt["name"].getDebugName(instance.subfamilyNameID),
+                        location=instance.coordinates,
+                    )
+                )
+
+    def _load_masters(self):
+        if "fvar" not in self.tt:
+            # Single master font
+            m = Master(location={},name="Default", id=uuid.uuid1())
+            m.font = self.font
+            self.font.masters = [m]
+        else:
+            raise NotImplementedError
+
+    def _load_head(self):
+        head = self.tt["head"]
+        self.font.upm = head.unitsPerEm
+        minor = head.fontRevision % 1
+        while minor - int(minor) > 1e-4:
+            minor *= 10
+        self.font.version = (int(head.fontRevision), int(minor))
+        self.font.date = datetime.fromtimestamp(self.tt["head"].created + epoch_diff)
+
+    def _load_names(self):
+        names = self.tt["name"]
+
+    def _load_glyphs(self):
+        mapping = self.tt["cmap"].buildReversed()
+        glyphs_dict = {}
+        for glyph in self.tt.getGlyphOrder():
+            category = _categorize_glyph(self.tt, glyph) or "base"
+            glyphs_dict[glyph] = Glyph(name=glyph, codepoints=mapping.get(glyph), category=category)
+            self.font.glyphs.append(glyphs_dict[glyph])
+            glyphs_dict[glyph].layers = self._load_layers(glyph)
+        return glyphs_dict
+
+    def _load_layers(self, g):
+        ttglyph = self.tt.getGlyphSet()[g]._glyph  # _TTGlyphGlyf object
+        width = self.tt["hmtx"][g][0]
+        # leftMargin = self.tt["hmtx"][g][1]
+        layer = Layer(width=width, id=uuid.uuid1())
+        layer._master = self.font.masters[0].id
+        layer._font = self.font
+        for i in range(0, max(ttglyph.numberOfContours, 0)):
+            layer.shapes.append(self._load_contour(ttglyph, i))
+        if hasattr(ttglyph, "components"):
+            for c in ttglyph.components:
+                comp = self._load_component(c)
+                layer.shapes.append(comp)
+        return [layer]
+
+
+    def _load_contour(self, ttglyph, index):
+        shape = Shape()
+        shape.nodes = []
+        endPt = ttglyph.endPtsOfContours[index]
+        if index > 0:
+            startPt = ttglyph.endPtsOfContours[index - 1] + 1
+        else:
+            startPt = 0
+        points = []
+        for j in range(startPt, endPt + 1):
+            coords = (ttglyph.coordinates[j][0], ttglyph.coordinates[j][1])
+            flags = ttglyph.flags[j] == 1
+            t = "o"
+            if flags == 1:
+                if (j == startPt and ttglyph.flags[endPt] == 1) or (
+                    j != startPt and points[-1].type != "o"
+                ):
+                    t = "l"
+                else:
+                    t = "q"
+            else:
+                if len(points) > 1 and points[-1].type == "o":
+                    # Double offcurve. Insert implicit oncurve.
+                    prevpoint = points[-1]
+                    intermediate = Node(
+                        x = (coords[0] + prevpoint.x) / 2,
+                        y = (coords[1] + prevpoint.y) / 2,
+                        type = "q"
+                    )
+                    points.append(intermediate)
+            p = Node(x = coords[0], y=coords[1], type=t)
+            points.append(p)
+        shape.nodes = points
+        return shape
+
+    def _load_component(self, c):
+        baseGlyph, transformation = c.getComponentInfo()
+        component = Shape(ref=baseGlyph, transform=transformation)
+        return component
 
     def _save(self):
         f = self.font
@@ -32,10 +164,12 @@ class TrueType(BaseConvertor):
         all_outlines = {}
 
         # Find all exportable glyphs
-        exportable = [ k for k,v in f.glyphs.items() if v.exported ]
+        exportable = [k for k, v in f.glyphs.items() if v.exported]
 
         fb.setupGlyphOrder(exportable)
-        fb.setupCharacterMap({ k:v for k,v in f.unicode_map.items() if v in exportable})
+        fb.setupCharacterMap(
+            {k: v for k, v in f.unicode_map.items() if v in exportable}
+        )
 
         for g in exportable:
             all_outlines[g] = []
@@ -48,8 +182,8 @@ class TrueType(BaseConvertor):
             glyf = {}
             m.ttglyphset = _TTGlyphSet(fb.font, glyf, _TTGlyphGlyf)
 
-
         done = {}
+
         def do_a_glyph(g):
             if g in done:
                 return
@@ -64,7 +198,7 @@ class TrueType(BaseConvertor):
                 all_outlines[g].append(layer)
             try:
                 glyphs_to_quadratic(all_outlines[g], reverse_direction=True)
-                for ix,m in enumerate(f.masters):
+                for ix, m in enumerate(f.masters):
                     layer = m.get_glyph_layer(g)
                     pen = TTGlyphPen(m.ttglyphset)
                     layer.draw(pen)
@@ -72,19 +206,21 @@ class TrueType(BaseConvertor):
                     m.ttglyphset._glyphs[g] = pen.glyph()
 
             except Exception as e:
-                print("Problem converting glyph %s to quadratic. (Probably incompatible) " % g)
+                print(
+                    "Problem converting glyph %s to quadratic. (Probably incompatible) "
+                    % g
+                )
                 for m in f.masters:
                     m.ttglyphset._glyphs[g] = TTGlyphPen(m.ttglyphset).glyph()
             done[g] = True
 
         for g in exportable:
-                do_a_glyph(g)
+            do_a_glyph(g)
 
         fb.updateHead(
-            fontRevision=f.version[0]
-            + f.version[1] / 10 ** len(str(f.version[1])),
+            fontRevision=f.version[0] + f.version[1] / 10 ** len(str(f.version[1])),
             created=timestampSinceEpoch(f.date.timestamp()),
-            lowestRecPPEM=10
+            lowestRecPPEM=10,
         )
         fb.setupGlyf(f.default_master.ttglyphset._glyphs)
         fb.setupHorizontalHeader(
@@ -103,7 +239,6 @@ class TrueType(BaseConvertor):
             sxHeight=int(f.default_master.xHeight),
         )
 
-
         if f.axes:
             model = f.variation_model()
             axis_map = {}
@@ -115,7 +250,9 @@ class TrueType(BaseConvertor):
                 ax.name = ax.name.as_fonttools_dict
                 axis_map[ax.tag] = ax
             for instance in f.instances:
-                instance.location = {k : axis_map[k].map_backward(v) for k,v in instance.location.items() }
+                instance.location = {
+                    k: axis_map[k].map_backward(v) for k, v in instance.location.items()
+                }
             fb.setupFvar(f.axes, f.instances)
 
             fb.setupGvar(variations)
@@ -134,7 +271,7 @@ class TrueType(BaseConvertor):
         fb.font.save(self.filename)
 
         # Rename to production
-        rename_map = { g.name: g.production_name or g.name for g in f.glyphs }
+        rename_map = {g.name: g.production_name or g.name for g in f.glyphs}
         if rename_map:
             font = TTFont(self.filename)
             font.setGlyphOrder([rename_map.get(n, n) for n in font.getGlyphOrder()])
@@ -153,9 +290,14 @@ class TrueType(BaseConvertor):
             layer = m.get_glyph_layer(g)
             basecoords = GlyphCoordinates(m.ttglyphset._glyphs[g].coordinates)
             if m.ttglyphset._glyphs[g].isComposite():
-                component_point = GlyphCoordinates([ (layer_comp.pos[0], layer_comp.pos[1]) for layer_comp in layer.components ])
-                basecoords.extend( component_point)
-            phantomcoords = GlyphCoordinates([(0,0), (layer.width,0), (0,0), (0,0) ])
+                component_point = GlyphCoordinates(
+                    [
+                        (layer_comp.pos[0], layer_comp.pos[1])
+                        for layer_comp in layer.components
+                    ]
+                )
+                basecoords.extend(component_point)
+            phantomcoords = GlyphCoordinates([(0, 0), (layer.width, 0), (0, 0), (0, 0)])
             basecoords.extend(phantomcoords)
             all_coords.append(basecoords)
         deltas = model.getDeltas(all_coords)
@@ -201,3 +343,6 @@ class TrueType(BaseConvertor):
     #     for deltaset, sup in zip(alldeltas, model.supports):
     #         gvar_entry.append(TupleVariation(sup, list(map(tuple, deltaset))))
     #     return gvar_entry
+
+class OpenType(TrueType):
+    suffix = ".otf"
