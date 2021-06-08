@@ -73,7 +73,7 @@ class TrueType(BaseConvertor):
                 )
 
     def _load_masters(self):
-        m = Master(location={},name="Default", id=uuid.uuid1())
+        m = Master(location={},name="Default", id=str(uuid.uuid1()) )
         # Metrics
         m.metrics = {
             "xHeight": self.tt["OS/2"].sxHeight,
@@ -85,7 +85,7 @@ class TrueType(BaseConvertor):
         self.font.masters = [m]
         if "fvar" in self.tt:
             m.location = {axis.tag: axis.default for axis in self.font.axes}
-            all_masters = [frozenset(x.axes.items()) for x in chain(*font["gvar"].variations.values())]
+            all_masters = [frozenset(x.axes.items()) for x in chain(*self.tt["gvar"].variations.values())]
             all_masters = [{k:v[1] for k,v in dict(m1).items()} for m1 in all_masters]
             # Now denormalize.
             # XXX
@@ -109,7 +109,7 @@ class TrueType(BaseConvertor):
         glyphs_dict = {}
         for glyph in self.tt.getGlyphOrder():
             category = _categorize_glyph(self.tt, glyph) or "base"
-            glyphs_dict[glyph] = Glyph(name=glyph, codepoints=mapping.get(glyph), category=category)
+            glyphs_dict[glyph] = Glyph(name=glyph, codepoints=list(mapping.get(glyph, [])), category=category)
             self.font.glyphs.append(glyphs_dict[glyph])
             glyphs_dict[glyph].layers = self._load_layers(glyph)
         return glyphs_dict
@@ -118,7 +118,7 @@ class TrueType(BaseConvertor):
         ttglyph = self.tt.getGlyphSet()[g]._glyph  # _TTGlyphGlyf object
         width = self.tt["hmtx"][g][0]
         # leftMargin = self.tt["hmtx"][g][1]
-        layer = Layer(width=width, id=uuid.uuid1())
+        layer = Layer(width=width, id=str(uuid.uuid1()) )
         layer._master = self.font.masters[0].id
         layer._font = self.font
         for i in range(0, max(ttglyph.numberOfContours, 0)):
@@ -364,7 +364,7 @@ class OpenType(TrueType):
     def _load_layers(self, g):
         ttglyph = self.tt.getGlyphSet()[g]
         width = self.tt["hmtx"][g][0]
-        layer = Layer(width=width, id=uuid.uuid1())
+        layer = Layer(width=width, id=str(uuid.uuid1()) )
         layer._master = self.font.masters[0].id
         layer._font = self.font
         pen = RecordingPen()
