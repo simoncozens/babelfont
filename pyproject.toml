@@ -12,7 +12,7 @@ ufoLib2 = "^0.11.1"
 openstep-plist = "^0.2.2"
 glyphsLib = "^5.3.2"
 cu2qu = "^1.6.7"
-fontfeatures = {git = "https://github.com/simoncozens/fontFeatures", rev = "eca1d07"}
+fontfeatures = {git = "https://github.com/simoncozens/fontFeatures", branch = "babelfont-3"}
 
 [tool.poetry.dev-dependencies]
 
