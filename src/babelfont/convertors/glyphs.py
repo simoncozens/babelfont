@@ -359,14 +359,10 @@ class GlyphsTwo(BaseConvertor):
     def _load_kern_groups(self, glyphs):
         kerngroups = {}
         for g in glyphs:
-            if "leftKerningGroup" in g:
-                kerngroups.setdefault("MMK_L_" + g["leftKerningGroup"], []).append(
-                    g["glyphname"]
-                )
-            if "rightKerningGroup" in g:
-                kerngroups.setdefault("MMK_R_" + g["rightKerningGroup"], []).append(
-                    g["glyphname"]
-                )
+            l_class = g.get("leftKerningGroup", g["glyphname"])
+            r_class = g.get("rightKerningGroup", g["glyphname"])
+            kerngroups.setdefault("MMK_L_" + l_class, []).append(g["glyphname"])
+            kerngroups.setdefault("MMK_R_" + r_class, []).append(g["glyphname"])
         for k, v in kerngroups.items():
             self.font.features.namedClasses[k] = tuple(v)
 
