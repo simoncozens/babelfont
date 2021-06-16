@@ -132,7 +132,11 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
         elif isinstance(v, dict):
             stream.write(b"{")
             for ix, (k1, v1) in enumerate(v.items()):
-                self._write_value(stream, k, k1, indent + 1)
+                if not isinstance(k1, str):
+                    # XXX kerning keys are tuples
+                    self._write_value(stream, k, "//".join(k1), indent + 1)
+                else:
+                    self._write_value(stream, k, k1, indent + 1)
                 stream.write(b": ")
                 self._write_value(stream, k, v1, indent + 1)
                 if ix < len(v.items()) - 1:
@@ -153,10 +157,8 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
             stream.write(b"]")
         elif isinstance(v, datetime.datetime):
             stream.write('"{0}"'.format(v.__str__()).encode())
-        elif isinstance(v, str):
-            stream.write('"{0}"'.format(v).encode())
         else:
-            stream.write(str(v).encode())
+            stream.write(orjson.dumps(v))
 
     def write(self, stream, indent=0):
         if not self._write_one_line:

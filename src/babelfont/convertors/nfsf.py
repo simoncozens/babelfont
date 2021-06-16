@@ -3,11 +3,14 @@ from babelfont import *
 from fontTools.misc.transform import Transform
 from babelfont.convertors import BaseConvertor
 from pathlib import Path
+from lxml import etree
+from fontFeatures import FontFeatures
 import orjson
 import os
 
 
 # One would hope this would be easy.
+
 
 class NFSF(BaseConvertor):
     suffix = ".nfsf"
@@ -21,16 +24,16 @@ class NFSF(BaseConvertor):
         info = self._load_file("info.json")
         glyphs = self._load_file("glyphs.json")
         self.font._formatspecific = info["_"]
-        for k,v in names.items():
+        for k, v in names.items():
             if k in self.font.names.__dataclass_fields__:
                 getattr(self.font.names, k).copy_in(v)
             elif k == "_":
                 self.font.names._formatspecific = v
 
-        self.font.axes = [ Axis(**j) for j in info.get("axes",[]) ]
-        self.font.instances = [ Instance(**j) for j in info.get("instances",[]) ]
+        self.font.axes = [Axis(**j) for j in info.get("axes", [])]
+        self.font.instances = [Instance(**j) for j in info.get("instances", [])]
 
-        self._load_masters(info.get("masters",[]))
+        self._load_masters(info.get("masters", []))
 
         for g in glyphs:
             glyph = Glyph(**g)
@@ -40,11 +43,16 @@ class NFSF(BaseConvertor):
                 glyph.layers.append(layer)
 
         self._load_metadata(info)
+        self._load_features()
         return self.font
 
     def _load_masters(self, masters):
         for json_master in masters:
             master = Master(**json_master)
+            if "kerning" in json_master:
+                json_master["kerning"] = {
+                    tuple(k.split("//")): v for k, v in json_master["kerning"].items()
+                }
             master.font = self.font
             master.guides = [Guide(**m) for m in master.guides]
             self.font.masters.append(master)
@@ -67,10 +75,17 @@ class NFSF(BaseConvertor):
         return Node(*n)
 
     def _load_metadata(self, info):
-        for k in ["note", "upm", "version", "date"]:
+        for k in ["note", "upm", "version", "date", "customOpenTypeValues"]:
             if k in info:
                 setattr(self.font, k, info[k])
         self.font.date = datetime.strptime(self.font.date, "%Y-%m-%d %H:%M:%S")
+
+    def _load_features(self):
+        path = os.path.join(self.filename, "features.xml")
+        if os.path.isfile(path):
+            f = open(path, "r")
+            xml = etree.parse(f)
+            self.font.features = FontFeatures.fromXML(xml.getroot())
 
     def _save(self):
         path = Path(self.filename)
@@ -81,6 +96,9 @@ class NFSF(BaseConvertor):
 
         with open(path / "names.json", "wb") as f:
             self.font._write_value(f, "glyphs", self.font.names)
+
+        with open(path / "features.xml", "wb") as f:
+            f.write(etree.tostring(self.font.features.toXML(), pretty_print=True))
 
         with open(path / "glyphs.json", "wb") as f:
             for g in self.font.glyphs:
