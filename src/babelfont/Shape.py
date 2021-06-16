@@ -40,7 +40,7 @@ class Shape(BaseObject, _ShapeFields):
         assert self.is_component
         if not self.transform:
             return (0,0)
-        return self.transform[4:]
+        return tuple(self.transform[4:])
 
     @property
     def angle(self):
@@ -52,4 +52,9 @@ class Shape(BaseObject, _ShapeFields):
     @property
     def scale(self):
         assert self.is_component
-        return (1,1) # XXX
+        if not self.transform:
+            return (1,1)
+        print(self.transform)
+        scaleX = math.sqrt(self.transform[0] ** 2 + self.transform[2] ** 2)
+        scaleY = math.sqrt(self.transform[1] ** 2 + self.transform[3] ** 2)
+        return (scaleX, scaleY)
