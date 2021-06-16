@@ -41,7 +41,7 @@ class _GlyphFields:
     category: str = "base"
     codepoints: [int] = field(default_factory=list)
     layers: [Layer] = field(default_factory=list, repr=False, metadata={"skip_serialize": True})
-    exported: bool = True
+    exported: bool = field(default=True, metadata={"serialize_if_false": True})
     direction: str = field(default="LTR", repr=False)
 
 

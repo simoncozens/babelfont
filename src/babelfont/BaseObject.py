@@ -171,7 +171,7 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
                 continue
             v = getattr(self, k)
             default = f.default
-            if not v or (default and v == default):
+            if (not v and not "serialize_if_false" in f.metadata) or (default and v == default):
                 continue
             towrite.append((k, v))
 
