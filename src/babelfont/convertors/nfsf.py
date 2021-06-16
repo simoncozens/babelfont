@@ -48,11 +48,11 @@ class NFSF(BaseConvertor):
 
     def _load_masters(self, masters):
         for json_master in masters:
-            master = Master(**json_master)
             if "kerning" in json_master:
                 json_master["kerning"] = {
                     tuple(k.split("//")): v for k, v in json_master["kerning"].items()
                 }
+            master = Master(**json_master)
             master.font = self.font
             master.guides = [Guide(**m) for m in master.guides]
             self.font.masters.append(master)
