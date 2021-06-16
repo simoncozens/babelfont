@@ -28,6 +28,7 @@ class Instance(BaseObject, _InstanceFields):
             self.name = I18NDictionary.with_default(self.name)
         if isinstance(self.styleName, str):
             self.styleName = I18NDictionary.with_default(self.styleName)
+        super().__post_init__()
 
     @property
     def localisedStyleName(self):

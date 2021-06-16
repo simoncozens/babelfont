@@ -59,6 +59,7 @@ class Axis(BaseObject, _AxisFields):
         # If they smacked my name with a bare string, replace with I18NDict
         if isinstance(self.name, str):
             self.name = I18NDictionary.with_default(self.name)
+        super().__post_init__()
 
     def normalize_value(self, value):
         return normalizeValue(
