@@ -49,10 +49,10 @@ class GlyphsTwo(BaseConvertor):
         )
 
     @classmethod
-    def can_save(cls, convertor, format=2):
-        if not super().can_save(convertor):
+    def can_save(cls, convertor, **kwargs):
+        if not super().can_save(convertor, **kwargs):
             return False
-        if format == 2:
+        if "format" in kwargs and kwargs["format"] == 2:
             return True
 
     @classmethod
@@ -205,11 +205,14 @@ class GlyphsTwo(BaseConvertor):
         else:
             category = "base"
         cp = self._get_codepoint(gglyph)
+        exported = True
+        if "export" in gglyph and gglyph["export"] == 0:
+            exported = False
         g = Glyph(
             name=name,
             codepoints=cp or [],
             category=category,
-            exported=gglyph.get("export", True),
+            exported=exported
         )
         g.production_name = gglyph.get("production", get_glyph(name).production_name)
         for entry in [
@@ -257,6 +260,12 @@ class GlyphsTwo(BaseConvertor):
         _maybesetformatspecific(l, layer, "partSelection")
         _maybesetformatspecific(l, layer, "visible")
         _maybesetformatspecific(l, layer, "attr")
+        _maybesetformatspecific(l, layer, "vertOrigin")
+        _maybesetformatspecific(l, layer, "vertWidth")
+        _maybesetformatspecific(l, layer, "metricTop")
+        _maybesetformatspecific(l, layer, "metricBottom")
+        _maybesetformatspecific(l, layer, "metricLeft")
+        _maybesetformatspecific(l, layer, "metricRight")
         returns = [l]
         if "background" in layer:
             (background,) = self._load_layer(layer["background"], width=l.width)
@@ -324,7 +333,7 @@ class GlyphsTwo(BaseConvertor):
                 ntype = ntype + "s"
             n = Node(x=float(m[1]), y=float(m[2]), type=ntype)
             shape.nodes.append(n)
-        shape.closed = path["closed"]
+        shape.closed = bool(path["closed"])
         _maybesetformatspecific(shape, path, "attr")
         return shape
 
@@ -426,6 +435,7 @@ class GlyphsTwo(BaseConvertor):
         _maybesetformatspecific(self.font, self.glyphs, "stems")
         _maybesetformatspecific(self.font, self.glyphs, "userData")
         _maybesetformatspecific(self.font, self.glyphs, "metrics")
+        _maybesetformatspecific(self.font, self.glyphs, "properties")
 
     def _load_features(self):
         for c in self.glyphs.get("classes", []):
@@ -459,10 +469,10 @@ class GlyphsThree(GlyphsTwo):
         )
 
     @classmethod
-    def can_save(cls, convertor, format=3):
-        if not super().can_save(convertor):
+    def can_save(cls, convertor, **kwargs):
+        if not convertor.filename.endswith(".glyphs"):
             return False
-        if format == 3:
+        if "format" in kwargs and kwargs["format"] == 3:
             return True
 
     def _load_axes(self):
@@ -503,11 +513,12 @@ class GlyphsThree(GlyphsTwo):
     def _load_guide(self, gguide):
         g = Guide(pos=[*gguide.get("pos", (0, 0)), gguide.get("angle", 0)])
         _maybesetformatspecific(g, gguide, "lockAngle")
+        _maybesetformatspecific(g, gguide, "locked")
         _maybesetformatspecific(g, gguide, "showMeasurement")
         return g
 
     def _load_anchor(self, ganchor):
-        x, y = ganchor.get("pos", [0, 0])
+        x, y = ganchor.get("pos", (0, 0))
         return Anchor(name=ganchor["name"], x=x, y=y)
 
     def _load_shape(self, shape):
@@ -520,6 +531,7 @@ class GlyphsThree(GlyphsTwo):
         shape = Shape()
         shape.nodes = [Node(*n[0:3]) for n in path["nodes"]]
         shape.closed = path["closed"]
+        _maybesetformatspecific(shape, path, "attr")
         return shape
 
     def _get_codepoint(self, gglyph):
@@ -599,8 +611,10 @@ class GlyphsThree(GlyphsTwo):
         return gaxis
 
     def _save_kerning(self, kerntable):
-        # XXX
-        return kerntable
+        newtable = {}
+        for (l,r), val in kerntable.items():
+            newtable.setdefault(l,{})[r] = val
+        return newtable
 
     def _save_master(self, master):
         gmaster = _moveformatspecific(master)
@@ -631,10 +645,17 @@ class GlyphsThree(GlyphsTwo):
         gglyph = _moveformatspecific(glyph)
         gglyph["glyphname"] = glyph.name
         if len(glyph.codepoints) == 1:
-            gglyph["unicode"] = "%04x" % glyph.codepoints[0]
+            if glyph.codepoints[0] < 256:
+                gglyph["unicode"] = glyph.codepoints[0]
+            else:
+                gglyph["unicode"] = "%04x" % glyph.codepoints[0]
         elif len(glyph.codepoints) > 1:
             gglyph["unicode"] = glyph.codepoints
         gglyph["layers"] = [self._save_layer(l) for l in glyph.layers]
+        if glyph.production_name != glyph.name:
+            gglyph["production"] = glyph.production_name
+        if not glyph.exported:
+            gglyph["export"] = 0
         return gglyph
 
     def _save_layer(self, layer):
@@ -655,7 +676,11 @@ class GlyphsThree(GlyphsTwo):
             gshape["closed"] = shape.closed
             gshape["nodes"] = [self._save_node(n) for n in shape.nodes]
         else:
-            _copyattrs(shape, gshape, ["ref", "pos", "angle", "scale"])
+            _copyattrs(shape, gshape, ["ref", "angle"])
+            if shape.pos != (0,0):
+                _copyattrs(shape, gshape, ["pos"])
+            if shape.scale != (1,1):
+                _copyattrs(shape, gshape, ["scale"])
         return gshape
 
     def _save_node(self, node):
@@ -666,7 +691,7 @@ class GlyphsPackage(GlyphsThree):
     suffix = ".glyphspackage"
 
     @classmethod
-    def can_save(cls, convertor):
+    def can_save(cls, convertor, **kwargs):
         return False
 
     @classmethod
