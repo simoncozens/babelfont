@@ -159,12 +159,12 @@ class GlyphsTwo(BaseConvertor):
             location = axisloc
         else:
             potential_locations = [
-                gmaster.get("weightValue", 0),
-                gmaster.get("widthValue", 0),
+                gmaster.get("weightValue", 100),
+                gmaster.get("widthValue", 100),
                 gmaster.get("customValue", 0),
-                gmaster.get("custom1Value", 0),
-                gmaster.get("custom2Value", 0),
-                gmaster.get("custom3Value", 0),
+                gmaster.get("customValue1", 0),
+                gmaster.get("customValue2", 0),
+                gmaster.get("customValue3", 0),
             ]
             location = {}
             for k, loc in zip(self.font.axes, potential_locations):
