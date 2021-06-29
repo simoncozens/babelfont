@@ -132,6 +132,9 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
         elif isinstance(v, dict):
             stream.write(b"{")
             for ix, (k1, v1) in enumerate(v.items()):
+                if self._should_separate_when_serializing(k):
+                    stream.write(b"\n")
+                    stream.write(b"  " * (indent + 2))
                 if not isinstance(k1, str):
                     # XXX kerning keys are tuples
                     self._write_value(stream, k, "//".join(k1), indent + 1)
