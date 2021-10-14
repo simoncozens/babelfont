@@ -77,6 +77,8 @@ class GlyphsTwo(BaseConvertor):
         for gmaster in self.glyphs["fontMaster"]:
             self.font.masters.append(self._load_master(gmaster))
         self._fixup_axes()
+        if not self.font.default_master:
+            raise ValueError("Cannot identify default master")
 
         for gglyph in self.glyphs["glyphs"]:
             g = self._load_glyph(gglyph)
@@ -136,10 +138,10 @@ class GlyphsTwo(BaseConvertor):
     def _default_master_id(self):
         # The default master in glyphs is either the first master or the
         # one selected by the Variable Font Origin custom parameter
-        return (
-            self._custom_parameter(self.glyphs, "Variable Font Origin")
-            or self.glyphs["fontMaster"][0]["id"]
-        )
+        vfo = self._custom_parameter(self.glyphs, "Variable Font Origin")
+        if vfo and vfo in self.font._master_map:
+            return vfo
+        return self.glyphs["fontMaster"][0]["id"]
 
     def _load_master(self, gmaster):
         # location = gmaster.get("axesValues", [])
