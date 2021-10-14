@@ -342,7 +342,7 @@ class GlyphsTwo(BaseConvertor):
         transform = shape.get("transform")
         if isinstance(transform, str):
             m = re.match(r"^\{(\S+), (\S+), (\S+), (\S+), (\S+), (\S+)\}", transform)
-            transform = [float(g) for g in m.groups()]
+            transform = Transform(*[float(g) for g in m.groups()])
         c = Shape(ref=glyphname)
 
         if not transform:
