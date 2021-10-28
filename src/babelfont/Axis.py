@@ -83,6 +83,10 @@ class Axis(BaseObject, _AxisFields):
     def minimum(self):
         return self.min
 
+    @property
+    def axisTag(self):
+        return self.tag
+
     # Stolen from fontTools.designspaceLib
 
     def map_forward(self, v):
