@@ -87,6 +87,10 @@ class Axis(BaseObject, _AxisFields):
     def axisTag(self):
         return self.tag
 
+    @property
+    def defaultValue(self):
+        return self.default
+
     # Stolen from fontTools.designspaceLib
 
     def map_forward(self, v):
