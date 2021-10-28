@@ -83,6 +83,15 @@ class Axis(BaseObject, _AxisFields):
     def minimum(self):
         return self.min
 
+    # Compatibility with fontTools.varLib
+    @property
+    def maxValue(self):
+        return self.max
+
+    @property
+    def minValue(self):
+        return self.min
+
     @property
     def axisTag(self):
         return self.tag
