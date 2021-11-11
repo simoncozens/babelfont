@@ -9,7 +9,7 @@ from .Names import Names
 import functools
 from fontTools.varLib.models import VariationModel
 from fontFeatures import FontFeatures
-from fontFeatures.variableScalar import VariableScalar
+from fontTools.feaLib.variableScalar import VariableScalar
 import fontFeatures
 import logging
 
@@ -121,6 +121,20 @@ class Font(_FontFields, BaseObject):
     def master(self, mid):
         return self._master_map[mid]
 
+    def map_forward(self, location):
+        location2 = dict(location)
+        for a in self.axes:
+            if a.tag in location2:
+                location2[a.tag] = a.map_forward(location2[a.tag])
+        return location2
+
+    def map_backward(self, location):
+        location2 = dict(location)
+        for a in self.axes:
+            if a.tag in location2:
+                location2[a.tag] = a.map_backward(location2[a.tag])
+        return location2
+
     @functools.cached_property
     def default_master(self):
         default_loc = {a.tag: a.map_forward(a.default) for a in self.axes}
@@ -183,7 +197,7 @@ class Font(_FontFields, BaseObject):
                 _all_anchors_dict[a][g] = self._get_variable_anchor(g, a)
         return _all_anchors_dict
 
-    def _get_variable_anchor(self, glyph, anchorname):
+    def get_variable_anchor(self, glyph, anchorname):
         x_vs = VariableScalar(self.axes)
         y_vs = VariableScalar(self.axes)
         for ix, m in enumerate(self.masters):
@@ -194,8 +208,8 @@ class Font(_FontFields, BaseObject):
                     % (anchorname, glyph, m)
                 )
             anchor = m.get_glyph_layer(glyph).anchors_dict[anchorname]
-            x_vs.add_value(m.location, anchor.x)
-            y_vs.add_value(m.location, anchor.y)
+            x_vs.add_value(self.map_forward(m.location), anchor.x)
+            y_vs.add_value(self.map_forward(m.location), anchor.y)
         return (x_vs, y_vs)
 
     def exportedGlyphs(self):
