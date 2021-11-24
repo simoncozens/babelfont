@@ -227,6 +227,7 @@ class GlyphsTwo(BaseConvertor):
             "partsSettings",
             "script",
             "tags",
+            "userData"
         ]:
             _maybesetformatspecific(g, gglyph, entry)
 
