@@ -168,7 +168,8 @@ class Font(_FontFields, BaseObject):
         all_keys = [set(m.kerning.keys()) for m in self.masters]
         kerndict = {}
         for (l, r) in list(set().union(*all_keys)):
-            kern = VariableScalar(self.axes)
+            kern = VariableScalar()
+            kern.axes = self.axes
             for m in self.masters:
                 thiskern = m.kerning.get((l, r), 0)
                 if (l, r) not in m.kerning:
@@ -194,12 +195,14 @@ class Font(_FontFields, BaseObject):
                     has_mark = a
                 if not a in _all_anchors_dict:
                     _all_anchors_dict[a] = {}
-                _all_anchors_dict[a][g] = self._get_variable_anchor(g, a)
+                _all_anchors_dict[a][g] = self.get_variable_anchor(g, a)
         return _all_anchors_dict
 
     def get_variable_anchor(self, glyph, anchorname):
-        x_vs = VariableScalar(self.axes)
-        y_vs = VariableScalar(self.axes)
+        x_vs = VariableScalar()
+        x_vs.axes = self.axes
+        y_vs = VariableScalar()
+        y_vs.axes = self.axes
         for ix, m in enumerate(self.masters):
             layer = m.get_glyph_layer(glyph)
             if anchorname not in layer.anchors_dict:
