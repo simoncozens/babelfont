@@ -137,7 +137,6 @@ class Designspace(BaseConvertor):
         l = Layer(width=width, id=uuid.uuid1())
         l._master = source._nfsf_master.id
         l._font = self.font
-        # XXX load shapes, anchors, metrics, etc.
         for contour in ufo_glyph:
             l.shapes.append(self._load_contour(contour))
         for component in ufo_glyph.components:
@@ -173,13 +172,32 @@ class Designspace(BaseConvertor):
         instance = Instance(name=ufo_instance.name, location=location)
         return instance
 
+    names_dict = {
+        "designer": "openTypeNameDesigner",
+        "designerURL": "openTypeNameDesignerURL",
+        "manufacturer": "openTypeNameManufacturer",
+        "manufacturerURL": "openTypeNameManufacturerURL",
+        "license": "openTypeNameLicense",
+        "licenseURL": "openTypeNameLicenseURL",
+        "version": "openTypeNameVersion",
+        "uniqueID": "openTypeNameUniqueID",
+        "description": "openTypeNameDescription",
+        "compatibleFullName": "openTypeNameCompatibleFullName",
+        "sampleText": "openTypeNameSampleText",
+        "WWSFamilyName": "openTypeNameWWSFamilyName",
+        "WWSSubfamilyName": "openTypeNameWWSSubfamilyName",
+        "copyright": "copyright",
+        "styleMapFamilyName": "styleMapFamilyName",
+        "familyName": "familyName",
+        "trademark": "trademark",
+    }
+
     def _load_metadata(self, ufo):
         firstfontinfo = ufo.info
-        self.font.names.familyName.set_default(firstfontinfo.familyName)
         self.font.upm = firstfontinfo.unitsPerEm
         self.font.version = (firstfontinfo.versionMajor, firstfontinfo.versionMinor)
         self.font.note = firstfontinfo.note
-
-        # copyright
-        # stylename
-        # opentype head/hhea/etc. table fields
+        for ours, theirs in self.names_dict:
+            their_value = firstfontinfo.getattr(theirs)
+            if their_value:
+                getattr(self.font.names, ours).set_default(their_value)
