@@ -143,10 +143,32 @@ class GlyphsTwo(BaseConvertor):
             return vfo
         return self.glyphs["fontMaster"][0]["id"]
 
+    def _get_master_name(self, gmaster):
+        if gmaster.get("name"):
+            return gmaster["name"]
+        cname = self._custom_parameter(gmaster, "Master Name")
+        if cname:
+            return cname
+        # Remove None and empty string
+        names = list(filter(None, [
+            gmaster.get("width", "Regular"),
+            gmaster.get("weight", "Regular"),
+            gmaster.get("custom", "")]))
+
+        # Remove redundant occurences of 'Regular'
+        while len(names) > 1 and "Regular" in names:
+            names.remove("Regular")
+        if gmaster.get("italicAngle"):
+            if names == ["Regular"]:
+                return "Italic"
+            if "Italic" not in gmaster.get("custom", ""):
+                names.append("Italic")
+        return " ".join(names)
+
     def _load_master(self, gmaster):
         # location = gmaster.get("axesValues", [])
         master = Master(
-            name=gmaster.get("name", gmaster.get("custom", "")),
+            name=self._get_master_name(gmaster),
             id=gmaster.get("id"),
         )
         for metric in Master.CORE_METRICS:
@@ -175,7 +197,18 @@ class GlyphsTwo(BaseConvertor):
 
         master.guides = [self._load_guide(x) for x in gmaster.get("guides", [])]
 
-        kerntable = self.glyphs.get("kerning", {}).get(master.id, {})
+        kernmaster = None
+        if self._custom_parameter(gmaster, "Link Metrics With First Master"):
+            kernmaster = self.glyphs["fontMaster"][0]["id"]
+        elif self._custom_parameter(gmaster, "Link Metrics With Master"):
+            kernmaster_name = self._custom_parameter(gmaster, "Link Metrics With Master")
+            for m in self.glyphs["fontMaster"]:
+                name = self._get_master_name(m)
+                if name == kernmaster_name:
+                    kernmaster = m["id"]
+        else:
+            kernmaster = master.id
+        kerntable = self.glyphs.get("kerning", {}).get(kernmaster, {})
         master.kerning = self._load_kerning(kerntable)
 
         _maybesetformatspecific(master, gmaster, "customParameters")
@@ -487,6 +520,9 @@ class GlyphsThree(GlyphsTwo):
             _maybesetformatspecific(axis, gaxis, "hidden")
             self.font.axes.append(axis)
 
+    def _get_master_name(self, gmaster):
+        return gmaster["name"]
+
     def _load_master(self, gmaster):
         location = gmaster.get("axesValues", [])
         metrics = self.glyphs["metrics"]
@@ -500,7 +536,18 @@ class GlyphsThree(GlyphsTwo):
 
         master.location = {k.tag: v for k, v in zip(self.font.axes, location)}
         master.guides = [self._load_guide(x) for x in gmaster.get("guides", [])]
-        kerntable = self.glyphs.get("kerningLTR", {}).get(master.id, {})
+        if self._custom_parameter(gmaster, "Link Metrics With First Master"):
+            kernmaster = self.glyphs["fontMaster"][0]["id"]
+        elif self._custom_parameter(gmaster, "Link Metrics With Master"):
+            kernmaster_name = self._custom_parameter(gmaster, "Link Metrics With Master")
+            for m in self.glyphs["fontMaster"]:
+                name = self._get_master_name(m)
+                if name == kernmaster_name:
+                    kernmaster = m["id"]
+        else:
+            kernmaster = master.id
+        kerntable = self.glyphs.get("kerningLTR", {}).get(kernmaster, {})
+
         master.kerning = self._load_kerning(kerntable)
         # XXX support RTL kerning etc.
 
