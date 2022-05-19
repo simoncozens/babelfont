@@ -306,14 +306,21 @@ class TrueType(BaseConvertor):
             if m.ttglyphset._glyphs[g].isComposite():
                 component_point = GlyphCoordinates(
                     [
-                        (layer_comp.pos[0], layer_comp.pos[1])
+                        (otRound(layer_comp.pos[0]), otRound(layer_comp.pos[1]))
                         for layer_comp in layer.components
                     ]
                 )
                 basecoords.extend(component_point)
-            phantomcoords = GlyphCoordinates([(0, 0), (layer.width, 0), (0, 0), (0, 0)])
+            phantomcoords = GlyphCoordinates([(0, 0), (otRound(layer.width), 0), (0, 0), (0, 0)])
             basecoords.extend(phantomcoords)
             all_coords.append(basecoords)
+        for ix,c in enumerate(all_coords):
+            all_ok = True
+            if len(c) != len(all_coords[0]):
+                print("Incompatible master %i in glyph %s" % (ix, g))
+                all_ok = False
+            if not all_ok:
+                return []
         deltas = model.getDeltas(all_coords)
         gvar_entry = []
         if default_g.isComposite():
