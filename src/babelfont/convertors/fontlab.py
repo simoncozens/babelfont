@@ -12,8 +12,16 @@ class Fontlab(BaseConvertor):
 
     def _load(self):
         self.fontlab = orjson.loads(open(self.filename).read())["font"]
+        self.known_transforms = {}
         self._load_axes()
         self._load_masters()
+        if "defaultMaster" in self.fontlab:
+            default = self.font.master(self.fontlab["defaultMaster"])
+            def_loc = self.font.map_backward(default.location)
+            for axis in self.font.axes:
+                if axis.tag in default.location:
+                    axis.default = def_loc[axis.tag]
+            assert self.font.default_master
         for g in self.fontlab.get("glyphs", []):
             glyph = self._load_thing(g, self.glyph_loader)
             self.font.glyphs.append(glyph)
@@ -48,19 +56,25 @@ class Fontlab(BaseConvertor):
     def _convert_shapes(self, flshapes):
         shapes = []
         for shape in flshapes:
+            transform_j = shape.get("transform", {})
+            if "id" in transform_j:
+                self.known_transforms[transform_j["id"]] = transform_j
+            if isinstance(transform_j, str):
+                transform_j = self.known_transforms[transform_j]
+            transform = Transform().translate(
+                            transform_j.get("xOffset", 0),
+                            transform_j.get("yOffset", 0),
+                        )
             if "component" in shape:
                 shapes.append(
                     Shape(
                         ref=shape["component"]["glyphName"],
-                        transform=Transform().translate(
-                            shape.get("transform", {}).get("xOffset", 0),
-                            shape.get("transform", {}).get("yOffset", 0),
-                        ),
+                        transform=transform,
                         _=shape["component"],
                     )
                 )
             else:
-                for flcontour in shape["elementData"]["contours"]:
+                for flcontour in shape["elementData"].get("contours",[]):
                     contour = Shape(nodes=[])
                     for n in flcontour["nodes"]:
                         contour.nodes.extend(self._load_node(n))
