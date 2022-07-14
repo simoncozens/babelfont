@@ -197,7 +197,7 @@ class Designspace(BaseConvertor):
         self.font.upm = firstfontinfo.unitsPerEm
         self.font.version = (firstfontinfo.versionMajor, firstfontinfo.versionMinor)
         self.font.note = firstfontinfo.note
-        for ours, theirs in self.names_dict:
-            their_value = firstfontinfo.getattr(theirs)
+        for ours, theirs in self.names_dict.items():
+            their_value = getattr(firstfontinfo, theirs)
             if their_value:
                 getattr(self.font.names, ours).set_default(their_value)
