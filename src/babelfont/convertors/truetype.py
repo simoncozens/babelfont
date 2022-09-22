@@ -5,7 +5,6 @@ from fontTools.pens.ttGlyphPen import TTGlyphPen
 from fontTools.pens.recordingPen import RecordingPen
 from cu2qu.ufo import glyphs_to_quadratic
 from fontTools.misc.timeTools import epoch_diff, timestampSinceEpoch
-from fontTools.ttLib.ttFont import _TTGlyphGlyf, _TTGlyphSet
 from fontTools.ttLib.tables.TupleVariation import TupleVariation
 from babelfont.fontFilters.featureWriters import build_all_features
 from fontTools.ttLib import TTFont
@@ -115,7 +114,7 @@ class TrueType(BaseConvertor):
         return glyphs_dict
 
     def _load_layers(self, g):
-        ttglyph = self.tt.getGlyphSet()[g]._glyph  # _TTGlyphGlyf object
+        ttglyph = self.tt.getGlyphSet()[g]  # _TTGlyphGlyf object
         width = self.tt["hmtx"][g][0]
         # leftMargin = self.tt["hmtx"][g][1]
         layer = Layer(width=width, id=str(uuid.uuid1()) )
@@ -194,7 +193,7 @@ class TrueType(BaseConvertor):
 
         for m in f.masters:
             glyf = {}
-            m.ttglyphset = _TTGlyphSet(fb.font, glyf, _TTGlyphGlyf)
+            m.ttglyphset = {}
 
         done = {}
 
@@ -217,7 +216,7 @@ class TrueType(BaseConvertor):
                     pen = TTGlyphPen(m.ttglyphset)
                     layer.draw(pen)
 
-                    m.ttglyphset._glyphs[g] = pen.glyph()
+                    m.ttglyphset[g] = pen.glyph()
 
             except Exception as e:
                 print(
@@ -225,7 +224,7 @@ class TrueType(BaseConvertor):
                     % g
                 )
                 for m in f.masters:
-                    m.ttglyphset._glyphs[g] = TTGlyphPen(m.ttglyphset).glyph()
+                    m.ttglyphset[g] = TTGlyphPen(m.ttglyphset).glyph()
             done[g] = True
 
         for g in exportable:
@@ -236,7 +235,7 @@ class TrueType(BaseConvertor):
             created=timestampSinceEpoch(f.date.timestamp()),
             lowestRecPPEM=10,
         )
-        fb.setupGlyf(f.default_master.ttglyphset._glyphs)
+        fb.setupGlyf(f.default_master.ttglyphset)
         fb.setupHorizontalHeader(
             ascent=int(f.default_master.ascender),
             descent=int(f.default_master.descender),
@@ -296,14 +295,14 @@ class TrueType(BaseConvertor):
 
     def calculate_a_gvar(self, f, model, g, default_width):
         master_layer = f.default_master.get_glyph_layer(g)
-        if not g in f.default_master.ttglyphset._glyphs:
+        if not g in f.default_master.ttglyphset:
             return None
-        default_g = f.default_master.ttglyphset._glyphs[g]
+        default_g = f.default_master.ttglyphset[g]
         all_coords = []
         for m in f.masters:
             layer = m.get_glyph_layer(g)
-            basecoords = GlyphCoordinates(m.ttglyphset._glyphs[g].coordinates)
-            if m.ttglyphset._glyphs[g].isComposite():
+            basecoords = GlyphCoordinates(m.ttglyphset[g].coordinates)
+            if m.ttglyphset[g].isComposite():
                 component_point = GlyphCoordinates(
                     [
                         (otRound(layer_comp.pos[0]), otRound(layer_comp.pos[1]))
