@@ -330,9 +330,9 @@ class TrueType(BaseConvertor):
         for delta, sup in zip(deltas, model.supports):
             if not sup:
                 continue
-            var = TupleVariation(sup, delta)
+            var = TupleVariation(sup, round(delta))
             # This assumes we do the default master first, which may not be true
-            delta_opt = iup_delta_optimize(delta, deltas[0], endPts, tolerance=0.5)
+            delta_opt = iup_delta_optimize(round(delta), round(deltas[0]), endPts, tolerance=0.5)
             if None in delta_opt:
                 var = TupleVariation(sup, delta_opt)
             gvar_entry.append(var)
