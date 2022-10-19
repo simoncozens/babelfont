@@ -6,7 +6,7 @@ authors = ["Simon Cozens <simon@simon-cozens.org>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-#python = "^3.8"
+python = ">=3.8"
 orjson = "^3.5.1"
 fonttools = ">=4.21.1"
 ufoLib2 = ">=0.11.1"
