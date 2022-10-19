@@ -54,6 +54,21 @@ fonttools = {version = ">=3.32.0", extras = ["ufo"]}
 cli = ["defcon (>=0.6.0)"]
 
 [[package]]
+name = "defcon"
+version = "0.10.2"
+description = "A set of flexible objects for representing UFO data."
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+fonttools = {version = ">=4.10.0", extras = ["ufo", "unicode"]}
+
+[package.extras]
+lxml = ["fonttools[lxml] (>=4.10.0)"]
+pens = ["fontPens (>=0.1.0)"]
+
+[[package]]
 name = "fontFeatures"
 version = "1.7.2"
 description = "Python library for manipulating OpenType font features"
@@ -320,7 +335,7 @@ testing = ["coverage", "pytest", "pytest-randomly", "pytest-xdist"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8"
-content-hash = "1b04d17c9311fc3cc4fcc077e66280f3c93efce3e657e17d624aed3162c0b39e"
+content-hash = "b3a9b7f10cd6bb2d6784eee8b870872355a75073580c8fa61c7d39c8c952b3e1"
 
 [metadata.files]
 appdirs = [
@@ -358,6 +373,10 @@ cu2qu = [
     {file = "cu2qu-1.6.7.post1-cp39-cp39-win_amd64.whl", hash = "sha256:dfb1c1abb012e6b0bfdefdfdbc2a7ae5d268a5923e56cf0416c439025316955f"},
     {file = "cu2qu-1.6.7.post1-py2.py3-none-any.whl", hash = "sha256:c93619ba635427f42373077f52711bf3a253ec9080da2a9b80652037d6c0f987"},
     {file = "cu2qu-1.6.7.post1.zip", hash = "sha256:8c982f11de0151f41da83df4a4f75207380301c0356fb7a3322f0db74e16e6f4"},
+]
+defcon = [
+    {file = "defcon-0.10.2-py3-none-any.whl", hash = "sha256:c7b40c5bdb57ce7548cd1ac92a95a66644e09e5588472e489d4e18e587288759"},
+    {file = "defcon-0.10.2.zip", hash = "sha256:aee396e6d69e45ae65c8264781392d4c29116934b2737ad76d8230b40c182a44"},
 ]
 fontFeatures = [
     {file = "fontFeatures-1.7.2-py3-none-any.whl", hash = "sha256:6740bb4754a69c105daafe4d4b22e916c737b2485c54339a580169eba39c6fbe"},
