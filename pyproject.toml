@@ -1,8 +1,9 @@
 [tool.poetry]
 name = "babelfont"
-version = "3.0.0a9"
-description = ""
+version = "3.0.0"
+description = "Load, examine and save fonts in a variety of formats"
 authors = ["Simon Cozens <simon@simon-cozens.org>"]
+readme = "README.md"
 
 [tool.poetry.dependencies]
 #python = "^3.8"
