@@ -2,6 +2,7 @@ import os
 import sys
 import pkgutil
 import inspect
+import importlib
 from babelfont import Font
 
 class BaseConvertor:
@@ -48,7 +49,9 @@ class Convert:
         for loader, module_name, is_pkg in loaders:
             if is_pkg:
                 continue
-            _module = loader.find_module(module_name).load_module(module_name)
+            spec = loader.find_spec(module_name)
+            _module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(_module)
             classes = [
                 x[1]
                 for x in inspect.getmembers(_module, inspect.isclass)
