@@ -24,9 +24,9 @@ def check_equal(one, two):
 
 @pytest.mark.xfail(reason="Still working on a few things")
 @pytest.mark.parametrize("filename", ["SimpleTwoAxis3.glyphs", "GlyphsFileFormatv3.glyphs"])
-def test_glyphs3_nfsf_glyphs3(tmp_path, filename):
+def test_glyphs3_babelfont_glyphs3(tmp_path, filename):
     original_file = data_path(filename)
-    tmp_file = os.path.join(tmp_path, "Roundtrip.nfsf")
+    tmp_file = os.path.join(tmp_path, "Roundtrip.babelfont")
     roundtrip_file = os.path.join(tmp_path, "Roundtrip.glyphs")
     f = load(original_file)
     f.save(tmp_file)

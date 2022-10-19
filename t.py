@@ -9,6 +9,6 @@ def warning_on_one_line(message, category, filename, lineno, file=None, line=Non
 warnings.formatwarning = warning_on_one_line
 
 f = Convert("Nunito3.glyphs").load()
-f.save("output/test.nfsf")
+f.save("output/test.babelfont")
 f.save("output/test.ttf")
 

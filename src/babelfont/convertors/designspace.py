@@ -24,8 +24,8 @@ class Designspace(BaseConvertor):
         self._load_axes()
 
         for source in self.ds.sources:
-            source._nfsf_master = self._load_master(source)
-            self.font.masters.append(source._nfsf_master)
+            source._babelfont_master = self._load_master(source)
+            self.font.masters.append(source._babelfont_master)
 
         for instance in self.ds.instances:
             self.font.instances.append(self._load_instance(instance))
@@ -135,7 +135,7 @@ class Designspace(BaseConvertor):
         ufo_glyph = ufo_layer[glyphname]
         width = ufo_glyph.width
         l = Layer(width=width, id=uuid.uuid1())
-        l._master = source._nfsf_master.id
+        l._master = source._babelfont_master.id
         l._font = self.font
         for contour in ufo_glyph:
             l.shapes.append(self._load_contour(contour))

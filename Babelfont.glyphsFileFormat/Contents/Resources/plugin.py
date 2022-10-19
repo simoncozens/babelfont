@@ -6,17 +6,16 @@ from GlyphsApp.plugins import *
 import sys
 import os
 
-sys.path.insert(0, "/Users/simon/hacks/typography/nfsf/src")
 from babelfont.convertors.gsobject import GSObject
 from babelfont import Font
 
-class NFSFExport(FileFormatPlugin):
+class BabelfontExport(FileFormatPlugin):
     # The NSView object from the User Interface. Keep this here!
     dialog = objc.IBOutlet()
 
     @objc.python_method
     def settings(self):
-        self.name = "NFSF"
+        self.name = "Babelfont"
         self.icon = "ExportIconTemplate"
         self.toolbarPosition = 100
         # Load .nib dialog (with .extension)
@@ -31,7 +30,7 @@ class NFSFExport(FileFormatPlugin):
         # Ask for export destination and write the file:
         title = "Choose export destination"
         proposedFilename = font.familyName
-        fileTypes = ["nfsf"]
+        fileTypes = ["babelfont"]
         # Call dialog
         filepath = GetSaveFile(title, proposedFilename, fileTypes)
 

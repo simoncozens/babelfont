@@ -30,7 +30,7 @@ def describe_dataclass(cls):
     f.write("\n")
     if cls._write_one_line:
         f.write(
-            "* When writing to NFSF-JSON, this class must be serialized without newlines\n"
+            "* When writing to Babelfont-JSON, this class must be serialized without newlines\n"
         )
     for k in dataclasses.fields(cls):
         if k.name == "_":
@@ -46,7 +46,7 @@ def describe_dataclass(cls):
         f.write("## %s.%s\n\n" % (name, k.name))
         f.write("* Python type: %s\n\n" % stringytype)
         if "json_type" in k.metadata:
-            f.write("* NFSF-JSON type: `%s`\n\n" % k.metadata["json_type"])
+            f.write("* Babelfont-JSON type: `%s`\n\n" % k.metadata["json_type"])
         if (
             k.default is dataclasses.MISSING
             and k.default_factory is dataclasses.MISSING
@@ -54,17 +54,17 @@ def describe_dataclass(cls):
             f.write("* **Required field**\n\n")
         if "json_location" in k.metadata:
             f.write(
-                "* When writing to NFSF-JSON, this structure is stored under the separate file `%s`.\n\n"
+                "* When writing to Babelfont-JSON, this structure is stored under the separate file `%s`.\n\n"
                 % k.metadata["json_location"]
             )
 
         if "separate_items" in k.metadata:
             f.write(
-                "* When writing to NFSF-JSON, each item in the list must be placed on a separate line.\n\n"
+                "* When writing to Babelfont-JSON, each item in the list must be placed on a separate line.\n\n"
             )
         if "python_only" in k.metadata:
             f.write(
-                "* This field only exists as an attribute of the the Python object and should not be written to NFSF-JSON.\n\n"
+                "* This field only exists as an attribute of the the Python object and should not be written to Babelfont-JSON.\n\n"
             )
 
         if "description" in k.metadata:

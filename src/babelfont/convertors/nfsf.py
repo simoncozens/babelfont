@@ -12,8 +12,8 @@ import os
 # One would hope this would be easy.
 
 
-class NFSF(BaseConvertor):
-    suffix = ".nfsf"
+class Babelfont(BaseConvertor):
+    suffix = ".babelfont"
 
     def _load_file(self, filename):
         contents = open(os.path.join(self.filename, filename), "r").read()
@@ -38,7 +38,7 @@ class NFSF(BaseConvertor):
         for g in glyphs:
             glyph = Glyph(**g)
             self.font.glyphs.append(glyph)
-            for json_layer in self._load_file(glyph.nfsf_filename):
+            for json_layer in self._load_file(glyph.babelfont_filename):
                 layer = self._inflate_layer(json_layer)
                 glyph.layers.append(layer)
 
@@ -104,6 +104,6 @@ class NFSF(BaseConvertor):
             for g in self.font.glyphs:
                 glyphpath = path / "glyphs"
                 glyphpath.mkdir(parents=True, exist_ok=True)
-                with open(path / g.nfsf_filename, "wb") as f2:
+                with open(path / g.babelfont_filename, "wb") as f2:
                     g._write_value(f2, "layers", g.layers)
             self.font._write_value(f, "glyphs", self.font.glyphs)

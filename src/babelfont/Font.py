@@ -81,7 +81,7 @@ glyph_ampersand = font.glyphs["ampersand"]
     date: datetime = field(
         default_factory=datetime.now,
         metadata={
-            "description": """The font's date. When writing to NFSF-JSON, this
+            "description": """The font's date. When writing to Babelfont-JSON, this
 should be stored in the format `%Y-%m-%d %H:%M:%S`. *If not provided, defaults
 to the current date/time*.""",
             "json_type": "str",

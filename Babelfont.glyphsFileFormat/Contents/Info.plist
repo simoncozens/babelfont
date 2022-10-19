@@ -18,11 +18,11 @@
 	<key>CFBundleExecutable</key>
 	<string>plugin</string>
 	<key>CFBundleIdentifier</key>
-	<string>uk.co.corvelsoftware.babelfont.NFSFExport</string>
+	<string>uk.co.corvelsoftware.babelfont.BabelfontExport</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>NFSFExport</string>
+	<string>BabelfontExport</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string> <!-- 1.0 -->
 	<key>CFBundleVersion</key>
@@ -30,7 +30,7 @@
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright, Simon Cozens, 2021</string>
 	<key>NSPrincipalClass</key>
-	<string>NFSFExport</string>
+	<string>BabelfontExport</string>
 	<key>PyMainFileNames</key>
 	<array>
 		<string>plugin.py</string>
