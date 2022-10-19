@@ -52,8 +52,9 @@ class GlyphsTwo(BaseConvertor):
     def can_save(cls, convertor, **kwargs):
         if not super().can_save(convertor, **kwargs):
             return False
-        if "format" in kwargs and kwargs["format"] == 2:
-            return True
+        if "format" in kwargs:
+            return kwargs["format"] == 2
+        return True
 
     @classmethod
     def can_load(cls, convertor):
@@ -509,8 +510,9 @@ class GlyphsThree(GlyphsTwo):
     def can_save(cls, convertor, **kwargs):
         if not convertor.filename.endswith(".glyphs"):
             return False
-        if "format" in kwargs and kwargs["format"] == 3:
-            return True
+        if "format" in kwargs:
+            return kwargs["format"] == 3
+        return True
 
     def _load_axes(self):
         self.axis_name_map = {}
@@ -682,7 +684,7 @@ class GlyphsThree(GlyphsTwo):
             gmaster["metricValues"].append(metric)
         if master.guides:
             gmaster["guides"] = [self._save_guide(g) for g in master.guides]
-        _copyattrs(master, gmaster, ["name", "id"])
+        _copyattrs(master, gmaster, ["name", "id"], convertor=str)
         return gmaster
 
     def _save_guide(self, guide):
@@ -712,7 +714,7 @@ class GlyphsThree(GlyphsTwo):
     def _save_layer(self, layer):
         glayer = _moveformatspecific(layer)
         _copyattrs(layer, glayer, ["width", "name"])
-        glayer["layerId"] = layer.id
+        glayer["layerId"] = str(layer.id)
         if layer.guides:
             glayer["guides"] = [self._save_guide(g) for g in layer.guides]
         if layer.shapes:
@@ -781,10 +783,10 @@ def _moveformatspecific(item):
     return rv
 
 
-def _copyattrs(src, dst, attrs):
+def _copyattrs(src, dst, attrs, convertor = lambda x:x):
     for a in attrs:
         v = getattr(src, a)
         if isinstance(v, I18NDictionary):
             v = v.get_default()
         if v:
-            dst[a] = v
+            dst[a] = convertor(v)
