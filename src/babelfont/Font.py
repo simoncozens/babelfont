@@ -141,6 +141,9 @@ class Font(_FontFields, BaseObject):
         for m in self.masters:
             if m.location == default_loc:
                 return m
+        if len(self.masters) == 1:
+            return self.masters[0]
+        raise ValueError("Could not determine default master")
 
     @functools.cached_property
     def _master_map(self):
