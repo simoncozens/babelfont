@@ -1,0 +1,166 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<designspace format="4.1">
+  <axes>
+    <axis tag="wght" name="Weight" minimum="100" maximum="900" default="400">
+      <map input="100" output="17"/>
+      <map input="200" output="30"/>
+      <map input="300" output="55"/>
+      <map input="357" output="75"/>
+      <map input="400" output="90"/>
+      <map input="500" output="133"/>
+      <map input="700" output="179"/>
+      <map input="900" output="220"/>
+    </axis>
+  </axes>
+  <sources>
+    <source filename="GlyphsUnitTestSans-Light.ufo" name="Glyphs Unit Test Sans Light" familyname="Glyphs Unit Test Sans" stylename="Light">
+      <location>
+        <dimension name="Weight" xvalue="17"/>
+      </location>
+    </source>
+    <source filename="GlyphsUnitTestSans-Regular.ufo" name="Glyphs Unit Test Sans Regular" familyname="Glyphs Unit Test Sans" stylename="Regular">
+      <lib copy="1"/>
+      <groups copy="1"/>
+      <features copy="1"/>
+      <info copy="1"/>
+      <location>
+        <dimension name="Weight" xvalue="90"/>
+      </location>
+    </source>
+    <source filename="GlyphsUnitTestSans-Regular.ufo" name="Glyphs Unit Test Sans Regular {155, 100}" layer="{155, 100}">
+      <location>
+        <dimension name="Weight" xvalue="155"/>
+      </location>
+    </source>
+    <source filename="GlyphsUnitTestSans-Bold.ufo" name="Glyphs Unit Test Sans Bold" familyname="Glyphs Unit Test Sans" stylename="Bold">
+      <location>
+        <dimension name="Weight" xvalue="220"/>
+      </location>
+    </source>
+  </sources>
+  <instances>
+    <instance name="Glyphs Unit Test Sans Thin" familyname="Glyphs Unit Test Sans" stylename="Thin" filename="instance_ufo/GlyphsUnitTestSans-Thin.ufo" stylemapfamilyname="Glyphs Unit Test Sans Thin" stylemapstylename="regular">
+      <location>
+        <dimension name="Weight" xvalue="17"/>
+      </location>
+      <kerning/>
+      <info/>
+    </instance>
+    <instance name="Glyphs Unit Test Sans Extra Light" familyname="Glyphs Unit Test Sans" stylename="Extra Light" filename="instance_ufo/GlyphsUnitTestSans-ExtraLight.ufo" stylemapfamilyname="Glyphs Unit Test Sans Extra Light" stylemapstylename="regular">
+      <location>
+        <dimension name="Weight" xvalue="30"/>
+      </location>
+      <kerning/>
+      <info/>
+    </instance>
+    <instance name="Glyphs Unit Test Sans Light" familyname="Glyphs Unit Test Sans" stylename="Light" filename="instance_ufo/GlyphsUnitTestSans-Light.ufo" stylemapfamilyname="Glyphs Unit Test Sans Light" stylemapstylename="regular">
+      <location>
+        <dimension name="Weight" xvalue="55"/>
+      </location>
+      <kerning/>
+      <info/>
+    </instance>
+    <instance name="Glyphs Unit Test Sans Regular" familyname="Glyphs Unit Test Sans" stylename="Regular" filename="instance_ufo/GlyphsUnitTestSans-Regular.ufo" stylemapfamilyname="Glyphs Unit Test Sans" stylemapstylename="regular">
+      <location>
+        <dimension name="Weight" xvalue="90"/>
+      </location>
+      <kerning/>
+      <info/>
+    </instance>
+    <instance name="Glyphs Unit Test Sans Medium" familyname="Glyphs Unit Test Sans" stylename="Medium" filename="instance_ufo/GlyphsUnitTestSans-Medium.ufo" stylemapfamilyname="Glyphs Unit Test Sans Medium" stylemapstylename="regular">
+      <location>
+        <dimension name="Weight" xvalue="133"/>
+      </location>
+      <kerning/>
+      <info/>
+    </instance>
+    <instance name="Glyphs Unit Test Sans Bold" familyname="Glyphs Unit Test Sans" stylename="Bold" filename="instance_ufo/GlyphsUnitTestSans-Bold.ufo" stylemapfamilyname="Glyphs Unit Test Sans Bold" stylemapstylename="regular">
+      <location>
+        <dimension name="Weight" xvalue="179"/>
+      </location>
+      <kerning/>
+      <info/>
+    </instance>
+    <instance name="Glyphs Unit Test Sans Black" familyname="Glyphs Unit Test Sans" stylename="Black" filename="instance_ufo/GlyphsUnitTestSans-Black.ufo" stylemapfamilyname="Glyphs Unit Test Sans Black" stylemapstylename="regular">
+      <location>
+        <dimension name="Weight" xvalue="220"/>
+      </location>
+      <kerning/>
+      <info/>
+    </instance>
+    <instance name="Glyphs Unit Test Sans Web" familyname="Glyphs Unit Test Sans" stylename="Web" filename="instance_ufo/GlyphsUnitTestSans-Web.ufo" stylemapfamilyname="Glyphs Unit Test Sans Web" stylemapstylename="regular">
+      <location>
+        <dimension name="Weight" xvalue="75"/>
+      </location>
+      <kerning/>
+      <info/>
+    </instance>
+  </instances>
+  <lib>
+    <dict>
+      <key>AsteriskParameters</key>
+      <dict>
+        <key>253E7231-480D-4F8E-8754-50FC8575C08E</key>
+        <array>
+          <string>754</string>
+          <string>30</string>
+          <integer>7</integer>
+          <integer>51</integer>
+          <string>80</string>
+          <string>50</string>
+        </array>
+      </dict>
+      <key>GSDimensionPlugin.Dimensions</key>
+      <dict>
+        <key>3E7589AA-8194-470F-8E2F-13C1C581BE24</key>
+        <dict>
+          <key>HH</key>
+          <integer>91</integer>
+          <key>HV</key>
+          <integer>93</integer>
+          <key>OH</key>
+          <integer>91</integer>
+          <key>OV</key>
+          <integer>93</integer>
+          <key>arAlef</key>
+          <integer>86</integer>
+          <key>arBar</key>
+          <integer>92</integer>
+          <key>nV</key>
+          <integer>90</integer>
+          <key>oH</key>
+          <integer>88</integer>
+        </dict>
+        <key>BFFFD157-90D3-4B85-B99D-9A2F366F03CA</key>
+        <dict>
+          <key>HH</key>
+          <integer>215</integer>
+          <key>HV</key>
+          <integer>225</integer>
+          <key>nV</key>
+          <integer>220</integer>
+          <key>oH</key>
+          <integer>210</integer>
+        </dict>
+        <key>C4872ECA-A3A9-40AB-960A-1DB2202F16DE</key>
+        <dict>
+          <key>HH</key>
+          <integer>18</integer>
+          <key>HV</key>
+          <integer>19</integer>
+          <key>nV</key>
+          <integer>17</integer>
+          <key>oH</key>
+          <integer>16</integer>
+        </dict>
+      </dict>
+      <key>public.skipExportGlyphs</key>
+      <array>
+        <string>_part.shoulder</string>
+        <string>_part.stem</string>
+      </array>
+      <key>uniTestValue</key>
+      <string>def</string>
+    </dict>
+  </lib>
+</designspace>
