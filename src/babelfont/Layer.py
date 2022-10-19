@@ -150,4 +150,4 @@ class LayerPen(AbstractPointPen):
 
     def addComponent(self, baseGlyphName, transformation, identifier=None,
                      **kwargs):
-        self.target.shapes.append(Shape(ref=baseGlyphName, transformation=transformation))
+        self.target.shapes.append(Shape(ref=baseGlyphName, transform=transformation))
