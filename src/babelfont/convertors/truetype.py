@@ -120,12 +120,7 @@ class TrueType(BaseConvertor):
         layer = Layer(width=width, id=str(uuid.uuid1()) )
         layer._master = self.font.masters[0].id
         layer._font = self.font
-        for i in range(0, max(ttglyph.numberOfContours, 0)):
-            layer.shapes.append(self._load_contour(ttglyph, i))
-        if hasattr(ttglyph, "components"):
-            for c in ttglyph.components:
-                comp = self._load_component(c)
-                layer.shapes.append(comp)
+        ttglyph.draw(layer.getPen())
         return [layer]
 
 
