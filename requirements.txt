@@ -1,4 +1,0 @@
-defcon
-fontParts
-fontTools
-glyphsLib
