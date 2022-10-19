@@ -1,0 +1,79 @@
+{
+.appVersion = "3072";
+DisplayStrings = (
+""
+);
+customParameters = (
+{
+name = Axes;
+value = (
+{
+Name = Weight;
+Tag = wght;
+},
+{
+Name = Width;
+Tag = wdth;
+},
+{
+Name = "Optical size";
+Tag = opsz;
+},
+{
+Name = Italic;
+Tag = ital;
+}
+);
+}
+);
+date = "2021-06-15 13:42:44 +0000";
+familyName = "New Font";
+fontMaster = (
+{
+alignmentZones = (
+"{800, 16}",
+"{700, 16}",
+"{500, 16}",
+"{0, -16}",
+"{0, -16}",
+"{-200, -16}"
+);
+ascender = 800;
+capHeight = 700;
+customValue = 12;
+descender = -200;
+id = m01;
+xHeight = 500;
+},
+{
+ascender = 800;
+capHeight = 700;
+custom = "Regular Italic";
+customValue = 12;
+customValue1 = 1;
+descender = -200;
+id = "97574350-07F5-4AFD-A5E0-BCDCD27573CF";
+xHeight = 500;
+}
+);
+glyphs = (
+{
+glyphname = A;
+lastChange = "2021-06-17 14:55:02 +0000";
+layers = (
+{
+layerId = m01;
+width = 600;
+},
+{
+layerId = "97574350-07F5-4AFD-A5E0-BCDCD27573CF";
+width = 600;
+}
+);
+unicode = 0041;
+}
+);
+unitsPerEm = 1000;
+versionMajor = 1;
+versionMinor = 0;
+}
