@@ -8,7 +8,7 @@ plugins:
   - jekyll-feed
   - jemoji
   - jekyll-include-cache
-title: "Neutral Font Source Format"
+title: "Babelfont Format"
 defaults:
   # _posts
   - values:
