@@ -5,7 +5,7 @@ from babelfont.BaseObject import I18NDictionary
 from graphviz import Digraph
 import re
 
-tocfile = open("site/_data/navigation.yml", "w")
+tocfile = open("docs/_data/navigation.yml", "w")
 tocfile.write("default:\n")
 
 
@@ -22,7 +22,7 @@ def describe_dataclass(cls):
         return
 
     name = cls.__name__
-    f = open("site/%s.md" % name, "w")
+    f = open("docs/%s.md" % name, "w")
     tocfile.write("  - title: %s\n    url: %s.html\n" % (name, name))
     f.write("---\ntitle: %s\n---\n" % name)
 
@@ -90,7 +90,7 @@ describe_dataclass(Shape)
 describe_dataclass(Anchor)
 
 
-dot = Digraph(comment="Neutral Font Source Format", format="svg")
+dot = Digraph(comment="Babelfont Format", format="svg")
 dot.attr(rankdir="LR")
 dot.attr(overlap="false")
 donetypes = {}
@@ -151,10 +151,10 @@ add_type_node(Font)
 add_type_node(Glyph)
 dot.edge("Font:glyphs", "Glyph")
 output = re.sub(r"(?s)^.*<svg", "<svg", dot.pipe().decode("utf-8"))
-out = open("site/index.md", "w")
+out = open("docs/index.md", "w")
 out.write(
     """---
-title: Neutral Font Source Format
+title: Babelfont Format
 toc: false
 ---
 
