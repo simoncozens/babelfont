@@ -487,7 +487,8 @@ class GlyphsTwo(BaseConvertor):
             feacode = "feature %s { %s\n} %s;" % (tag, f["code"], tag)
             featurefile = featurefile + feacode
 
-        feaparser = FeaParser(featurefile)
+        glyphNames = {g.name for g in self.font.glyphs}
+        feaparser = FeaParser(featurefile, glyphNames=glyphNames)
         ast = feaparser.parser.ast
         for name, members in self.font.features.namedClasses.items():
             glyphclass = ast.GlyphClassDefinition(
