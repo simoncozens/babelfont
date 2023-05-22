@@ -328,6 +328,8 @@ class GlyphsTwo(BaseConvertor):
         return Anchor(name=ganchor["name"], x=float(m[1]), y=float(m[2]))
 
     def _load_instance(self, ginstance):
+        if ginstance.get("type") == "variable":
+            return
         if "axesValues" in ginstance:
             location = ginstance["axesValues"]
             instance_location = {k.tag: v for k, v in zip(self.font.axes, location)}
