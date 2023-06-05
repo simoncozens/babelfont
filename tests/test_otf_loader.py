@@ -31,3 +31,7 @@ def test_load():
     assert i_layer.shapes[0].is_component
     assert i_layer.shapes[0].pos == (0,0)
 
+
+def test_load_vf():
+    font = load("tests/data/Ysabeau[wght].ttf")
+    a_layer = font.default_master.get_glyph_layer("A")
