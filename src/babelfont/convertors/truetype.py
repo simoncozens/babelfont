@@ -75,8 +75,8 @@ class TrueType(BaseConvertor):
         m = Master(location={},name="Default", id=str(uuid.uuid1()) )
         # Metrics
         m.metrics = {
-            "xHeight": self.tt["OS/2"].sxHeight,
-            "capHeight": self.tt["OS/2"].sCapHeight,
+            "xHeight": self.tt["OS/2"].sxHeight if hasattr(self.tt["OS/2"], "sxHeight") else None,
+            "capHeight": self.tt["OS/2"].sCapHeight  if hasattr(self.tt["OS/2"], "capHeight") else None,
             "ascender": self.tt["hhea"].ascender,
             "descender": self.tt["hhea"].descender
         }
