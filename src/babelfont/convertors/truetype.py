@@ -17,6 +17,8 @@ from itertools import chain
 
 def _categorize_glyph(font,glyphname):
     if "GDEF" not in font: return None
+    if not font["GDEF"].table.GlyphClassDef:
+        return None
     classdefs = font["GDEF"].table.GlyphClassDef.classDefs
     if glyphname not in classdefs:
         return None
