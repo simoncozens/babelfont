@@ -11,6 +11,8 @@ from fontTools.ttLib import TTFont
 from fontTools.ttLib.tables._g_l_y_f import GlyphCoordinates
 from fontTools.varLib.iup import iup_delta_optimize
 from fontTools.misc.fixedTools import otRound
+from fontFeatures.ttLib import unparse
+from fontFeatures import Attachment
 import uuid
 from itertools import chain
 
@@ -43,6 +45,7 @@ class TrueType(BaseConvertor):
         self._load_masters()
         self._load_names()
         self._load_glyphs()
+        self._load_features()
         return self.font
 
     def _load_fvar(self):
@@ -334,6 +337,22 @@ class TrueType(BaseConvertor):
                 var = TupleVariation(sup, delta_opt)
             gvar_entry.append(var)
         return gvar_entry
+
+    def _load_features(self):
+        self.font.features = unparse(self.tt)
+        # Load anchors
+        for routine in self.font.features.routines:
+            for rule in routine.rules:
+                if isinstance(rule, Attachment):
+                    for glyphname, pos in rule.bases.items():
+                        self._add_anchor(glyphname, pos, rule.base_name)
+                    for glyphname, pos in rule.marks.items():
+                        self._add_anchor(glyphname, pos, rule.mark_name)
+
+    def _add_anchor(self, glyphname, pos, name):
+        # Would be nice if this was variable.
+        layer = self.font.default_master.get_glyph_layer(glyphname)
+        layer.anchors.append(Anchor(name=name, x=pos[0], y=pos[1]))
 
     # import numpy as np
     # def calculate_a_gvar(self, f, model, g, default_width):
