@@ -1,6 +1,7 @@
 from babelfont import *
 from babelfont.convertors import BaseConvertor
 from fontTools.designspaceLib import DesignSpaceDocument
+from fontTools import designspaceLib
 import ufoLib2
 import uuid
 import logging
@@ -102,7 +103,8 @@ class Designspace(BaseConvertor):
             ):
                 log.warn(
                     "Inconsistent definition of glyph class @%s found in %s"
-                 % (name, sourcename))
+                    % (name, sourcename)
+                )
             self.font.features.namedClasses[name] = value
 
     def _load_guide(self, ufo_guide):
@@ -132,9 +134,13 @@ class Designspace(BaseConvertor):
         return g
 
     def _load_layer(self, source, ufo_layer, glyphname):
+        if ufo_layer.name == "public.default":
+            layer_id = source._babelfont_master.id
+        else:
+            layer_id = ufo_layer.name
         ufo_glyph = ufo_layer[glyphname]
         width = ufo_glyph.width
-        l = Layer(width=width, id=uuid.uuid1())
+        l = Layer(width=width, id=layer_id)
         l._master = source._babelfont_master.id
         l._font = self.font
         for contour in ufo_glyph:
@@ -201,3 +207,71 @@ class Designspace(BaseConvertor):
             their_value = getattr(firstfontinfo, theirs)
             if their_value:
                 getattr(self.font.names, ours).set_default(their_value)
+
+    def _save(self):
+        font = self.font
+        self.ds = DesignSpaceDocument()
+        self.save_axes()
+        self.save_sources()
+        # self.save_instances()
+        self.ds.write(self.filename)
+
+    def save_axes(self):
+        axes = self.font.axes
+        if not axes:
+            axes = [
+                Axis(
+                    name=I18NDictionary.with_default("Weight"),
+                    tag="wght",
+                    min=100,
+                    max=100,
+                    default=100,
+                )
+            ]
+        for axis in axes:
+            axisDescriptor = designspaceLib.AxisDescriptor()
+            axisDescriptor.name = axis.name.get_default()
+            other_names = axis.name.as_fonttools_dict
+            if other_names:
+                axis.labelNames = other_names
+            axisDescriptor.tag = axis.tag
+            axisDescriptor.minimum = axis.min
+            axisDescriptor.maximum = axis.max
+            axisDescriptor.default = axis.default
+            axisDescriptor.map = axis.map
+            self.ds.addAxis(axisDescriptor)
+        import IPython; IPython.embed()
+
+    def save_sources(self):
+        font = self.font
+        for master in font.masters:
+            sourceDescriptor = designspaceLib.SourceDescriptor()
+            sourceDescriptor.name = (
+                font.names.familyName.get_default() + " " + master.name.get_default()
+            )
+            sourceDescriptor.filename = (
+                font.names.familyName.get_default().replace(" ", "")
+                + "-"
+                + master.name.get_default().replace(" ", "")
+                + ".ufo"
+            )
+            sourceDescriptor.styleName = master.name.get_default()
+            sourceDescriptor.familyName = font.names.familyName.get_default()
+            if master == self.font.default_master:
+                sourceDescriptor.copyLib = True
+                sourceDescriptor.copyGroups = True
+                sourceDescriptor.copyFeatures = True
+                sourceDescriptor.copyInfo = True
+            # sourceDescriptor.filename = master.filename
+            # sourceDescriptor.path = master.filename
+            axis_tags_to_names = {
+                axis.tag: axis.name.get_default() for axis in self.font.axes
+            }
+            if master.location:
+                sourceDescriptor.location = {
+                    axis_tags_to_names[ax]: value
+                    for ax, value in master.location.items()
+                }
+            else:
+                sourceDescriptor.location = {"Weight": 100}
+            self.ds.addSource(sourceDescriptor)

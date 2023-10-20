@@ -81,11 +81,10 @@ class Babelfont(BaseConvertor):
         self.font.date = datetime.strptime(self.font.date, "%Y-%m-%d %H:%M:%S")
 
     def _load_features(self):
-        path = os.path.join(self.filename, "features.xml")
+        path = os.path.join(self.filename, "features.fea")
         if os.path.isfile(path):
             f = open(path, "r")
-            xml = etree.parse(f)
-            self.font.features = FontFeatures.fromXML(xml.getroot())
+            self.font.features = f.read()
 
     def _save(self):
         path = Path(self.filename)
@@ -97,8 +96,9 @@ class Babelfont(BaseConvertor):
         with open(path / "names.json", "wb") as f:
             self.font._write_value(f, "glyphs", self.font.names)
 
-        with open(path / "features.xml", "wb") as f:
-            f.write(etree.tostring(self.font.features.toXML(), pretty_print=True))
+        with open(path / "features.fea", "w") as f:
+            if self.font.features:
+                f.write(self.font.features)
 
         with open(path / "glyphs.json", "wb") as f:
             for g in self.font.glyphs:

@@ -1,3 +1,5 @@
+from typing import Optional, List
+
 from dataclasses import dataclass, field
 from .BaseObject import BaseObject
 from .Layer import Layer
@@ -37,10 +39,10 @@ class GlyphList(dict):
 @dataclass
 class _GlyphFields:
     name: str
-    production_name: str = None
+    production_name: Optional[str] = None
     category: str = "base"
-    codepoints: [int] = field(default_factory=list)
-    layers: [Layer] = field(default_factory=list, repr=False, metadata={"skip_serialize": True})
+    codepoints: List[int] = field(default_factory=list)
+    layers: List[Layer] = field(default_factory=list, repr=False, metadata={"skip_serialize": True})
     exported: bool = field(default=True, metadata={"serialize_if_false": True})
     direction: str = field(default="LTR", repr=False)
 
