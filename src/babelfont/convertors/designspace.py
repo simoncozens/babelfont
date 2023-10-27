@@ -240,7 +240,6 @@ class Designspace(BaseConvertor):
             axisDescriptor.default = axis.default
             axisDescriptor.map = axis.map
             self.ds.addAxis(axisDescriptor)
-        import IPython; IPython.embed()
 
     def save_sources(self):
         font = self.font
