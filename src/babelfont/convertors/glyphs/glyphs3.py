@@ -373,8 +373,8 @@ class GlyphsThree(BaseConvertor):
                     ax.map = []
                 ax.map.append(
                     (
-                        int(loc["Location"]),
                         instance.location[ax.tag],
+                        int(loc["Location"]),
                     )
                 )
 
