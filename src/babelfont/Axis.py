@@ -107,11 +107,11 @@ class Axis(BaseObject, _AxisFields):
 
         if not self.map:
             return v
-        return piecewiseLinearMap(v, {k: v for k, v in self.map.items()})
+        return piecewiseLinearMap(v, {k: v for k, v in self.map})
 
     def map_backward(self, v):
         from fontTools.varLib.models import piecewiseLinearMap
 
         if not self.map:
             return v
-        return piecewiseLinearMap(v, {v: k for k, v in self.map.items()})
+        return piecewiseLinearMap(v, {v: k for k, v in self.map})
