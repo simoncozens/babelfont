@@ -8,11 +8,10 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = ">=3.8"
 orjson = "^3.5.1"
-fonttools = ">=4.21.1"
+fonttools = ">=4.40.0"
 ufoLib2 = ">=0.11.1"
 openstep-plist = ">=0.2.2"
 glyphsLib = ">=5.3.2"
-cu2qu = "^1.6.7"
 fontfeatures = "^1.0.6"
 
 [tool.poetry.dev-dependencies]
