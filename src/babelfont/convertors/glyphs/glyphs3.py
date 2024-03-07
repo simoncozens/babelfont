@@ -1,42 +1,42 @@
-from collections import OrderedDict, defaultdict
 import datetime
 import math
 import re
 import uuid
+from collections import OrderedDict, defaultdict
 from itertools import tee
 
-from fontFeatures.feaLib import ast
-from babelfont.BaseObject import OTValue
-from babelfont.convertors import BaseConvertor
 import openstep_plist
+from fontFeatures.feaLib import ast
 
-from babelfont.convertors.glyphs.utils import (
-    _g,
-    _stash,
-    _stashed_cp,
-    _custom_parameter,
-    _moveformatspecific,
-    _copyattrs,
-    _glyphs_metrics_to_ours,
-    _our_metrics_to_glyphs,
-    _reverse_rename_metrics,
-    _metrics_name_to_dict,
-    _metrics_dict_to_name,
-    opentype_custom_parameters,
-    glyphs_i18ndict,
-    to_bitfield,
-)
 from babelfont import (
     Anchor,
     Axis,
-    Master,
-    Instance,
-    Guide,
     Glyph,
+    Guide,
+    Instance,
     Layer,
+    Master,
     Node,
     Shape,
     Transform,
+)
+from babelfont.BaseObject import OTValue
+from babelfont.convertors import BaseConvertor
+from babelfont.convertors.glyphs.utils import (
+    _copyattrs,
+    _custom_parameter,
+    _g,
+    _glyphs_metrics_to_ours,
+    _metrics_dict_to_name,
+    _metrics_name_to_dict,
+    _moveformatspecific,
+    _our_metrics_to_glyphs,
+    _reverse_rename_metrics,
+    _stash,
+    _stashed_cp,
+    glyphs_i18ndict,
+    opentype_custom_parameters,
+    to_bitfield,
 )
 
 
@@ -308,8 +308,8 @@ class GlyphsThree(BaseConvertor):
             if right_group:
                 kerngroups[f"MMK_R_{right_group}"].append(g.name)
 
-        # for k, v in kerngroups.items():
-        #     self.font.features.namedClasses[k] = tuple(v)
+        for k, v in kerngroups.items():
+            self.font.features.namedClasses[k] = tuple(v)
 
     def interpret_linked_kerning(self):
         name_to_master = {m.name.get_default(): m for m in self.font.masters}
@@ -495,7 +495,7 @@ class GlyphsThree(BaseConvertor):
             # if glyph.codepoints[0] < 256:
             gglyph["unicode"] = glyph.codepoints[0]
             # else:
-                # gglyph["unicode"] = "%04x" % glyph.codepoints[0]
+            # gglyph["unicode"] = "%04x" % glyph.codepoints[0]
         elif len(glyph.codepoints) > 1:
             gglyph["unicode"] = glyph.codepoints
         gglyph["layers"] = [self.save_layer(l) for l in glyph.layers]
@@ -545,24 +545,39 @@ class GlyphsThree(BaseConvertor):
 
         return ginstance
 
-
-    def save_metadata(self,out):
+    def save_metadata(self, out):
         if self.font.note:
             out["note"] = self.font.note
         if self.font.version:
             out["versionMajor"], out["versionMinor"] = self.font.version
-        props = out["properties"] = []
-        if self.font.names.copyright:
-            props.append( {"key": "copyrights",  "values": glyphs_i18ndict(self.font.names.copyright) })
-        if self.font.names.designer:
-            props.append( {"key": "designer",  "values": glyphs_i18ndict(self.font.names.designer) })
-        if self.font.names.designerURL:
-            props.append( {"key": "designerURL",  "values": glyphs_i18ndict(self.font.names.designerURL) })
+        if not "properties" in out:
+            out["properties"] = []
+        props = out["properties"]
+        alreadydone = {p["key"] for p in props}
+        if self.font.names.copyright and "copyrights" not in alreadydone:
+            props.append(
+                {
+                    "key": "copyrights",
+                    "values": glyphs_i18ndict(self.font.names.copyright),
+                }
+            )
+        if self.font.names.designer and "designer" not in alreadydone:
+            props.append(
+                {"key": "designer", "values": glyphs_i18ndict(self.font.names.designer)}
+            )
+        if self.font.names.designerURL and "designerURL" not in alreadydone:
+            props.append(
+                {
+                    "key": "designerURL",
+                    "values": glyphs_i18ndict(self.font.names.designerURL),
+                }
+            )
         if not props:
             del out["properties"]
 
     def save_custom_parameters(self, out):
-        out["customParameters"] = []
+        if not "customParameters" in out:
+            out["customParameters"] = []
         for otvalue in self.font.customOpenTypeValues:
             table, field, value = otvalue.table, otvalue.field, otvalue.value
             if table == "OS/2" and field == "fsType":
