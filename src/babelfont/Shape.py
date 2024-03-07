@@ -54,7 +54,6 @@ class Shape(BaseObject, _ShapeFields):
         assert self.is_component
         if not self.transform:
             return (1,1)
-        print(self.transform)
         scaleX = math.sqrt(self.transform[0] ** 2 + self.transform[2] ** 2)
         scaleY = math.sqrt(self.transform[1] ** 2 + self.transform[3] ** 2)
         return (scaleX, scaleY)
