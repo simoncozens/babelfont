@@ -64,6 +64,7 @@ class FontForgeSFDIR(BaseConvertor):
         self.current_glyph = None
         # I'm going to assume a single master font
         font.masters = [Master(name="Regular", id=str(uuid.uuid4()), font=font)]
+        font.instances = [Instance(name="Regular", styleName="Regular", location={})]
 
         self.info = open(Path(self.filename) / "font.props").read().splitlines()
         self._load_line("info")
