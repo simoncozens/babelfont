@@ -10,7 +10,12 @@ class IncompatibleMastersError(ValueError):
 
 Color = namedtuple("Color", "r,g,b,a", defaults=[0, 0, 0, 0])
 Position = namedtuple("Position", "x,y,angle", defaults=[0, 0, 0])
-OTValue = namedtuple("OTValue", "table,field,value")
+
+@dataclass
+class OTValue:
+    table: str
+    field: str
+    value: any
 
 class I18NDictionary(dict):
     @classmethod
