@@ -10,7 +10,7 @@ from .Names import Names
 import functools
 from fontTools.varLib.models import VariationModel
 from fontTools.feaLib.variableScalar import VariableScalar
-import fontFeatures
+from fontFeatures import FontFeatures
 import logging
 
 
@@ -94,8 +94,8 @@ to the current date/time*.""",
             "description": "Any values to be placed in OpenType tables on export to override defaults"
         },
     )
-    features: Optional[str] = field(
-        default=None,
+    features: FontFeatures = field(
+        default_factory=FontFeatures,
         metadata={
             "description": "A representation of the font's OpenType features",
         },
