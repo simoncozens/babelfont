@@ -23,6 +23,8 @@ from babelfont.convertors.glyphs.utils import (
     _metrics_name_to_dict,
     _metrics_dict_to_name,
     opentype_custom_parameters,
+    glyphs_i18ndict,
+    to_bitfield,
 )
 from babelfont import (
     Anchor,
@@ -442,6 +444,9 @@ class GlyphsThree(BaseConvertor):
         if kerntables:
             out["kerningLTR"] = kerntables
 
+        self.save_metadata(out)
+        self.save_custom_parameters(out)
+
         with open(self.filename, "wb") as file:
             openstep_plist.dump(out, file, indent=0, single_line_tuples=True)
             file.write(b"\n")
@@ -459,7 +464,8 @@ class GlyphsThree(BaseConvertor):
 
     def save_master(self, master):
         gmaster = _moveformatspecific(master)
-        gmaster["axesValues"] = list(master.location.values())
+        if master.location:
+            gmaster["axesValues"] = list(master.location.values())
         gmaster["metricValues"] = []
         for k in self.glyphs["metrics"]:
             metric = {}
@@ -486,10 +492,10 @@ class GlyphsThree(BaseConvertor):
         gglyph = _moveformatspecific(glyph)
         gglyph["glyphname"] = glyph.name
         if len(glyph.codepoints) == 1:
-            if glyph.codepoints[0] < 256:
-                gglyph["unicode"] = glyph.codepoints[0]
-            else:
-                gglyph["unicode"] = "%04x" % glyph.codepoints[0]
+            # if glyph.codepoints[0] < 256:
+            gglyph["unicode"] = glyph.codepoints[0]
+            # else:
+                # gglyph["unicode"] = "%04x" % glyph.codepoints[0]
         elif len(glyph.codepoints) > 1:
             gglyph["unicode"] = glyph.codepoints
         gglyph["layers"] = [self.save_layer(l) for l in glyph.layers]
@@ -538,3 +544,39 @@ class GlyphsThree(BaseConvertor):
         ginstance["axesValues"] = [instance.location[ax.tag] for ax in self.font.axes]
 
         return ginstance
+
+
+    def save_metadata(self,out):
+        if self.font.note:
+            out["note"] = self.font.note
+        if self.font.version:
+            out["versionMajor"], out["versionMinor"] = self.font.version
+        props = out["properties"] = []
+        if self.font.names.copyright:
+            props.append( {"key": "copyrights",  "values": glyphs_i18ndict(self.font.names.copyright) })
+        if self.font.names.designer:
+            props.append( {"key": "designer",  "values": glyphs_i18ndict(self.font.names.designer) })
+        if self.font.names.designerURL:
+            props.append( {"key": "designerURL",  "values": glyphs_i18ndict(self.font.names.designerURL) })
+        if not props:
+            del out["properties"]
+
+    def save_custom_parameters(self, out):
+        out["customParameters"] = []
+        for otvalue in self.font.customOpenTypeValues:
+            table, field, value = otvalue.table, otvalue.field, otvalue.value
+            if table == "OS/2" and field == "fsType":
+                out["customParameters"].append(
+                    {"name": "fsType", "value": to_bitfield(int(value))}
+                )
+            if table == "OS/2" and field == "fsSelection":
+                if value & 0x7:
+                    out["customParameters"].append(
+                        {"name": "Use Typo Metrics", "value": 1}
+                    )
+                if value & 0x8:
+                    out["customParameters"].append(
+                        {"name": "Has WWS Names", "value": 1}
+                    )
+        if not out["customParameters"]:
+            del out["customParameters"]

@@ -93,3 +93,13 @@ def _metrics_dict_to_name(k):
     if "filter" in k:
         name += " [filter " + k.get("filter") + "]"
     return name
+
+def glyphs_i18ndict(i):
+    return [
+        {"language": k, "value": v}
+        for k, v in i.items()
+    ]
+
+def to_bitfield(flags):
+    # Convert an integer flag to an array of bit indices
+    return [i for i in range(8) if flags & (1 << i)]
