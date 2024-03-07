@@ -43,10 +43,10 @@ class BaseConvertor:
         return self._save()
 
     def _load(self):
-        raise NotImplemented
+        raise NotImplementedError
 
     def _save(self):
-        raise NotImplemented
+        raise NotImplementedError
 
 class Convert:
     convertors = []
