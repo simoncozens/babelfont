@@ -1,4 +1,41 @@
-class GlyphsTwo(BaseConvertor):
+import datetime
+
+import openstep_plist
+from fontFeatures.feaLib import FeaParser
+
+from babelfont import (
+    Anchor,
+    Axis,
+    Glyph,
+    Guide,
+    Instance,
+    Layer,
+    Master,
+    Node,
+    Shape,
+    Transform,
+)
+from babelfont.BaseObject import OTValue
+from babelfont.convertors import BaseConvertor
+from babelfont.convertors.glyphs.utils import (
+    _copyattrs,
+    _custom_parameter,
+    _g,
+    _glyphs_metrics_to_ours,
+    _metrics_dict_to_name,
+    _metrics_name_to_dict,
+    _moveformatspecific,
+    _our_metrics_to_glyphs,
+    _reverse_rename_metrics,
+    _stash,
+    _stashed_cp,
+    glyphs_i18ndict,
+    opentype_custom_parameters,
+    to_bitfield,
+)
+
+
+class Glyphs2(BaseConvertor):
     suffix = ".glyphs"
 
     @classmethod
@@ -12,8 +49,8 @@ class GlyphsTwo(BaseConvertor):
     def can_save(cls, convertor, **kwargs):
         if not super().can_save(convertor, **kwargs):
             return False
-        if "format" in kwargs:
-            return kwargs["format"] == 2
+        if "format" not in kwargs or kwargs["format"] != 2:
+            return False
         return True
 
     @classmethod
@@ -113,10 +150,16 @@ class GlyphsTwo(BaseConvertor):
         if cname:
             return cname
         # Remove None and empty string
-        names = list(filter(None, [
-            gmaster.get("width", "Regular"),
-            gmaster.get("weight", "Regular"),
-            gmaster.get("custom", "")]))
+        names = list(
+            filter(
+                None,
+                [
+                    gmaster.get("width", "Regular"),
+                    gmaster.get("weight", "Regular"),
+                    gmaster.get("custom", ""),
+                ],
+            )
+        )
 
         # Remove redundant occurences of 'Regular'
         while len(names) > 1 and "Regular" in names:
@@ -164,7 +207,9 @@ class GlyphsTwo(BaseConvertor):
         if self._custom_parameter(gmaster, "Link Metrics With First Master"):
             kernmaster = self.glyphs["fontMaster"][0]["id"]
         elif self._custom_parameter(gmaster, "Link Metrics With Master"):
-            kernmaster_name = self._custom_parameter(gmaster, "Link Metrics With Master")
+            kernmaster_name = self._custom_parameter(
+                gmaster, "Link Metrics With Master"
+            )
             for m in self.glyphs["fontMaster"]:
                 name = self._get_master_name(m)
                 if name == kernmaster_name:
@@ -174,14 +219,7 @@ class GlyphsTwo(BaseConvertor):
         kerntable = self.glyphs.get("kerning", {}).get(kernmaster, {})
         master.kerning = self._load_kerning(kerntable)
 
-        _maybesetformatspecific(master, gmaster, "customParameters")
-        _maybesetformatspecific(master, gmaster, "iconName")
-        _maybesetformatspecific(master, gmaster, "id")
-        _maybesetformatspecific(master, gmaster, "numberValues")
-        _maybesetformatspecific(master, gmaster, "stemValues")
-        _maybesetformatspecific(master, gmaster, "properties")
-        _maybesetformatspecific(master, gmaster, "userData")
-        _maybesetformatspecific(master, gmaster, "visible")
+        _stash(master, gmaster)
         return master
 
     def _get_codepoint(self, gglyph):
@@ -206,35 +244,13 @@ class GlyphsTwo(BaseConvertor):
         exported = True
         if "export" in gglyph and gglyph["export"] == 0:
             exported = False
-        g = Glyph(
-            name=name,
-            codepoints=cp or [],
-            category=category,
-            exported=exported
-        )
-        g.production_name = gglyph.get("production", get_glyph(name).production_name)
-        for entry in [
-            "case",
-            "category",
-            "subCategory",
-            "color",
-            "direction",
-            "locked",
-            "partsSettings",
-            "script",
-            "tags",
-            "userData",
-            "lastChange",
-            "metricLeft",
-            "metricRight",
-            "metricTop",
-            "metricBottom",
-        ]:
-            _maybesetformatspecific(g, gglyph, entry)
+        g = Glyph(name=name, codepoints=cp or [], category=category, exported=exported)
+        g.production_name = gglyph.pop("production", None)
 
-        for layer in gglyph.get("layers"):
+        for layer in gglyph.pop("layers"):
             g.layers.extend(self._load_layer(layer))
 
+        _stash(g, gglyph)
         return g
 
     def _load_layer(self, layer, width=None):
@@ -260,16 +276,6 @@ class GlyphsTwo(BaseConvertor):
         for anchor in layer.get("anchors", []):
             l.anchors.append(self._load_anchor(anchor))
 
-        _maybesetformatspecific(l, layer, "hints")
-        _maybesetformatspecific(l, layer, "partSelection")
-        _maybesetformatspecific(l, layer, "visible")
-        _maybesetformatspecific(l, layer, "attr")
-        _maybesetformatspecific(l, layer, "vertOrigin")
-        _maybesetformatspecific(l, layer, "vertWidth")
-        _maybesetformatspecific(l, layer, "metricTop")
-        _maybesetformatspecific(l, layer, "metricBottom")
-        _maybesetformatspecific(l, layer, "metricLeft")
-        _maybesetformatspecific(l, layer, "metricRight")
         returns = [l]
         if "background" in layer:
             (background,) = self._load_layer(layer["background"], width=l.width)
@@ -282,6 +288,8 @@ class GlyphsTwo(BaseConvertor):
         # TODO backgroundImage, metricTop/Bottom/etc, vertOrigin, vertWidth.
         for r in returns:
             assert r.valid
+        _stash(l, layer)
+
         return returns
 
     def _load_guide(self, gguide):
@@ -430,19 +438,10 @@ class GlyphsTwo(BaseConvertor):
             )
 
         self.font.note = self.glyphs.get("note")
-        self.font.date = datetime.strptime(
+        self.font.date = datetime.datetime.strptime(
             self.glyphs.get("date"), "%Y-%m-%d %H:%M:%S +0000"
         )
-        _maybesetformatspecific(self.font, self.glyphs, ".appVersion")
-        _maybesetformatspecific(self.font, self.glyphs, ".formatVersion")
-        _maybesetformatspecific(self.font, self.glyphs, "DisplayStrings")
-        _maybesetformatspecific(self.font, self.glyphs, "customParameters")
-        _maybesetformatspecific(self.font, self.glyphs, "settings")
-        _maybesetformatspecific(self.font, self.glyphs, "numbers")
-        _maybesetformatspecific(self.font, self.glyphs, "stems")
-        _maybesetformatspecific(self.font, self.glyphs, "userData")
-        _maybesetformatspecific(self.font, self.glyphs, "metrics")
-        _maybesetformatspecific(self.font, self.glyphs, "properties")
+        _stash(self.font, self.glyphs)
 
     def _load_features(self):
         for c in self.glyphs.get("classes", []):
@@ -466,4 +465,3 @@ class GlyphsTwo(BaseConvertor):
             feaparser.parser.glyphclasses_.define(name, glyphclass)
         feaparser.parse()
         self.font.features += feaparser.ff
-
