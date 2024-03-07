@@ -185,12 +185,12 @@ class FontForgeSFDIR(BaseConvertor):
 
     def _handle_CreationTime(self, value):
         self.font.customOpenTypeValues.append(
-            OTValue("head", "created", datetime.datetime.fromtimestamp(int(value)))
+            OTValue("head", "created", int(value))
         )
 
     def _handle_ModificationTime(self, value):
         self.font.customOpenTypeValues.append(
-            OTValue("head", "modified", datetime.datetime.fromtimestamp(int(value)))
+            OTValue("head", "modified", int(value))
         )
 
     def _handle_ShortTable(self, value):
