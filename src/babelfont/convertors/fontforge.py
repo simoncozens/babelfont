@@ -222,7 +222,7 @@ class FontForgeSFDIR(BaseConvertor):
             Layer(
                 name="default",
                 id=self.font.masters[0].id,
-                _master=self.font.masters[0].name.get_default(),
+                _master=self.font.masters[0].id,
                 _font=self.font,
             )
         ]
