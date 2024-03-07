@@ -143,6 +143,8 @@ class LayerPen(AbstractPointPen):
 
     def addPoint(self, pt, segmentType=None, smooth=False, name=None,
                  identifier=None, **kwargs):
+        if segmentType == "move":
+            return
         ourtype = Node._from_pen_type[segmentType]
         if smooth:
             ourtype = ourtype + "s"
