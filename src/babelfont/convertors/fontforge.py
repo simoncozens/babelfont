@@ -1,6 +1,3 @@
-from collections import OrderedDict, defaultdict
-import datetime
-import math
 import re
 import uuid
 import logging
@@ -10,14 +7,10 @@ from babelfont.BaseObject import OTValue
 from babelfont.convertors import BaseConvertor
 
 from babelfont import (
-    Anchor,
-    Axis,
     Master,
     Instance,
-    Guide,
     Glyph,
     Layer,
-    Node,
     Shape,
     Transform,
 )
@@ -50,9 +43,7 @@ class FontForgeSFDIR(BaseConvertor):
         "DisplaySize",
         "Validated",
         "Flags",
-        "VWidth",
         "Lookup",
-        "Substitution2",  # Urgh
     ]
 
     @classmethod
@@ -112,8 +103,8 @@ class FontForgeSFDIR(BaseConvertor):
                 continue
             if hasattr(self, "_handle_" + key):
                 getattr(self, "_handle_" + key)(value)
-            # else:
-            #     log.warn("Unknown info key %s", key)
+            else:
+                log.warn("Unknown info key %s", key)
 
     def _handle_FamilyName(self, value):
         self.font.names.familyName.set_default(value)
@@ -152,6 +143,45 @@ class FontForgeSFDIR(BaseConvertor):
             OTValue("post", "underlineThickness", int(value))
         )
 
+    def _handle_OS2TypoAscent(self, value):
+        self.font.customOpenTypeValues.append(
+            OTValue("OS/2", "sTypoAscender", int(value))
+        )
+
+    def _handle_OS2TypoDescent(self, value):
+        self.font.customOpenTypeValues.append(
+            OTValue("OS/2", "sTypoDescender", int(value))
+        )
+
+    def _handle_OS2TypoLineGap(self, value):
+        self.font.customOpenTypeValues.append(
+            OTValue("OS/2", "sTypoLineGap", int(value))
+        )
+
+    def _handle_OS2WinAscent(self, value):
+        self.font.customOpenTypeValues.append(
+            OTValue("OS/2", "usWinAscent", int(value))
+        )
+
+    def _handle_OS2WinDescent(self, value):
+        self.font.customOpenTypeValues.append(
+            OTValue("OS/2", "usWinDescent", int(value))
+        )
+
+    def _handle_OS2Vendor(self, value):
+        self.font.customOpenTypeValues.append(OTValue("OS/2", "achVendID", value))
+
+    def _handle_hheaAscent(self, value):
+        self.font.customOpenTypeValues.append(OTValue("hhea", "ascent", int(value)))
+
+    def _handle_hheaDescent(self, value):
+        self.font.customOpenTypeValues.append(OTValue("hhea", "descent", int(value)))
+
+    def _handle_OS2TypoLinegap(self, value):
+        self.font.customOpenTypeValues.append(
+            OTValue("OS/2", "sTypoLineGap", int(value))
+        )
+
     def _handle_Ascent(self, value):
         self.font.masters[0].metrics["ascender"] = int(value)
 
@@ -185,14 +215,10 @@ class FontForgeSFDIR(BaseConvertor):
         self.font.customOpenTypeValues.append(OTValue("OS/2", "fsSelection", 7))
 
     def _handle_CreationTime(self, value):
-        self.font.customOpenTypeValues.append(
-            OTValue("head", "created", int(value))
-        )
+        self.font.customOpenTypeValues.append(OTValue("head", "created", int(value)))
 
     def _handle_ModificationTime(self, value):
-        self.font.customOpenTypeValues.append(
-            OTValue("head", "modified", int(value))
-        )
+        self.font.customOpenTypeValues.append(OTValue("head", "modified", int(value)))
 
     def _handle_ShortTable(self, value):
         # Ignore short table for now
@@ -237,6 +263,9 @@ class FontForgeSFDIR(BaseConvertor):
 
     def _handle_Width(self, value):
         self.current_glyph.layers[0].width = int(value)
+
+    def _handle_VWidth(self, value):
+        self.current_glyph.layers[0].height = int(value)
 
     def _handle_GlyphClass(self, value):
         pass
