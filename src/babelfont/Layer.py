@@ -1,7 +1,11 @@
 from dataclasses import dataclass, field
 from functools import cached_property
 
-from fontTools.ufoLib.pointPen import PointToSegmentPen, SegmentToPointPen, AbstractPointPen
+from fontTools.ufoLib.pointPen import (
+    PointToSegmentPen,
+    SegmentToPointPen,
+    AbstractPointPen,
+)
 from fontTools.pens.boundsPen import BoundsPen
 from fontTools.pens.recordingPen import DecomposingRecordingPen
 
@@ -19,15 +23,17 @@ class _LayerFields:
     height: int = 0
     name: str = None
     _master: str = None
-    id: str = field(default_factory = lambda: str(uuid.uuid1()))
-    guides: [Guide] = field(default_factory = list, repr=False)
-    shapes: [Shape] = field(default_factory=list, repr=False, metadata={"separate_items": True})
-    anchors: [Anchor] = field(default_factory = list, repr=False)
+    id: str = field(default_factory=lambda: str(uuid.uuid1()))
+    guides: [Guide] = field(default_factory=list, repr=False)
+    shapes: [Shape] = field(
+        default_factory=list, repr=False, metadata={"separate_items": True}
+    )
+    anchors: [Anchor] = field(default_factory=list, repr=False)
     color: Color = None
     layerIndex: int = 0
     # hints: [Hint]
-    _background: str = field(default=None,repr=False)
-    isBackground: bool = field(default=False,repr=False)
+    _background: str = field(default=None, repr=False)
+    isBackground: bool = field(default=False, repr=False)
     location: [float] = None
     _font: object = field(
         default=None, repr=False, metadata={"python_only": True}
@@ -85,7 +91,7 @@ class Layer(BaseObject, _LayerFields):
 
     @property
     def anchors_dict(self):
-        return { a.name: a for a in self.anchors }
+        return {a.name: a for a in self.anchors}
 
     # Pen protocol support...
 
@@ -142,8 +148,9 @@ class LayerPen(AbstractPointPen):
         """End the current sub path."""
         self.target.shapes.append(Shape(nodes=self.curPath))
 
-    def addPoint(self, pt, segmentType=None, smooth=False, name=None,
-                 identifier=None, **kwargs):
+    def addPoint(
+        self, pt, segmentType=None, smooth=False, name=None, identifier=None, **kwargs
+    ):
         if segmentType == "move":
             return
         ourtype = Node._from_pen_type[segmentType]
@@ -151,6 +158,5 @@ class LayerPen(AbstractPointPen):
             ourtype = ourtype + "s"
         self.curPath.append(Node(pt[0], pt[1], ourtype))
 
-    def addComponent(self, baseGlyphName, transformation, identifier=None,
-                     **kwargs):
+    def addComponent(self, baseGlyphName, transformation, identifier=None, **kwargs):
         self.target.shapes.append(Shape(ref=baseGlyphName, transform=transformation))

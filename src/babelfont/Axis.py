@@ -63,7 +63,12 @@ class Axis(BaseObject, _AxisFields):
 
     def normalize_value(self, value):
         return normalizeValue(
-            value, (self.map_forward(self.min), self.map_forward(self.default), self.map_forward(self.max))
+            value,
+            (
+                self.map_forward(self.min),
+                self.map_forward(self.default),
+                self.map_forward(self.max),
+            ),
         )
 
     def denormalize_value(self, value):

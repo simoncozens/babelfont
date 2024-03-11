@@ -32,7 +32,6 @@ CORE_METRICS = [
     "hheaCaretSlopeRise",
     "hheaCaretSlopeRun",
     "hheaCaretOffset",
-    
 ]
 
 
@@ -70,7 +69,7 @@ compatible between clients."""
             % (",".join(CORE_METRICS))
         },
     )
-    kerning: dict = field( # I think I want this to be UFO-style (l,r) -> value
+    kerning: dict = field(  # I think I want this to be UFO-style (l,r) -> value
         default_factory=dict,
         repr=False,
         metadata={
@@ -78,7 +77,7 @@ compatible between clients."""
             "description": "I'll be honest, I haven't worked out how this is meant to work.",
         },
     )
-    font: object = field(
+    font: "Font" = field(
         default=None,
         repr=False,
         metadata={
@@ -128,7 +127,10 @@ class Master(BaseObject, _MasterFields):
 
     @property
     def valid(self):
-        if not self.font: return False
-        if self.location and list(self.location.keys()) != [n.tag for n in self.font.axes]:
+        if not self.font:
+            return False
+        if self.location and list(self.location.keys()) != [
+            n.tag for n in self.font.axes
+        ]:
             return False
         return True

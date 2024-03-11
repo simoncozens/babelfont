@@ -1,6 +1,5 @@
 from dataclasses import dataclass, fields, field
 import orjson
-from io import StringIO
 from collections import namedtuple
 import datetime
 
@@ -8,14 +7,17 @@ import datetime
 class IncompatibleMastersError(ValueError):
     pass
 
+
 Color = namedtuple("Color", "r,g,b,a", defaults=[0, 0, 0, 0])
 Position = namedtuple("Position", "x,y,angle", defaults=[0, 0, 0])
+
 
 @dataclass
 class OTValue:
     table: str
     field: str
     value: any
+
 
 class I18NDictionary(dict):
     @classmethod
@@ -64,9 +66,9 @@ class I18NDictionary(dict):
             del rv["dflt"]
         return rv
 
+
 @dataclass
 class BaseObject:
-
     # OK, what's going on here? And why do we split _FoobarFields from Foobar?
     # We want to achieve the following:
     #    * A ``_formatspecific`` field on *every* derived object...
@@ -129,8 +131,8 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
             v.write(stream, indent + 1)
         elif isinstance(v, tuple):
             stream.write(b"[")
-            for ix, l in enumerate(v):
-                self._write_value(stream, k, l, indent + 1)
+            for ix, entry in enumerate(v):
+                self._write_value(stream, k, entry, indent + 1)
                 if ix < len(v) - 1:
                     stream.write(b", ")
             stream.write(b"]")
@@ -152,11 +154,11 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
             stream.write(b"}")
         elif isinstance(v, list):
             stream.write(b"[")
-            for ix, l in enumerate(v):
+            for ix, item in enumerate(v):
                 if self._should_separate_when_serializing(k):
                     stream.write(b"\n")
                     stream.write(b"  " * (indent + 2))
-                self._write_value(stream, k, l, indent + 1)
+                self._write_value(stream, k, item, indent + 1)
                 if ix < len(v) - 1:
                     stream.write(b", ")
             if self._should_separate_when_serializing(k):
@@ -179,7 +181,9 @@ is exported not as `_formatspecific` but as a simple underscore (`_`).
                 continue
             v = getattr(self, k)
             default = f.default
-            if (not v and not "serialize_if_false" in f.metadata) or (default and v == default):
+            if (not v and "serialize_if_false" not in f.metadata) or (
+                default and v == default
+            ):
                 continue
             towrite.append((k, v))
 

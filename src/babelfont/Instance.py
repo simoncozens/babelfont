@@ -10,9 +10,10 @@ class _InstanceFields:
             "description": """A dictionary mapping axis tags to coordinates in order to locate this instance in the design space."""
         }
     )
-    styleName: I18NDictionary = field(default_factory=I18NDictionary,
-        metadata={"description": "The style name of this instance."})
-
+    styleName: I18NDictionary = field(
+        default_factory=I18NDictionary,
+        metadata={"description": "The style name of this instance."},
+    )
 
 
 @dataclass
@@ -20,7 +21,6 @@ class Instance(BaseObject, _InstanceFields):
     """An object representing a named or static instance."""
 
     _write_one_line = True
-
 
     def __post_init__(self):
         # If they smacked my name with a bare string, replace with I18NDict

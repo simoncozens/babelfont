@@ -1,10 +1,11 @@
-from datetime import datetime
-from babelfont import *
+import re
+
 import orjson
 from fontTools.misc.transform import Transform
+
+from babelfont import Axis, Glyph, Layer, Master, Node, Shape
+from babelfont.BaseObject import Color
 from babelfont.convertors import BaseConvertor
-import uuid
-import re
 
 
 class Fontlab(BaseConvertor):
@@ -63,9 +64,9 @@ class Fontlab(BaseConvertor):
             if isinstance(transform_j, str):
                 transform_j = self.known_transforms[transform_j]
             transform = Transform().translate(
-                            transform_j.get("xOffset", 0),
-                            transform_j.get("yOffset", 0),
-                        )
+                transform_j.get("xOffset", 0),
+                transform_j.get("yOffset", 0),
+            )
             if "component" in shape:
                 shapes.append(
                     Shape(
@@ -75,7 +76,7 @@ class Fontlab(BaseConvertor):
                     )
                 )
             else:
-                for flcontour in shape["elementData"].get("contours",[]):
+                for flcontour in shape["elementData"].get("contours", []):
                     contour = Shape(nodes=[])
                     for n in flcontour["nodes"]:
                         contour.nodes.extend(self._load_node(n))

@@ -1,33 +1,42 @@
-from datetime import datetime
-from babelfont import *
-from fontTools.fontBuilder import FontBuilder
-from fontTools.pens.ttGlyphPen import TTGlyphPen
-from fontTools.pens.recordingPen import RecordingPen
-from fontTools.cu2qu.ufo import glyphs_to_quadratic
-from fontTools.misc.timeTools import epoch_diff, timestampSinceEpoch
-from fontTools.ttLib.tables.TupleVariation import TupleVariation
-from babelfont.fontFilters.featureWriters import build_all_features
-from fontTools.ttLib import TTFont
-from fontTools.ttLib.tables._g_l_y_f import GlyphCoordinates
-from fontTools.varLib.iup import iup_delta_optimize
-from fontTools.misc.fixedTools import otRound
-from fontFeatures.ttLib import unparse
-from fontFeatures import Attachment
 import uuid
+from datetime import datetime
 from itertools import chain
 
+from fontFeatures import Attachment
+from fontFeatures.ttLib import unparse
+from fontTools.cu2qu.ufo import glyphs_to_quadratic
+from fontTools.fontBuilder import FontBuilder
+from fontTools.misc.fixedTools import otRound
+from fontTools.misc.timeTools import epoch_diff, timestampSinceEpoch
+from fontTools.pens.recordingPen import RecordingPen
+from fontTools.pens.ttGlyphPen import TTGlyphPen
+from fontTools.ttLib import TTFont
+from fontTools.ttLib.tables._g_l_y_f import GlyphCoordinates
+from fontTools.ttLib.tables.TupleVariation import TupleVariation
+from fontTools.varLib.iup import iup_delta_optimize
 
-def _categorize_glyph(font,glyphname):
-    if "GDEF" not in font: return None
+from babelfont.convertors import BaseConvertor
+from babelfont.fontFilters.featureWriters import build_all_features
+from babelfont import Master, Glyph, Layer, Anchor, Shape, Node, Axis, Instance
+
+
+def _categorize_glyph(font, glyphname):
+    if "GDEF" not in font:
+        return None
     if not font["GDEF"].table.GlyphClassDef:
         return None
     classdefs = font["GDEF"].table.GlyphClassDef.classDefs
     if glyphname not in classdefs:
         return None
-    if classdefs[glyphname] == 1: return "base"
-    if classdefs[glyphname] == 2: return "ligature"
-    if classdefs[glyphname] == 3: return "mark"
-    if classdefs[glyphname] == 4: return "component"
+    if classdefs[glyphname] == 1:
+        return "base"
+    if classdefs[glyphname] == 2:
+        return "ligature"
+    if classdefs[glyphname] == 3:
+        return "mark"
+    if classdefs[glyphname] == 4:
+        return "component"
+
 
 class TrueType(BaseConvertor):
     suffix = ".ttf"
@@ -77,20 +86,27 @@ class TrueType(BaseConvertor):
                 )
 
     def _load_masters(self):
-        m = Master(location={},name="Default", id=str(uuid.uuid1()) )
+        m = Master(location={}, name="Default", id=str(uuid.uuid1()))
         # Metrics
         m.metrics = {
-            "xHeight": self.tt["OS/2"].sxHeight if hasattr(self.tt["OS/2"], "sxHeight") else None,
-            "capHeight": self.tt["OS/2"].sCapHeight  if hasattr(self.tt["OS/2"], "capHeight") else None,
+            "xHeight": self.tt["OS/2"].sxHeight
+            if hasattr(self.tt["OS/2"], "sxHeight")
+            else None,
+            "capHeight": self.tt["OS/2"].sCapHeight
+            if hasattr(self.tt["OS/2"], "capHeight")
+            else None,
             "ascender": self.tt["hhea"].ascender,
-            "descender": self.tt["hhea"].descender
+            "descender": self.tt["hhea"].descender,
         }
         m.font = self.font
         self.font.masters = [m]
         if "fvar" in self.tt:
             m.location = {axis.tag: axis.default for axis in self.font.axes}
-            all_masters = [frozenset(x.axes.items()) for x in chain(*self.tt["gvar"].variations.values())]
-            all_masters = [{k:v[1] for k,v in dict(m1).items()} for m1 in all_masters]
+            all_masters = [
+                frozenset(x.axes.items())
+                for x in chain(*self.tt["gvar"].variations.values())
+            ]
+            all_masters = [{k: v[1] for k, v in dict(m1).items()} for m1 in all_masters]
             # Now denormalize.
             # XXX
             pass
@@ -113,7 +129,9 @@ class TrueType(BaseConvertor):
         glyphs_dict = {}
         for glyph in self.tt.getGlyphOrder():
             category = _categorize_glyph(self.tt, glyph) or "base"
-            glyphs_dict[glyph] = Glyph(name=glyph, codepoints=list(mapping.get(glyph, [])), category=category)
+            glyphs_dict[glyph] = Glyph(
+                name=glyph, codepoints=list(mapping.get(glyph, [])), category=category
+            )
             self.font.glyphs.append(glyphs_dict[glyph])
             glyphs_dict[glyph].layers = self._load_layers(glyph)
         return glyphs_dict
@@ -122,12 +140,11 @@ class TrueType(BaseConvertor):
         ttglyph = self.tt.getGlyphSet()[g]  # _TTGlyphGlyf object
         width = self.tt["hmtx"][g][0]
         # leftMargin = self.tt["hmtx"][g][1]
-        layer = Layer(width=width, id=str(uuid.uuid1()) )
+        layer = Layer(width=width, id=str(uuid.uuid1()))
         layer._master = self.font.masters[0].id
         layer._font = self.font
         ttglyph.draw(layer.getPen())
         return [layer]
-
 
     def _load_contour(self, ttglyph, index):
         shape = Shape()
@@ -154,12 +171,12 @@ class TrueType(BaseConvertor):
                     # Double offcurve. Insert implicit oncurve.
                     prevpoint = points[-1]
                     intermediate = Node(
-                        x = (coords[0] + prevpoint.x) / 2,
-                        y = (coords[1] + prevpoint.y) / 2,
-                        type = "q"
+                        x=(coords[0] + prevpoint.x) / 2,
+                        y=(coords[1] + prevpoint.y) / 2,
+                        type="q",
                     )
                     points.append(intermediate)
-            p = Node(x = coords[0], y=coords[1], type=t)
+            p = Node(x=coords[0], y=coords[1], type=t)
             points.append(p)
         shape.nodes = points
         return shape
@@ -218,7 +235,7 @@ class TrueType(BaseConvertor):
 
                     m.ttglyphset[g] = pen.glyph()
 
-            except Exception as e:
+            except Exception:
                 print(
                     "Problem converting glyph %s to quadratic. (Probably incompatible) "
                     % g
@@ -297,7 +314,7 @@ class TrueType(BaseConvertor):
 
     def calculate_a_gvar(self, f, model, g, default_width):
         master_layer = f.default_master.get_glyph_layer(g)
-        if not g in f.default_master.ttglyphset:
+        if g not in f.default_master.ttglyphset:
             return None
         default_g = f.default_master.ttglyphset[g]
         all_coords = []
@@ -312,10 +329,12 @@ class TrueType(BaseConvertor):
                     ]
                 )
                 basecoords.extend(component_point)
-            phantomcoords = GlyphCoordinates([(0, 0), (otRound(layer.width), 0), (0, 0), (0, 0)])
+            phantomcoords = GlyphCoordinates(
+                [(0, 0), (otRound(layer.width), 0), (0, 0), (0, 0)]
+            )
             basecoords.extend(phantomcoords)
             all_coords.append(basecoords)
-        for ix,c in enumerate(all_coords):
+        for ix, c in enumerate(all_coords):
             all_ok = True
             if len(c) != len(all_coords[0]):
                 print("Incompatible master %i in glyph %s" % (ix, g))
@@ -334,7 +353,9 @@ class TrueType(BaseConvertor):
                 continue
             var = TupleVariation(sup, round(delta))
             # This assumes we do the default master first, which may not be true
-            delta_opt = iup_delta_optimize(round(delta), round(deltas[0]), endPts, tolerance=0.5)
+            delta_opt = iup_delta_optimize(
+                round(delta), round(deltas[0]), endPts, tolerance=0.5
+            )
             if None in delta_opt:
                 var = TupleVariation(sup, delta_opt)
             gvar_entry.append(var)
@@ -382,42 +403,43 @@ class TrueType(BaseConvertor):
     #         gvar_entry.append(TupleVariation(sup, list(map(tuple, deltaset))))
     #     return gvar_entry
 
+
 class OpenType(TrueType):
     suffix = ".otf"
 
     def _load_layers(self, g):
         ttglyph = self.tt.getGlyphSet()[g]
         width = self.tt["hmtx"][g][0]
-        layer = Layer(width=width, id=str(uuid.uuid1()) )
+        layer = Layer(width=width, id=str(uuid.uuid1()))
         layer._master = self.font.masters[0].id
         layer._font = self.font
         pen = RecordingPen()
         ttglyph.draw(pen)
         contours = pen.value
         lastcontour = []
-        startPt = (0,0)
-        lastPt = (0,0)
+        startPt = (0, 0)
+        lastPt = (0, 0)
         index = 0
         for operation, segment in contours:
             if operation == "moveTo":
                 startPt = segment[0]
             elif operation == "closePath":
                 if startPt != lastPt:
-                    lastcontour.append(Node(x=startPt[0], y=startPt[1],type = "l"))
+                    lastcontour.append(Node(x=startPt[0], y=startPt[1], type="l"))
                 contour = Shape()
                 contour.nodes = lastcontour
                 layer.shapes.append(contour)
                 lastcontour = []
             elif operation == "curveTo":
-                lastcontour.append(Node(x=segment[0][0],y=segment[0][1],type = "o"))
-                lastcontour.append(Node(x=segment[1][0],y=segment[1][1],type = "o"))
-                lastcontour.append(Node(x=segment[2][0],y=segment[2][1],type = "c"))
+                lastcontour.append(Node(x=segment[0][0], y=segment[0][1], type="o"))
+                lastcontour.append(Node(x=segment[1][0], y=segment[1][1], type="o"))
+                lastcontour.append(Node(x=segment[2][0], y=segment[2][1], type="c"))
                 lastPt = segment[2]
             elif operation == "lineTo":
-                lastcontour.append(Node(x=segment[0][0],y=segment[0][1],type = "l"))
+                lastcontour.append(Node(x=segment[0][0], y=segment[0][1], type="l"))
                 lastPt = segment[0]
             elif operation == "qCurveTo":
-                lastcontour.append(Node(x=segment[0][0],y=segment[0][1],type = "o"))
-                lastcontour.append(Node(x=segment[1][0],y=segment[1][1],type = "q"))
+                lastcontour.append(Node(x=segment[0][0], y=segment[0][1], type="o"))
+                lastcontour.append(Node(x=segment[1][0], y=segment[1][1], type="q"))
 
         return [layer]

@@ -182,12 +182,12 @@ class Designspace(BaseConvertor):
     def _load_kerning(self, source: designspaceLib.SourceDescriptor):
         font: ufoLib2.Font = source.font
         kerning = {}
-        for (l, r), value in font.kerning.items():
-            if l.startswith("public.kern"):
-                l = "@" + l
-            if r.startswith("public.kern"):
-                r = "@" + r
-            kerning[(l, r)] = value
+        for (left, right), value in font.kerning.items():
+            if left.startswith("public.kern"):
+                left = "@" + left
+            if right.startswith("public.kern"):
+                right = "@" + right
+            kerning[(left, right)] = value
         return kerning
 
     def _load_glyph(self, ufo_glyph: ufoLib2.objects.Glyph):
@@ -210,17 +210,17 @@ class Designspace(BaseConvertor):
             layer_id = ufo_layer.name
         ufo_glyph = ufo_layer[glyphname]
         width = ufo_glyph.width
-        l = Layer(width=width, id=layer_id)
-        l._master = source._babelfont_master.id
-        l._font = self.font
+        layer = Layer(width=width, id=layer_id)
+        layer._master = source._babelfont_master.id
+        layer._font = self.font
         for contour in ufo_glyph:
-            l.shapes.append(self._load_contour(contour))
+            layer.shapes.append(self._load_contour(contour))
         for component in ufo_glyph.components:
-            l.shapes.append(self._load_component(component))
+            layer.shapes.append(self._load_component(component))
         for anchor in ufo_glyph.anchors:
-            l.anchors.append(self._load_anchor(anchor))
-        assert l.valid
-        return l
+            layer.anchors.append(self._load_anchor(anchor))
+        assert layer.valid
+        return layer
 
     def _load_component(self, shape: ufoLib2.objects.Component):
         c = Shape(ref=shape.baseGlyph, transform=shape.transformation)
@@ -286,7 +286,6 @@ class Designspace(BaseConvertor):
                 )
 
     def _save(self):
-        font = self.font
         self.ds = DesignSpaceDocument()
         self.save_axes()
         self.save_sources()
@@ -354,7 +353,11 @@ class Designspace(BaseConvertor):
             else:
                 sourceDescriptor.location = {"Weight": 100}
             self.ds.addSource(sourceDescriptor)
-            self.save_master_to_ufo(master, self._master_filename(master), is_default=(master == self.font.default_master))
+            self.save_master_to_ufo(
+                master,
+                self._master_filename(master),
+                is_default=(master == self.font.default_master),
+            )
 
     def save_master_to_ufo(self, master, filename, is_default=False):
         ufo = ufoLib2.Font()

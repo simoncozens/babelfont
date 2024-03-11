@@ -6,6 +6,7 @@ import importlib
 
 from babelfont import Font
 
+
 class BaseConvertor:
     filename: str
     scratch: object
@@ -47,6 +48,7 @@ class BaseConvertor:
 
     def _save(self):
         raise NotImplementedError
+
 
 class Convert:
     convertors = []

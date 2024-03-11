@@ -3,10 +3,8 @@ import math
 import re
 import uuid
 from collections import OrderedDict, defaultdict
-from itertools import tee
 
 import openstep_plist
-from fontFeatures.feaLib import ast
 
 from babelfont import (
     Anchor,
@@ -20,7 +18,7 @@ from babelfont import (
     Shape,
     Transform,
 )
-from babelfont.BaseObject import OTValue
+from babelfont.Master import CORE_METRICS
 from babelfont.convertors import BaseConvertor
 from babelfont.convertors.glyphs.utils import (
     _copyattrs,
@@ -30,12 +28,9 @@ from babelfont.convertors.glyphs.utils import (
     _metrics_dict_to_name,
     _metrics_name_to_dict,
     _moveformatspecific,
-    _our_metrics_to_glyphs,
-    _reverse_rename_metrics,
     _stash,
     _stashed_cp,
     glyphs_i18ndict,
-    opentype_custom_parameters,
     to_bitfield,
 )
 
@@ -54,7 +49,7 @@ class GlyphsThree(BaseConvertor):
     def can_load(cls, convertor):
         if not super().can_load(convertor):
             return False
-        if not "plist" in convertor.scratch:
+        if "plist" not in convertor.scratch:
             convertor.scratch["plist"] = openstep_plist.load(
                 open(convertor.filename, "r"), use_numbers=True
             )
@@ -100,7 +95,7 @@ class GlyphsThree(BaseConvertor):
         self.interpret_linked_kerning()
         assert self.font.default_master
         self.interpret_kern_groups()
-        self.interpret_opentype_custom_parameters()
+        self.interpret_metric_custom_parameters()
         self.interpret_features()
 
         return font
@@ -188,41 +183,42 @@ class GlyphsThree(BaseConvertor):
 
         return g
 
-    def load_layer(self, layer, width=None):
+    def load_layer(self, gslayer, width=None):
         if width is None:
-            width = layer["width"]
-        l = Layer(width=width, id=layer.pop("layerId", ""), _font=self.font)
-        l.name = layer.pop("name", "")
-        if [x for x in self.font.masters if x.id == l.id]:
-            l._master = l.id
+            width = gslayer["width"]
+        layer = Layer(width=width, id=gslayer.pop("gslayerId", ""), _font=self.font)
+        layer.name = gslayer.pop("name", "")
+        if [x for x in self.font.masters if x.id == layer.id]:
+            layer._master = layer.id
         else:
-            l._master = layer.pop("associatedMasterId", None)
-        l.guides = [
-            self.load_guide(x) for x in layer.pop("guideLines", layer.pop("guides", []))
+            layer._master = gslayer.pop("associatedMasterId", None)
+        layer.guides = [
+            self.load_guide(x)
+            for x in gslayer.pop("guideLines", gslayer.pop("guides", []))
         ]
-        l.shapes = []
-        for shape in layer.pop("shapes", []):
-            l.shapes.append(self.load_shape(shape))
-        for shape in layer.pop("paths", []):
-            l.shapes.append(self.load_path(shape))
-        for shape in layer.pop("components", []):
-            l.shapes.append(self.load_component(shape))
-        for anchor in layer.pop("anchors", []):
-            l.anchors.append(self.load_anchor(anchor))
+        layer.shapes = []
+        for shape in gslayer.pop("shapes", []):
+            layer.shapes.append(self.load_shape(shape))
+        for shape in gslayer.pop("paths", []):
+            layer.shapes.append(self.load_path(shape))
+        for shape in gslayer.pop("components", []):
+            layer.shapes.append(self.load_component(shape))
+        for anchor in gslayer.pop("anchors", []):
+            layer.anchors.append(self.load_anchor(anchor))
 
-        returns = [l]
-        if "background" in layer:
-            (background,) = self.load_layer(layer["background"], width=l.width)
+        returns = [layer]
+        if "background" in gslayer:
+            (background,) = self.load_gslayer(gslayer["background"], width=layer.width)
             # If it doesn't have an ID, we need to generate one
             background.id = background.id or str(uuid.uuid1())
             background.isBackground = True
 
-            l._background = background.id
+            layer._background = background.id
             returns.append(background)
         for r in returns:
             assert r.valid
 
-        _stash(l, layer)
+        _stash(layer, gslayer)
         return returns
 
     def load_guide(self, gguide):
@@ -325,9 +321,9 @@ class GlyphsThree(BaseConvertor):
 
     def load_kerning(self, kerndict):
         return {
-            (l, r): value
-            for l, level2 in kerndict.items()
-            for r, value in level2.items()
+            (left, right): value
+            for left, level2 in kerndict.items()
+            for right, value in level2.items()
         }
 
     def interpret_metrics(self):
@@ -380,20 +376,15 @@ class GlyphsThree(BaseConvertor):
                     )
                 )
 
-    def interpret_opentype_custom_parameters(self):
-        # Any customparameters in the default master which look like
-        # custom OT values need to move there.
-        cp = _g(self.font.default_master, "customParameters", [])
-        new_cps = []
-        for param in cp:
-            ot_param = opentype_custom_parameters.get(param["name"])
-            if not ot_param:
-                new_cps.append(param)
-                continue
-            self.font.customOpenTypeValues.append(
-                OTValue(ot_param[0], ot_param[1], param["value"])
-            )
-        if new_cps:
+    def interpret_metric_custom_parameters(self):
+        for master in self.font.masters:
+            cps = _g(master, "customParameters", [])
+            new_cps = []
+            for param in cps:
+                if param["name"] in CORE_METRICS:
+                    master.metrics[param["name"]] = param["value"]
+                else:
+                    new_cps.append(param)
             _stash(self.font.default_master, {"customParameters": new_cps})
 
     def interpret_features(self):
@@ -458,8 +449,8 @@ class GlyphsThree(BaseConvertor):
 
     def save_kerning(self, kerntable):
         newtable = {}
-        for (l, r), val in kerntable.items():
-            newtable.setdefault(l, {})[r] = val
+        for (left, right), val in kerntable.items():
+            newtable.setdefault(left, {})[right] = val
         return newtable
 
     def save_master(self, master):
@@ -498,7 +489,7 @@ class GlyphsThree(BaseConvertor):
             # gglyph["unicode"] = "%04x" % glyph.codepoints[0]
         elif len(glyph.codepoints) > 1:
             gglyph["unicode"] = glyph.codepoints
-        gglyph["layers"] = [self.save_layer(l) for l in glyph.layers]
+        gglyph["layers"] = [self.save_layer(layer) for layer in glyph.layers]
         if glyph.production_name is not None and glyph.production_name != glyph.name:
             gglyph["production"] = glyph.production_name
         if not glyph.exported:
@@ -550,7 +541,7 @@ class GlyphsThree(BaseConvertor):
             out["note"] = self.font.note
         if self.font.version:
             out["versionMajor"], out["versionMinor"] = self.font.version
-        if not "properties" in out:
+        if "properties" not in out:
             out["properties"] = []
         props = out["properties"]
         alreadydone = {p["key"] for p in props}
@@ -576,7 +567,7 @@ class GlyphsThree(BaseConvertor):
             del out["properties"]
 
     def save_custom_parameters(self, out):
-        if not "customParameters" in out:
+        if "customParameters" not in out:
             out["customParameters"] = []
         for otvalue in self.font.customOpenTypeValues:
             table, field, value = otvalue.table, otvalue.field, otvalue.value

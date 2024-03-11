@@ -17,7 +17,7 @@ class GlyphsPackage(GlyphsThree):
 
     def _load(self):
         infofile = os.path.join(self.filename, "fontinfo.plist")
-        orderfile = os.path.join(self.filename, "order.plist")
+        # orderfile = os.path.join(self.filename, "order.plist")
         # glyphorder = openstep_plist.load(open(orderfile, "r"))
         self.scratch["plist"] = openstep_plist.load(
             open(infofile, "r"), use_numbers=True
@@ -29,5 +29,3 @@ class GlyphsPackage(GlyphsThree):
             )
 
         return super()._load()
-
-

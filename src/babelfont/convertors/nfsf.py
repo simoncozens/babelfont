@@ -1,10 +1,7 @@
 from datetime import datetime
-from babelfont import *
-from fontTools.misc.transform import Transform
+from babelfont import Glyph, Layer, Node, Shape, Master, Guide, Anchor, Axis, Instance
 from babelfont.convertors import BaseConvertor
 from pathlib import Path
-from lxml import etree
-from fontFeatures import FontFeatures
 import orjson
 import os
 

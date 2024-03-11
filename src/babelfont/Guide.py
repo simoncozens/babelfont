@@ -8,6 +8,7 @@ class _GuideFields:
     name: str = None
     color: Color = None
 
+
 @dataclass
 class Guide(BaseObject, _GuideFields):
     pass

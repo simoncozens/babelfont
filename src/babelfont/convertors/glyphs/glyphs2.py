@@ -1,4 +1,7 @@
 import datetime
+import math
+import re
+import uuid
 
 import openstep_plist
 from fontFeatures.feaLib import FeaParser
@@ -18,20 +21,9 @@ from babelfont import (
 from babelfont.BaseObject import OTValue
 from babelfont.convertors import BaseConvertor
 from babelfont.convertors.glyphs.utils import (
-    _copyattrs,
-    _custom_parameter,
-    _g,
     _glyphs_metrics_to_ours,
-    _metrics_dict_to_name,
-    _metrics_name_to_dict,
-    _moveformatspecific,
-    _our_metrics_to_glyphs,
-    _reverse_rename_metrics,
     _stash,
-    _stashed_cp,
-    glyphs_i18ndict,
     opentype_custom_parameters,
-    to_bitfield,
 )
 
 
@@ -57,7 +49,7 @@ class Glyphs2(BaseConvertor):
     def can_load(cls, convertor):
         if not super().can_load(convertor):
             return False
-        if not "plist" in convertor.scratch:
+        if "plist" not in convertor.scratch:
             convertor.scratch["plist"] = openstep_plist.load(
                 open(convertor.filename, "r"), use_numbers=True
             )

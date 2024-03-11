@@ -15,6 +15,7 @@ class _ShapeFields:
 
     _layer = None
 
+
 @dataclass
 class Shape(BaseObject, _ShapeFields):
     @property
@@ -39,7 +40,7 @@ class Shape(BaseObject, _ShapeFields):
     def pos(self):
         assert self.is_component
         if not self.transform:
-            return (0,0)
+            return (0, 0)
         return tuple(self.transform[4:])
 
     @property
@@ -53,7 +54,7 @@ class Shape(BaseObject, _ShapeFields):
     def scale(self):
         assert self.is_component
         if not self.transform:
-            return (1,1)
+            return (1, 1)
         scaleX = math.sqrt(self.transform[0] ** 2 + self.transform[2] ** 2)
         scaleY = math.sqrt(self.transform[1] ** 2 + self.transform[3] ** 2)
         return (scaleX, scaleY)

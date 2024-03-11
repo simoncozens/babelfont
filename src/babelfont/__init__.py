@@ -12,6 +12,28 @@ from babelfont.Names import Names
 from babelfont.BaseObject import Color, Position, OTValue, I18NDictionary
 from babelfont.convertors import Convert, BaseConvertor
 
+__all__ = [
+    "Font",
+    "Axis",
+    "Glyph",
+    "Master",
+    "Instance",
+    "Guide",
+    "Anchor",
+    "Layer",
+    "Shape",
+    "Transform",
+    "Node",
+    "Names",
+    "Color",
+    "Position",
+    "OTValue",
+    "I18NDictionary",
+    "Convert",
+    "BaseConvertor",
+    "load",
+]
+
 
 def load(filename):
     return Convert(filename).load()

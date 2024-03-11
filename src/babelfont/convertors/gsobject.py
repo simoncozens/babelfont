@@ -1,16 +1,19 @@
-from datetime import datetime
-from babelfont import *
-import openstep_plist
-from fontTools.misc.transform import Transform
 from fontFeatures.feaLib import FeaParser
 from babelfont.convertors import BaseConvertor
-import re
-import math
+from babelfont import (
+    Master,
+    Glyph,
+    Layer,
+    Guide,
+    Anchor,
+    Shape,
+    Node,
+    OTValue,
+    Axis,
+    Instance,
+)
 import uuid
-from collections import OrderedDict
 from glyphsLib.glyphdata import get_glyph
-from fontTools.misc.filenames import userNameToFileName
-import os
 
 
 opentype_custom_parameters = {
@@ -91,7 +94,7 @@ class GSObject(BaseConvertor):
             )
 
     def _custom_parameter(self, thing, name):
-        for param in (thing.customParameters or []):
+        for param in thing.customParameters or []:
             if param.name == name:
                 return param.value
         return None
@@ -120,7 +123,9 @@ class GSObject(BaseConvertor):
         for k, v in zip(metric_types, gmaster.metrics()):
             master.metrics[_glyphs_metrics_to_ours(k)] = v.position
             if v.overshoot:
-                master.metrics["%s overshoot" % _glyphs_metrics_to_ours(k)] = v.overshoot
+                master.metrics[
+                    "%s overshoot" % _glyphs_metrics_to_ours(k)
+                ] = v.overshoot
 
         master.location = {k.tag: v for k, v in zip(self.font.axes, location)}
         master.guides = [self._load_guide(x) for x in gmaster.guides]
@@ -140,7 +145,7 @@ class GSObject(BaseConvertor):
 
     def _get_codepoint(self, gglyph):
         if gglyph.unicodes:
-            return [int(x,16) for x in gglyph.unicodes]
+            return [int(x, 16) for x in gglyph.unicodes]
         return []
 
     def _load_glyph(self, gglyph):
@@ -207,8 +212,8 @@ class GSObject(BaseConvertor):
             # XXX
             # For some INSANE REASON orjson is serializing this to `True` in json,
             # not `true`.
-            #background.isBackground = True
-            del(background._master)
+            # background.isBackground = True
+            del background._master
 
             l._background = background.id
             returns.append(background)
@@ -357,7 +362,7 @@ class GSObject(BaseConvertor):
                 )
                 feaparser.parser.glyphclasses_.define(name, glyphclass)
             feaparser.parse()
-        except Exception as e:
+        except Exception:
             pass
 
     def _load_shape(self, shape):
@@ -376,13 +381,9 @@ class GSObject(BaseConvertor):
         kerngroups = {}
         for g in glyphs:
             if g.leftKerningGroup:
-                kerngroups.setdefault("MMK_L_" + g.leftKerningGroup, []).append(
-                    g.name
-                )
+                kerngroups.setdefault("MMK_L_" + g.leftKerningGroup, []).append(g.name)
             if g.rightKerningGroup:
-                kerngroups.setdefault("MMK_R_" + g.rightKerningGroup, []).append(
-                    g.name
-                )
+                kerngroups.setdefault("MMK_R_" + g.rightKerningGroup, []).append(g.name)
         for k, v in kerngroups.items():
             self.font.features.namedClasses[k] = tuple(v)
 
@@ -391,11 +392,11 @@ def _maybesetformatspecific(item, glyphs, key):
     if hasattr(glyphs, key):
         if "com.glyphsapp" not in item._formatspecific:
             item._formatspecific["com.glyphsapp"] = {}
-        value = getattr(glyphs, key) # XXX
+        value = getattr(glyphs, key)  # XXX
         try:
             orjson.dumps(value)
             item._formatspecific["com.glyphsapp"][key] = value
-        except Exception as e:
+        except Exception:
             print("%s.%s cannot be serialized!" % (glyphs, key))
 
 

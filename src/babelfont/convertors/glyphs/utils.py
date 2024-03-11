@@ -52,8 +52,6 @@ def _copyattrs(src, dst, attrs, convertor=lambda x: x):
             dst[a] = convertor(v)
 
 
-1
-
 opentype_custom_parameters = {
     "typoAscender": ("OS/2", "sTypoAscender"),
     "typoDescender": ("OS/2", "sTypoDescender"),
@@ -94,11 +92,10 @@ def _metrics_dict_to_name(k):
         name += " [filter " + k.get("filter") + "]"
     return name
 
+
 def glyphs_i18ndict(i):
-    return [
-        {"language": k, "value": v}
-        for k, v in i.items()
-    ]
+    return [{"language": k, "value": v} for k, v in i.items()]
+
 
 def to_bitfield(flags):
     # Convert an integer flag to an array of bit indices

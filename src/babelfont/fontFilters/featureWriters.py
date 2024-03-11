@@ -24,14 +24,16 @@ def build_kern(font):
         return [x for x in font.features.namedClasses[c[1:]] if font.glyphs[x].exported]
 
     kernroutine = Routine()
-    for (l,r), kern in font._all_kerning.items():
-        l, r = _expand_class(l), _expand_class(r)
-        if l is None or r is None:
+    for (left, right), kern in font._all_kerning.items():
+        left, right = _expand_class(left), _expand_class(right)
+        if left is None or right is None:
             continue
-        kernroutine.rules.append(Positioning(
-            [ l, r ],
-            [ ValueRecord(xAdvance=kern), ValueRecord() ],
-        ))
+        kernroutine.rules.append(
+            Positioning(
+                [left, right],
+                [ValueRecord(xAdvance=kern), ValueRecord()],
+            )
+        )
     font.features.addFeature("kern", [kernroutine])
 
 
@@ -39,11 +41,13 @@ def build_cursive(font):
     anchors = font._all_anchors
     if "entry" in anchors and "exit" in anchors:
         attach = Attachment(
-            "entry", "exit", anchors["entry"], anchors["exit"],
-            flags=(0x8 | 0x1)
+            "entry", "exit", anchors["entry"], anchors["exit"], flags=(0x8 | 0x1)
         )
-        r = Routine(rules=[attach], )
+        r = Routine(
+            rules=[attach],
+        )
         font.features.addFeature("curs", [r])
+
 
 def build_mark_mkmk(font, which="mark", strict=False):
     # Find matching pairs of foo/_foo anchors
@@ -66,7 +70,8 @@ def build_mark_mkmk(font, which="mark", strict=False):
         marks = {
             k: v
             for k, v in anchors[markanchor].items()
-            if font.glyphs[k].exported and (not strict or font.glyphs[k].category == "mark")
+            if font.glyphs[k].exported
+            and (not strict or font.glyphs[k].category == "mark")
         }
         if not (bases and marks):
             continue
