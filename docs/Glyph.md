@@ -1,7 +1,7 @@
 ---
 title: Glyph
 ---
-Glyph(name: str, production_name: str = None, category: str = 'base', codepoints: [<class 'int'>] = <factory>, layers: [<class 'babelfont.Layer.Layer'>] = <factory>, exported: bool = True, direction: str = 'LTR', _formatspecific: dict = <factory>, _: dict = None)
+Glyph(name: str, production_name: Optional[str] = None, category: str = 'base', codepoints: List[int] = <factory>, layers: List[babelfont.Layer.Layer] = <factory>, exported: bool = True, direction: str = 'LTR', _formatspecific: dict = <factory>, _: dict = None)
 * When writing to Babelfont-JSON, this class must be serialized without newlines
 ## Glyph.name
 
@@ -14,7 +14,7 @@ Glyph(name: str, production_name: str = None, category: str = 'base', codepoints
 
 ## Glyph.production_name
 
-* Python type: `str`
+* Python type: `Optional[str]`
 
 
 *If not provided, defaults to* `None`.
@@ -63,7 +63,7 @@ Glyph(name: str, production_name: str = None, category: str = 'base', codepoints
 * Python type: `dict`
 
 
-Each object in NFSF has an optional attached dictionary to allow the storage
+Each object in Babelfont has an optional attached dictionary to allow the storage
 of format-specific information. Font creation software may store any additional
 information that they wish to have preserved on import and export under a
 namespaced (reverse-domain) key in this dictionary. For example, information
@@ -72,7 +72,7 @@ The value stored under this key may be any data serializable in JSON; typically
 it will be a `dict`.
 
 Note that there is an important distinction between the Python object format
-of this field and the NFSF-JSON representation. When stored to JSON, this key
+of this field and the Babelfont-JSON representation. When stored to JSON, this key
 is exported not as `_formatspecific` but as a simple underscore (`_`).
 
 

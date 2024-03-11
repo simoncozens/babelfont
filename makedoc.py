@@ -1,9 +1,12 @@
 import dataclasses
-from babelfont import *
-import babelfont
-from babelfont.BaseObject import I18NDictionary
-from graphviz import Digraph
 import re
+import typing
+
+from graphviz import Digraph
+
+import babelfont
+from babelfont import *
+from babelfont.BaseObject import I18NDictionary
 
 tocfile = open("docs/_data/navigation.yml", "w")
 tocfile.write("default:\n")
@@ -12,6 +15,11 @@ tocfile.write("default:\n")
 def maybelink(t):
     if "babelfont" in str(t) and dataclasses.is_dataclass(t):
         return "[`%s`](%s.html)" % (t.__name__, t.__name__)
+    if isinstance(t, typing._GenericAlias):
+        if t._name == "Optional":
+            return "Optional[%s]" % maybelink(t.__args__[0])
+        elif t._name == "List":
+            return "[%s]" % maybelink(t.__args__[0])
     if isinstance(t, tuple):
         return "(" + ", ".join([e.__name__ for e in t]) + ")"
     return t.__name__

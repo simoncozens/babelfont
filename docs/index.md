@@ -4,48 +4,48 @@ toc: false
 ---
 
 
-<svg width="1072pt" height="1153pt"
- viewBox="0.00 0.00 1072.00 1153.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 1149)">
-<polygon fill="white" stroke="none" points="-4,4 -4,-1149 1068,-1149 1068,4 -4,4"/>
+<svg width="804pt" height="1630pt"
+ viewBox="0.00 0.00 804.00 1630.24" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 1626.24)">
+<polygon fill="white" stroke="none" points="-4,4 -4,-1626.24 800,-1626.24 800,4 -4,4"/>
 <!-- Axis -->
 <g id="node1" class="node">
 <title>Axis</title>
 <g id="a_node1"><a xlink:href="Axis.html" xlink:title="&lt;TABLE&gt;">
-<text text-anchor="start" x="423" y="-1125.3" font-family="Avenir" font-weight="bold" font-size="14.00">Axis</text>
-<polygon fill="none" stroke="black" points="335,-1095.5 335,-1116.5 437,-1116.5 437,-1095.5 335,-1095.5"/>
-<text text-anchor="start" x="367.5" y="-1103.3" font-family="Avenir" font-weight="bold" font-size="14.00">name</text>
-<polygon fill="none" stroke="black" points="439,-1095.5 439,-1116.5 539,-1116.5 539,-1095.5 439,-1095.5"/>
-<text text-anchor="start" x="442" y="-1103.3" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
-<polygon fill="none" stroke="black" points="335,-1072.5 335,-1093.5 437,-1093.5 437,-1072.5 335,-1072.5"/>
-<text text-anchor="start" x="375" y="-1080.3" font-family="Avenir" font-weight="bold" font-size="14.00">tag</text>
-<polygon fill="none" stroke="black" points="439,-1072.5 439,-1093.5 539,-1093.5 539,-1072.5 439,-1072.5"/>
-<text text-anchor="start" x="480.5" y="-1080.3" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
-<polygon fill="none" stroke="black" points="335,-1049.5 335,-1070.5 437,-1070.5 437,-1049.5 335,-1049.5"/>
-<text text-anchor="start" x="380" y="-1056.3" font-family="Avenir" font-size="14.00">id</text>
-<polygon fill="none" stroke="black" points="439,-1049.5 439,-1070.5 539,-1070.5 539,-1049.5 439,-1049.5"/>
-<text text-anchor="start" x="480.5" y="-1057.3" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
-<polygon fill="none" stroke="black" points="335,-1026.5 335,-1047.5 437,-1047.5 437,-1026.5 335,-1026.5"/>
-<text text-anchor="start" x="374.5" y="-1033.3" font-family="Avenir" font-size="14.00">min</text>
-<polygon fill="none" stroke="black" points="439,-1026.5 439,-1047.5 539,-1047.5 539,-1026.5 439,-1026.5"/>
-<text text-anchor="start" x="481" y="-1034.3" font-family="Avenir" font-style="italic" font-size="14.00">int</text>
-<polygon fill="none" stroke="black" points="335,-1003.5 335,-1024.5 437,-1024.5 437,-1003.5 335,-1003.5"/>
-<text text-anchor="start" x="372.5" y="-1010.3" font-family="Avenir" font-size="14.00">max</text>
-<polygon fill="none" stroke="black" points="439,-1003.5 439,-1024.5 539,-1024.5 539,-1003.5 439,-1003.5"/>
-<text text-anchor="start" x="481" y="-1011.3" font-family="Avenir" font-style="italic" font-size="14.00">int</text>
-<polygon fill="none" stroke="black" points="335,-980.5 335,-1001.5 437,-1001.5 437,-980.5 335,-980.5"/>
-<text text-anchor="start" x="364" y="-987.3" font-family="Avenir" font-size="14.00">default</text>
-<polygon fill="none" stroke="black" points="439,-980.5 439,-1001.5 539,-1001.5 539,-980.5 439,-980.5"/>
-<text text-anchor="start" x="481" y="-988.3" font-family="Avenir" font-style="italic" font-size="14.00">int</text>
-<polygon fill="none" stroke="black" points="335,-957.5 335,-978.5 437,-978.5 437,-957.5 335,-957.5"/>
-<text text-anchor="start" x="372" y="-964.3" font-family="Avenir" font-size="14.00">map</text>
-<polygon fill="none" stroke="black" points="439,-957.5 439,-978.5 539,-978.5 539,-957.5 439,-957.5"/>
-<text text-anchor="start" x="461.5" y="-965.3" font-family="Avenir" font-style="italic" font-size="14.00">[(int, int)]</text>
-<polygon fill="none" stroke="black" points="335,-934.5 335,-955.5 437,-955.5 437,-934.5 335,-934.5"/>
-<text text-anchor="start" x="338" y="-941.3" font-family="Avenir" font-size="14.00">_formatspecific</text>
-<polygon fill="none" stroke="black" points="439,-934.5 439,-955.5 539,-955.5 539,-934.5 439,-934.5"/>
-<text text-anchor="start" x="477" y="-942.3" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
-<polygon fill="none" stroke="black" points="332,-932 332,-1141 542,-1141 542,-932 332,-932"/>
+<text text-anchor="start" x="427.5" y="-1600.94" font-family="Avenir" font-weight="bold" font-size="14.00">Axis</text>
+<polygon fill="none" stroke="black" points="340,-1565.24 340,-1590.24 441,-1590.24 441,-1565.24 340,-1565.24"/>
+<text text-anchor="start" x="372.5" y="-1574.94" font-family="Avenir" font-weight="bold" font-size="14.00">name</text>
+<polygon fill="none" stroke="black" points="443,-1565.24 443,-1590.24 542,-1590.24 542,-1565.24 443,-1565.24"/>
+<text text-anchor="start" x="445.62" y="-1574.94" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
+<polygon fill="none" stroke="black" points="340,-1538.24 340,-1563.24 441,-1563.24 441,-1538.24 340,-1538.24"/>
+<text text-anchor="start" x="379.62" y="-1547.94" font-family="Avenir" font-weight="bold" font-size="14.00">tag</text>
+<polygon fill="none" stroke="black" points="443,-1538.24 443,-1563.24 542,-1563.24 542,-1538.24 443,-1538.24"/>
+<text text-anchor="start" x="484.25" y="-1547.94" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
+<polygon fill="none" stroke="black" points="340,-1511.24 340,-1536.24 441,-1536.24 441,-1511.24 340,-1511.24"/>
+<text text-anchor="start" x="384.88" y="-1519.94" font-family="Avenir" font-size="14.00">id</text>
+<polygon fill="none" stroke="black" points="443,-1511.24 443,-1536.24 542,-1536.24 542,-1511.24 443,-1511.24"/>
+<text text-anchor="start" x="484.25" y="-1520.94" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
+<polygon fill="none" stroke="black" points="340,-1484.24 340,-1509.24 441,-1509.24 441,-1484.24 340,-1484.24"/>
+<text text-anchor="start" x="379.25" y="-1492.94" font-family="Avenir" font-size="14.00">min</text>
+<polygon fill="none" stroke="black" points="443,-1484.24 443,-1509.24 542,-1509.24 542,-1484.24 443,-1484.24"/>
+<text text-anchor="start" x="484.62" y="-1493.94" font-family="Avenir" font-style="italic" font-size="14.00">int</text>
+<polygon fill="none" stroke="black" points="340,-1457.24 340,-1482.24 441,-1482.24 441,-1457.24 340,-1457.24"/>
+<text text-anchor="start" x="377.38" y="-1465.94" font-family="Avenir" font-size="14.00">max</text>
+<polygon fill="none" stroke="black" points="443,-1457.24 443,-1482.24 542,-1482.24 542,-1457.24 443,-1457.24"/>
+<text text-anchor="start" x="484.62" y="-1466.94" font-family="Avenir" font-style="italic" font-size="14.00">int</text>
+<polygon fill="none" stroke="black" points="340,-1430.24 340,-1455.24 441,-1455.24 441,-1430.24 340,-1430.24"/>
+<text text-anchor="start" x="368.75" y="-1438.94" font-family="Avenir" font-size="14.00">default</text>
+<polygon fill="none" stroke="black" points="443,-1430.24 443,-1455.24 542,-1455.24 542,-1430.24 443,-1430.24"/>
+<text text-anchor="start" x="484.62" y="-1439.94" font-family="Avenir" font-style="italic" font-size="14.00">int</text>
+<polygon fill="none" stroke="black" points="340,-1403.24 340,-1428.24 441,-1428.24 441,-1403.24 340,-1403.24"/>
+<text text-anchor="start" x="376.62" y="-1411.94" font-family="Avenir" font-size="14.00">map</text>
+<polygon fill="none" stroke="black" points="443,-1403.24 443,-1428.24 542,-1428.24 542,-1403.24 443,-1403.24"/>
+<text text-anchor="start" x="465.5" y="-1412.94" font-family="Avenir" font-style="italic" font-size="14.00">[(int, int)]</text>
+<polygon fill="none" stroke="black" points="340,-1376.24 340,-1401.24 441,-1401.24 441,-1376.24 340,-1376.24"/>
+<text text-anchor="start" x="342.88" y="-1384.94" font-family="Avenir" font-size="14.00">_formatspecific</text>
+<polygon fill="none" stroke="black" points="443,-1376.24 443,-1401.24 542,-1401.24 542,-1376.24 443,-1376.24"/>
+<text text-anchor="start" x="480.88" y="-1385.94" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
+<polygon fill="none" stroke="black" points="337,-1373.24 337,-1618.24 545,-1618.24 545,-1373.24 337,-1373.24"/>
 </a>
 </g>
 </g>
@@ -53,454 +53,348 @@ toc: false
 <g id="node2" class="node">
 <title>Font</title>
 <g id="a_node2"><a xlink:href="Font.html" xlink:title="&lt;TABLE&gt;">
-<text text-anchor="start" x="118.5" y="-890.3" font-family="Avenir" font-weight="bold" font-size="14.00">Font</text>
-<polygon fill="none" stroke="black" points="11,-860.5 11,-881.5 167,-881.5 167,-860.5 11,-860.5"/>
-<text text-anchor="start" x="41" y="-867.3" font-family="Avenir" font-size="14.00">_formatspecific</text>
-<polygon fill="none" stroke="black" points="169,-860.5 169,-881.5 257,-881.5 257,-860.5 169,-860.5"/>
-<text text-anchor="start" x="201" y="-868.3" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
-<polygon fill="none" stroke="black" points="11,-837.5 11,-858.5 167,-858.5 167,-837.5 11,-837.5"/>
-<text text-anchor="start" x="75" y="-844.3" font-family="Avenir" font-size="14.00">upm</text>
-<polygon fill="none" stroke="black" points="169,-837.5 169,-858.5 257,-858.5 257,-837.5 169,-837.5"/>
-<text text-anchor="start" x="205" y="-845.3" font-family="Avenir" font-style="italic" font-size="14.00">int</text>
-<polygon fill="none" stroke="black" points="11,-814.5 11,-835.5 167,-835.5 167,-814.5 11,-814.5"/>
-<text text-anchor="start" x="66.5" y="-821.3" font-family="Avenir" font-size="14.00">version</text>
-<polygon fill="none" stroke="black" points="169,-814.5 169,-835.5 257,-835.5 257,-814.5 169,-814.5"/>
-<text text-anchor="start" x="189.5" y="-822.3" font-family="Avenir" font-style="italic" font-size="14.00">(int, int)</text>
-<polygon fill="none" stroke="black" points="11,-791.5 11,-812.5 167,-812.5 167,-791.5 11,-791.5"/>
-<text text-anchor="start" x="75" y="-798.3" font-family="Avenir" font-size="14.00">axes</text>
-<polygon fill="none" stroke="black" points="169,-791.5 169,-812.5 257,-812.5 257,-791.5 169,-791.5"/>
-<text text-anchor="start" x="196" y="-799.3" font-family="Avenir" font-style="italic" font-size="14.00">[Axis]</text>
-<polygon fill="none" stroke="black" points="11,-768.5 11,-789.5 167,-789.5 167,-768.5 11,-768.5"/>
-<text text-anchor="start" x="60" y="-775.3" font-family="Avenir" font-size="14.00">instances</text>
-<polygon fill="none" stroke="black" points="169,-768.5 169,-789.5 257,-789.5 257,-768.5 169,-768.5"/>
-<text text-anchor="start" x="183" y="-776.3" font-family="Avenir" font-style="italic" font-size="14.00">[Instance]</text>
-<polygon fill="none" stroke="black" points="11,-745.5 11,-766.5 167,-766.5 167,-745.5 11,-745.5"/>
-<text text-anchor="start" x="64" y="-752.3" font-family="Avenir" font-size="14.00">masters</text>
-<polygon fill="none" stroke="black" points="169,-745.5 169,-766.5 257,-766.5 257,-745.5 169,-745.5"/>
-<text text-anchor="start" x="187" y="-753.3" font-family="Avenir" font-style="italic" font-size="14.00">[Master]</text>
-<polygon fill="none" stroke="black" points="11,-722.5 11,-743.5 167,-743.5 167,-722.5 11,-722.5"/>
-<text text-anchor="start" x="69" y="-729.3" font-family="Avenir" font-size="14.00">glyphs</text>
-<polygon fill="none" stroke="black" points="169,-722.5 169,-743.5 257,-743.5 257,-722.5 169,-722.5"/>
-<text text-anchor="start" x="184" y="-730.3" font-family="Avenir" font-style="italic" font-size="14.00">GlyphList</text>
-<polygon fill="none" stroke="black" points="11,-699.5 11,-720.5 167,-720.5 167,-699.5 11,-699.5"/>
-<text text-anchor="start" x="74.5" y="-706.3" font-family="Avenir" font-size="14.00">note</text>
-<polygon fill="none" stroke="black" points="169,-699.5 169,-720.5 257,-720.5 257,-699.5 169,-699.5"/>
-<text text-anchor="start" x="204.5" y="-707.3" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
-<polygon fill="none" stroke="black" points="11,-676.5 11,-697.5 167,-697.5 167,-676.5 11,-676.5"/>
-<text text-anchor="start" x="74.5" y="-683.3" font-family="Avenir" font-size="14.00">date</text>
-<polygon fill="none" stroke="black" points="169,-676.5 169,-697.5 257,-697.5 257,-676.5 169,-676.5"/>
-<text text-anchor="start" x="184.5" y="-684.3" font-family="Avenir" font-style="italic" font-size="14.00">datetime</text>
-<polygon fill="none" stroke="black" points="11,-653.5 11,-674.5 167,-674.5 167,-653.5 11,-653.5"/>
-<text text-anchor="start" x="68.5" y="-660.3" font-family="Avenir" font-size="14.00">names</text>
-<polygon fill="none" stroke="black" points="169,-653.5 169,-674.5 257,-674.5 257,-653.5 169,-653.5"/>
-<text text-anchor="start" x="190.5" y="-661.3" font-family="Avenir" font-style="italic" font-size="14.00">Names</text>
-<polygon fill="none" stroke="black" points="11,-630.5 11,-651.5 167,-651.5 167,-630.5 11,-630.5"/>
-<text text-anchor="start" x="14" y="-637.3" font-family="Avenir" font-size="14.00">customOpenTypeValues</text>
-<polygon fill="none" stroke="black" points="169,-630.5 169,-651.5 257,-651.5 257,-630.5 169,-630.5"/>
-<text text-anchor="start" x="182.5" y="-638.3" font-family="Avenir" font-style="italic" font-size="14.00">[OTValue]</text>
-<polygon fill="none" stroke="black" points="11,-607.5 11,-628.5 167,-628.5 167,-607.5 11,-607.5"/>
-<text text-anchor="start" x="63.5" y="-614.3" font-family="Avenir" font-size="14.00">features</text>
-<polygon fill="none" stroke="black" points="169,-607.5 169,-628.5 257,-628.5 257,-607.5 169,-607.5"/>
-<text text-anchor="start" x="172" y="-615.3" font-family="Avenir" font-style="italic" font-size="14.00">FontFeatures</text>
-<polygon fill="none" stroke="black" points="8,-605 8,-906 260,-906 260,-605 8,-605"/>
+<text text-anchor="start" x="118" y="-1097.94" font-family="Avenir" font-weight="bold" font-size="14.00">Font</text>
+<polygon fill="none" stroke="black" points="11,-1062.24 11,-1087.24 166,-1087.24 166,-1062.24 11,-1062.24"/>
+<text text-anchor="start" x="40.88" y="-1070.94" font-family="Avenir" font-size="14.00">_formatspecific</text>
+<polygon fill="none" stroke="black" points="168,-1062.24 168,-1087.24 255,-1087.24 255,-1062.24 168,-1062.24"/>
+<text text-anchor="start" x="199.88" y="-1071.94" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
+<polygon fill="none" stroke="black" points="11,-1035.24 11,-1060.24 166,-1060.24 166,-1035.24 11,-1035.24"/>
+<text text-anchor="start" x="74.62" y="-1043.94" font-family="Avenir" font-size="14.00">upm</text>
+<polygon fill="none" stroke="black" points="168,-1035.24 168,-1060.24 255,-1060.24 255,-1035.24 168,-1035.24"/>
+<text text-anchor="start" x="203.62" y="-1044.94" font-family="Avenir" font-style="italic" font-size="14.00">int</text>
+<polygon fill="none" stroke="black" points="11,-1008.24 11,-1033.24 166,-1033.24 166,-1008.24 11,-1008.24"/>
+<text text-anchor="start" x="66.38" y="-1016.94" font-family="Avenir" font-size="14.00">version</text>
+<polygon fill="none" stroke="black" points="168,-1008.24 168,-1033.24 255,-1033.24 255,-1008.24 168,-1008.24"/>
+<text text-anchor="start" x="188.25" y="-1017.94" font-family="Avenir" font-style="italic" font-size="14.00">(int, int)</text>
+<polygon fill="none" stroke="black" points="11,-981.24 11,-1006.24 166,-1006.24 166,-981.24 11,-981.24"/>
+<text text-anchor="start" x="74.62" y="-989.94" font-family="Avenir" font-size="14.00">axes</text>
+<polygon fill="none" stroke="black" points="168,-981.24 168,-1006.24 255,-1006.24 255,-981.24 168,-981.24"/>
+<text text-anchor="start" x="195" y="-990.94" font-family="Avenir" font-style="italic" font-size="14.00">[Axis]</text>
+<polygon fill="none" stroke="black" points="11,-954.24 11,-979.24 166,-979.24 166,-954.24 11,-954.24"/>
+<text text-anchor="start" x="60" y="-962.94" font-family="Avenir" font-size="14.00">instances</text>
+<polygon fill="none" stroke="black" points="168,-954.24 168,-979.24 255,-979.24 255,-954.24 168,-954.24"/>
+<text text-anchor="start" x="181.88" y="-963.94" font-family="Avenir" font-style="italic" font-size="14.00">[Instance]</text>
+<polygon fill="none" stroke="black" points="11,-927.24 11,-952.24 166,-952.24 166,-927.24 11,-927.24"/>
+<text text-anchor="start" x="63.75" y="-935.94" font-family="Avenir" font-size="14.00">masters</text>
+<polygon fill="none" stroke="black" points="168,-927.24 168,-952.24 255,-952.24 255,-927.24 168,-927.24"/>
+<text text-anchor="start" x="185.62" y="-936.94" font-family="Avenir" font-style="italic" font-size="14.00">[Master]</text>
+<polygon fill="none" stroke="black" points="11,-900.24 11,-925.24 166,-925.24 166,-900.24 11,-900.24"/>
+<text text-anchor="start" x="68.62" y="-908.94" font-family="Avenir" font-size="14.00">glyphs</text>
+<polygon fill="none" stroke="black" points="168,-900.24 168,-925.24 255,-925.24 255,-900.24 168,-900.24"/>
+<text text-anchor="start" x="182.62" y="-909.94" font-family="Avenir" font-style="italic" font-size="14.00">GlyphList</text>
+<polygon fill="none" stroke="black" points="11,-873.24 11,-898.24 166,-898.24 166,-873.24 11,-873.24"/>
+<text text-anchor="start" x="74.25" y="-881.94" font-family="Avenir" font-size="14.00">note</text>
+<polygon fill="none" stroke="black" points="168,-873.24 168,-898.24 255,-898.24 255,-873.24 168,-873.24"/>
+<text text-anchor="start" x="203.25" y="-882.94" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
+<polygon fill="none" stroke="black" points="11,-846.24 11,-871.24 166,-871.24 166,-846.24 11,-846.24"/>
+<text text-anchor="start" x="74.25" y="-854.94" font-family="Avenir" font-size="14.00">date</text>
+<polygon fill="none" stroke="black" points="168,-846.24 168,-871.24 255,-871.24 255,-846.24 168,-846.24"/>
+<text text-anchor="start" x="183.38" y="-855.94" font-family="Avenir" font-style="italic" font-size="14.00">datetime</text>
+<polygon fill="none" stroke="black" points="11,-819.24 11,-844.24 166,-844.24 166,-819.24 11,-819.24"/>
+<text text-anchor="start" x="68.25" y="-827.94" font-family="Avenir" font-size="14.00">names</text>
+<polygon fill="none" stroke="black" points="168,-819.24 168,-844.24 255,-844.24 255,-819.24 168,-819.24"/>
+<text text-anchor="start" x="189.38" y="-828.94" font-family="Avenir" font-style="italic" font-size="14.00">Names</text>
+<polygon fill="none" stroke="black" points="11,-792.24 11,-817.24 166,-817.24 166,-792.24 11,-792.24"/>
+<text text-anchor="start" x="13.88" y="-800.94" font-family="Avenir" font-size="14.00">customOpenTypeValues</text>
+<polygon fill="none" stroke="black" points="168,-792.24 168,-817.24 255,-817.24 255,-792.24 168,-792.24"/>
+<text text-anchor="start" x="181.12" y="-801.94" font-family="Avenir" font-style="italic" font-size="14.00">[OTValue]</text>
+<polygon fill="none" stroke="black" points="11,-765.24 11,-790.24 166,-790.24 166,-765.24 11,-765.24"/>
+<text text-anchor="start" x="63.38" y="-773.94" font-family="Avenir" font-size="14.00">features</text>
+<polygon fill="none" stroke="black" points="168,-765.24 168,-790.24 255,-790.24 255,-765.24 168,-765.24"/>
+<text text-anchor="start" x="170.62" y="-774.94" font-family="Avenir" font-style="italic" font-size="14.00">FontFeatures</text>
+<polygon fill="none" stroke="black" points="8,-762.24 8,-1115.24 258,-1115.24 258,-762.24 8,-762.24"/>
 </a>
 </g>
 </g>
 <!-- Font&#45;&gt;Axis -->
 <g id="edge1" class="edge">
 <title>Font:axes&#45;&gt;Axis</title>
-<path fill="none" stroke="black" d="M258,-802.5C313.87,-802.5 271.99,-873.71 304,-919.5 308.1,-925.37 312.55,-931.14 317.26,-936.78"/>
-<polygon fill="black" stroke="black" points="314.64,-939.11 323.82,-944.4 319.95,-934.54 314.64,-939.11"/>
+<path fill="none" stroke="black" d="M256,-993.74C338.19,-993.74 265.47,-1287.11 302,-1360.74 307.59,-1372 314.5,-1382.86 322.23,-1393.2"/>
+<polygon fill="black" stroke="black" points="319.37,-1395.22 328.29,-1400.95 324.89,-1390.91 319.37,-1395.22"/>
 </g>
 <!-- Instance -->
 <g id="node3" class="node">
 <title>Instance</title>
 <g id="a_node3"><a xlink:href="Instance.html" xlink:title="&lt;TABLE&gt;">
-<text text-anchor="start" x="409.5" y="-890.3" font-family="Avenir" font-weight="bold" font-size="14.00">Instance</text>
-<polygon fill="none" stroke="black" points="335,-860.5 335,-881.5 437,-881.5 437,-860.5 335,-860.5"/>
-<text text-anchor="start" x="367.5" y="-868.3" font-family="Avenir" font-weight="bold" font-size="14.00">name</text>
-<polygon fill="none" stroke="black" points="439,-860.5 439,-881.5 539,-881.5 539,-860.5 439,-860.5"/>
-<text text-anchor="start" x="442" y="-868.3" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
-<polygon fill="none" stroke="black" points="335,-837.5 335,-858.5 437,-858.5 437,-837.5 335,-837.5"/>
-<text text-anchor="start" x="360" y="-845.3" font-family="Avenir" font-weight="bold" font-size="14.00">location</text>
-<polygon fill="none" stroke="black" points="439,-837.5 439,-858.5 539,-858.5 539,-837.5 439,-837.5"/>
-<text text-anchor="start" x="477" y="-845.3" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
-<polygon fill="none" stroke="black" points="335,-814.5 335,-835.5 437,-835.5 437,-814.5 335,-814.5"/>
-<text text-anchor="start" x="352.5" y="-821.3" font-family="Avenir" font-size="14.00">styleName</text>
-<polygon fill="none" stroke="black" points="439,-814.5 439,-835.5 539,-835.5 539,-814.5 439,-814.5"/>
-<text text-anchor="start" x="442" y="-822.3" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
-<polygon fill="none" stroke="black" points="335,-791.5 335,-812.5 437,-812.5 437,-791.5 335,-791.5"/>
-<text text-anchor="start" x="338" y="-798.3" font-family="Avenir" font-size="14.00">_formatspecific</text>
-<polygon fill="none" stroke="black" points="439,-791.5 439,-812.5 539,-812.5 539,-791.5 439,-791.5"/>
-<text text-anchor="start" x="477" y="-799.3" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
-<polygon fill="none" stroke="black" points="332,-789 332,-906 542,-906 542,-789 332,-789"/>
+<text text-anchor="start" x="414" y="-1329.94" font-family="Avenir" font-weight="bold" font-size="14.00">Instance</text>
+<polygon fill="none" stroke="black" points="340,-1294.24 340,-1319.24 441,-1319.24 441,-1294.24 340,-1294.24"/>
+<text text-anchor="start" x="372.5" y="-1303.94" font-family="Avenir" font-weight="bold" font-size="14.00">name</text>
+<polygon fill="none" stroke="black" points="443,-1294.24 443,-1319.24 542,-1319.24 542,-1294.24 443,-1294.24"/>
+<text text-anchor="start" x="445.62" y="-1303.94" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
+<polygon fill="none" stroke="black" points="340,-1267.24 340,-1292.24 441,-1292.24 441,-1267.24 340,-1267.24"/>
+<text text-anchor="start" x="364.62" y="-1276.94" font-family="Avenir" font-weight="bold" font-size="14.00">location</text>
+<polygon fill="none" stroke="black" points="443,-1267.24 443,-1292.24 542,-1292.24 542,-1267.24 443,-1267.24"/>
+<text text-anchor="start" x="480.88" y="-1276.94" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
+<polygon fill="none" stroke="black" points="340,-1240.24 340,-1265.24 441,-1265.24 441,-1240.24 340,-1240.24"/>
+<text text-anchor="start" x="357.12" y="-1248.94" font-family="Avenir" font-size="14.00">styleName</text>
+<polygon fill="none" stroke="black" points="443,-1240.24 443,-1265.24 542,-1265.24 542,-1240.24 443,-1240.24"/>
+<text text-anchor="start" x="445.62" y="-1249.94" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
+<polygon fill="none" stroke="black" points="340,-1213.24 340,-1238.24 441,-1238.24 441,-1213.24 340,-1213.24"/>
+<text text-anchor="start" x="342.88" y="-1221.94" font-family="Avenir" font-size="14.00">_formatspecific</text>
+<polygon fill="none" stroke="black" points="443,-1213.24 443,-1238.24 542,-1238.24 542,-1213.24 443,-1213.24"/>
+<text text-anchor="start" x="480.88" y="-1222.94" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
+<polygon fill="none" stroke="black" points="337,-1210.24 337,-1347.24 545,-1347.24 545,-1210.24 337,-1210.24"/>
 </a>
 </g>
 </g>
 <!-- Font&#45;&gt;Instance -->
 <g id="edge2" class="edge">
 <title>Font:instances&#45;&gt;Instance</title>
-<path fill="none" stroke="black" d="M258,-779.5C276.73,-779.5 295.89,-782.83 314.36,-788.01"/>
-<polygon fill="black" stroke="black" points="313.37,-791.37 323.96,-790.88 315.38,-784.66 313.37,-791.37"/>
+<path fill="none" stroke="black" d="M256,-966.74C360.68,-966.74 241.32,-1112.44 302,-1197.74 307.38,-1205.3 313.71,-1212.28 320.65,-1218.68"/>
+<polygon fill="black" stroke="black" points="318.05,-1221.06 327.9,-1224.94 322.62,-1215.76 318.05,-1221.06"/>
 </g>
 <!-- Master -->
 <g id="node5" class="node">
 <title>Master</title>
 <g id="a_node5"><a xlink:href="Master.html" xlink:title="&lt;TABLE&gt;">
-<text text-anchor="start" x="696" y="-894.3" font-family="Avenir" font-weight="bold" font-size="14.00">Master</text>
-<polygon fill="none" stroke="black" points="617,-864.5 617,-885.5 719,-885.5 719,-864.5 617,-864.5"/>
-<text text-anchor="start" x="649.5" y="-872.3" font-family="Avenir" font-weight="bold" font-size="14.00">name</text>
-<polygon fill="none" stroke="black" points="721,-864.5 721,-885.5 821,-885.5 821,-864.5 721,-864.5"/>
-<text text-anchor="start" x="724" y="-872.3" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
-<polygon fill="none" stroke="black" points="617,-841.5 617,-862.5 719,-862.5 719,-841.5 617,-841.5"/>
-<text text-anchor="start" x="661.5" y="-849.3" font-family="Avenir" font-weight="bold" font-size="14.00">id</text>
-<polygon fill="none" stroke="black" points="721,-841.5 721,-862.5 821,-862.5 821,-841.5 721,-841.5"/>
-<text text-anchor="start" x="762.5" y="-849.3" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
-<polygon fill="none" stroke="black" points="617,-818.5 617,-839.5 719,-839.5 719,-818.5 617,-818.5"/>
-<text text-anchor="start" x="643" y="-825.3" font-family="Avenir" font-size="14.00">location</text>
-<polygon fill="none" stroke="black" points="721,-818.5 721,-839.5 821,-839.5 821,-818.5 721,-818.5"/>
-<text text-anchor="start" x="759" y="-826.3" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
-<polygon fill="none" stroke="black" points="617,-795.5 617,-816.5 719,-816.5 719,-795.5 617,-795.5"/>
-<text text-anchor="start" x="647.5" y="-802.3" font-family="Avenir" font-size="14.00">guides</text>
-<polygon fill="none" stroke="black" points="721,-795.5 721,-816.5 821,-816.5 821,-795.5 721,-795.5"/>
-<text text-anchor="start" x="748" y="-803.3" font-family="Avenir" font-style="italic" font-size="14.00">[Guide]</text>
-<polygon fill="none" stroke="black" points="617,-772.5 617,-793.5 719,-793.5 719,-772.5 617,-772.5"/>
-<text text-anchor="start" x="645" y="-779.3" font-family="Avenir" font-size="14.00">metrics</text>
-<polygon fill="none" stroke="black" points="721,-772.5 721,-793.5 821,-793.5 821,-772.5 721,-772.5"/>
-<text text-anchor="start" x="759" y="-780.3" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
-<polygon fill="none" stroke="black" points="617,-749.5 617,-770.5 719,-770.5 719,-749.5 617,-749.5"/>
-<text text-anchor="start" x="645" y="-756.3" font-family="Avenir" font-size="14.00">kerning</text>
-<polygon fill="none" stroke="black" points="721,-749.5 721,-770.5 821,-770.5 821,-749.5 721,-749.5"/>
-<text text-anchor="start" x="759" y="-757.3" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
-<polygon fill="none" stroke="black" points="617,-726.5 617,-747.5 719,-747.5 719,-726.5 617,-726.5"/>
-<text text-anchor="start" x="620" y="-733.3" font-family="Avenir" font-size="14.00">_formatspecific</text>
-<polygon fill="none" stroke="black" points="721,-726.5 721,-747.5 821,-747.5 821,-726.5 721,-726.5"/>
-<text text-anchor="start" x="759" y="-734.3" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
-<polygon fill="none" stroke="black" points="614,-723.5 614,-909.5 824,-909.5 824,-723.5 614,-723.5"/>
+<text text-anchor="start" x="418.5" y="-1166.94" font-family="Avenir" font-weight="bold" font-size="14.00">Master</text>
+<polygon fill="none" stroke="black" points="313,-1131.24 313,-1156.24 468,-1156.24 468,-1131.24 313,-1131.24"/>
+<text text-anchor="start" x="372.5" y="-1140.94" font-family="Avenir" font-weight="bold" font-size="14.00">name</text>
+<polygon fill="none" stroke="black" points="470,-1131.24 470,-1156.24 569,-1156.24 569,-1131.24 470,-1131.24"/>
+<text text-anchor="start" x="472.62" y="-1140.94" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
+<polygon fill="none" stroke="black" points="313,-1104.24 313,-1129.24 468,-1129.24 468,-1104.24 313,-1104.24"/>
+<text text-anchor="start" x="384.12" y="-1113.94" font-family="Avenir" font-weight="bold" font-size="14.00">id</text>
+<polygon fill="none" stroke="black" points="470,-1104.24 470,-1129.24 569,-1129.24 569,-1104.24 470,-1104.24"/>
+<text text-anchor="start" x="511.25" y="-1113.94" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
+<polygon fill="none" stroke="black" points="313,-1077.24 313,-1102.24 468,-1102.24 468,-1077.24 313,-1077.24"/>
+<text text-anchor="start" x="365.75" y="-1085.94" font-family="Avenir" font-size="14.00">location</text>
+<polygon fill="none" stroke="black" points="470,-1077.24 470,-1102.24 569,-1102.24 569,-1077.24 470,-1077.24"/>
+<text text-anchor="start" x="507.88" y="-1086.94" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
+<polygon fill="none" stroke="black" points="313,-1050.24 313,-1075.24 468,-1075.24 468,-1050.24 313,-1050.24"/>
+<text text-anchor="start" x="370.25" y="-1058.94" font-family="Avenir" font-size="14.00">guides</text>
+<polygon fill="none" stroke="black" points="470,-1050.24 470,-1075.24 569,-1075.24 569,-1050.24 470,-1050.24"/>
+<text text-anchor="start" x="497" y="-1059.94" font-family="Avenir" font-style="italic" font-size="14.00">[Guide]</text>
+<polygon fill="none" stroke="black" points="313,-1023.24 313,-1048.24 468,-1048.24 468,-1023.24 313,-1023.24"/>
+<text text-anchor="start" x="367.62" y="-1031.94" font-family="Avenir" font-size="14.00">metrics</text>
+<polygon fill="none" stroke="black" points="470,-1023.24 470,-1048.24 569,-1048.24 569,-1023.24 470,-1023.24"/>
+<text text-anchor="start" x="507.88" y="-1032.94" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
+<polygon fill="none" stroke="black" points="313,-996.24 313,-1021.24 468,-1021.24 468,-996.24 313,-996.24"/>
+<text text-anchor="start" x="367.62" y="-1004.94" font-family="Avenir" font-size="14.00">kerning</text>
+<polygon fill="none" stroke="black" points="470,-996.24 470,-1021.24 569,-1021.24 569,-996.24 470,-996.24"/>
+<text text-anchor="start" x="507.88" y="-1005.94" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
+<polygon fill="none" stroke="black" points="313,-969.24 313,-994.24 468,-994.24 468,-969.24 313,-969.24"/>
+<text text-anchor="start" x="315.88" y="-977.94" font-family="Avenir" font-size="14.00">customOpenTypeValues</text>
+<polygon fill="none" stroke="black" points="470,-969.24 470,-994.24 569,-994.24 569,-969.24 470,-969.24"/>
+<text text-anchor="start" x="489.12" y="-978.94" font-family="Avenir" font-style="italic" font-size="14.00">[OTValue]</text>
+<polygon fill="none" stroke="black" points="313,-942.24 313,-967.24 468,-967.24 468,-942.24 313,-942.24"/>
+<text text-anchor="start" x="342.88" y="-950.94" font-family="Avenir" font-size="14.00">_formatspecific</text>
+<polygon fill="none" stroke="black" points="470,-942.24 470,-967.24 569,-967.24 569,-942.24 470,-942.24"/>
+<text text-anchor="start" x="507.88" y="-951.94" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
+<polygon fill="none" stroke="black" points="310,-939.24 310,-1184.24 572,-1184.24 572,-939.24 310,-939.24"/>
 </a>
 </g>
 </g>
 <!-- Font&#45;&gt;Master -->
-<g id="edge4" class="edge">
+<g id="edge5" class="edge">
 <title>Font:masters&#45;&gt;Master</title>
-<path fill="none" stroke="black" d="M258,-756.5C396.95,-756.5 432.91,-753.82 570,-776.5 578.49,-777.9 587.2,-779.59 595.93,-781.47"/>
-<polygon fill="black" stroke="black" points="595.27,-784.91 605.79,-783.67 596.79,-778.08 595.27,-784.91"/>
+<path fill="none" stroke="black" d="M256,-939.74C267.98,-939.74 279.78,-941.56 291.26,-944.75"/>
+<polygon fill="black" stroke="black" points="290.14,-948.07 300.73,-947.76 292.26,-941.4 290.14,-948.07"/>
+</g>
+<!-- OTValue -->
+<g id="node6" class="node">
+<title>OTValue</title>
+<g id="a_node6"><a xlink:href="OTValue.html" xlink:title="&lt;TABLE&gt;">
+<text text-anchor="start" x="677.5" y="-514.44" font-family="Avenir" font-weight="bold" font-size="14.00">OTValue</text>
+<polygon fill="none" stroke="black" points="671,-478.74 671,-503.74 712,-503.74 712,-478.74 671,-478.74"/>
+<text text-anchor="start" x="674.62" y="-488.44" font-family="Avenir" font-weight="bold" font-size="14.00">table</text>
+<polygon fill="none" stroke="black" points="714,-478.74 714,-503.74 741,-503.74 741,-478.74 714,-478.74"/>
+<text text-anchor="start" x="719.25" y="-488.44" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
+<polygon fill="none" stroke="black" points="671,-451.74 671,-476.74 712,-476.74 712,-451.74 671,-451.74"/>
+<text text-anchor="start" x="676.88" y="-461.44" font-family="Avenir" font-weight="bold" font-size="14.00">field</text>
+<polygon fill="none" stroke="black" points="714,-451.74 714,-476.74 741,-476.74 741,-451.74 714,-451.74"/>
+<text text-anchor="start" x="719.25" y="-461.44" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
+<polygon fill="none" stroke="black" points="671,-424.74 671,-449.74 712,-449.74 712,-424.74 671,-424.74"/>
+<text text-anchor="start" x="673.88" y="-434.44" font-family="Avenir" font-weight="bold" font-size="14.00">value</text>
+<polygon fill="none" stroke="black" points="714,-424.74 714,-449.74 741,-449.74 741,-424.74 714,-424.74"/>
+<text text-anchor="start" x="716.62" y="-434.44" font-family="Avenir" font-style="italic" font-size="14.00">any</text>
+<polygon fill="none" stroke="black" points="668,-421.74 668,-531.74 744,-531.74 744,-421.74 668,-421.74"/>
+</a>
+</g>
+</g>
+<!-- Font&#45;&gt;OTValue -->
+<g id="edge7" class="edge">
+<title>Font:customOpenTypeValues&#45;&gt;OTValue</title>
+<path fill="none" stroke="black" d="M256,-804.74C338.94,-804.74 241.58,-116.55 302,-59.74 392.02,24.89 480.88,14.03 580,-59.74 635.92,-101.36 676.16,-299.52 694.28,-407.01"/>
+<polygon fill="black" stroke="black" points="690.77,-407.29 695.87,-416.58 697.68,-406.14 690.77,-407.29"/>
 </g>
 <!-- Names -->
-<g id="node6" class="node">
+<g id="node7" class="node">
 <title>Names</title>
-<g id="a_node6"><a xlink:href="Names.html" xlink:title="&lt;TABLE&gt;">
-<text text-anchor="start" x="414" y="-473.3" font-family="Avenir" font-weight="bold" font-size="14.00">Names</text>
-<polygon fill="none" stroke="black" points="315,-443.5 315,-464.5 457,-464.5 457,-443.5 315,-443.5"/>
-<text text-anchor="start" x="338" y="-450.3" font-family="Avenir" font-size="14.00">_formatspecific</text>
-<polygon fill="none" stroke="black" points="459,-443.5 459,-464.5 559,-464.5 559,-443.5 459,-443.5"/>
-<text text-anchor="start" x="497" y="-451.3" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
-<polygon fill="none" stroke="black" points="315,-420.5 315,-441.5 457,-441.5 457,-420.5 315,-420.5"/>
-<text text-anchor="start" x="348" y="-427.3" font-family="Avenir" font-size="14.00">familyName</text>
-<polygon fill="none" stroke="black" points="459,-420.5 459,-441.5 559,-441.5 559,-420.5 459,-420.5"/>
-<text text-anchor="start" x="462" y="-428.3" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
-<polygon fill="none" stroke="black" points="315,-397.5 315,-418.5 457,-418.5 457,-397.5 315,-397.5"/>
-<text text-anchor="start" x="359" y="-404.3" font-family="Avenir" font-size="14.00">designer</text>
-<polygon fill="none" stroke="black" points="459,-397.5 459,-418.5 559,-418.5 559,-397.5 459,-397.5"/>
-<text text-anchor="start" x="462" y="-405.3" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
-<polygon fill="none" stroke="black" points="315,-374.5 315,-395.5 457,-395.5 457,-374.5 315,-374.5"/>
-<text text-anchor="start" x="346.5" y="-381.3" font-family="Avenir" font-size="14.00">designerURL</text>
-<polygon fill="none" stroke="black" points="459,-374.5 459,-395.5 559,-395.5 559,-374.5 459,-374.5"/>
-<text text-anchor="start" x="462" y="-382.3" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
-<polygon fill="none" stroke="black" points="315,-351.5 315,-372.5 457,-372.5 457,-351.5 315,-351.5"/>
-<text text-anchor="start" x="344" y="-358.3" font-family="Avenir" font-size="14.00">manufacturer</text>
-<polygon fill="none" stroke="black" points="459,-351.5 459,-372.5 559,-372.5 559,-351.5 459,-351.5"/>
-<text text-anchor="start" x="462" y="-359.3" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
-<polygon fill="none" stroke="black" points="315,-328.5 315,-349.5 457,-349.5 457,-328.5 315,-328.5"/>
-<text text-anchor="start" x="331.5" y="-335.3" font-family="Avenir" font-size="14.00">manufacturerURL</text>
-<polygon fill="none" stroke="black" points="459,-328.5 459,-349.5 559,-349.5 559,-328.5 459,-328.5"/>
-<text text-anchor="start" x="462" y="-336.3" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
-<polygon fill="none" stroke="black" points="315,-305.5 315,-326.5 457,-326.5 457,-305.5 315,-305.5"/>
-<text text-anchor="start" x="365" y="-312.3" font-family="Avenir" font-size="14.00">license</text>
-<polygon fill="none" stroke="black" points="459,-305.5 459,-326.5 559,-326.5 559,-305.5 459,-305.5"/>
-<text text-anchor="start" x="462" y="-313.3" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
-<polygon fill="none" stroke="black" points="315,-282.5 315,-303.5 457,-303.5 457,-282.5 315,-282.5"/>
-<text text-anchor="start" x="352.5" y="-289.3" font-family="Avenir" font-size="14.00">licenseURL</text>
-<polygon fill="none" stroke="black" points="459,-282.5 459,-303.5 559,-303.5 559,-282.5 459,-282.5"/>
-<text text-anchor="start" x="462" y="-290.3" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
-<polygon fill="none" stroke="black" points="315,-259.5 315,-280.5 457,-280.5 457,-259.5 315,-259.5"/>
-<text text-anchor="start" x="363.5" y="-266.3" font-family="Avenir" font-size="14.00">version</text>
-<polygon fill="none" stroke="black" points="459,-259.5 459,-280.5 559,-280.5 559,-259.5 459,-259.5"/>
-<text text-anchor="start" x="462" y="-267.3" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
-<polygon fill="none" stroke="black" points="315,-236.5 315,-257.5 457,-257.5 457,-236.5 315,-236.5"/>
-<text text-anchor="start" x="358" y="-243.3" font-family="Avenir" font-size="14.00">uniqueID</text>
-<polygon fill="none" stroke="black" points="459,-236.5 459,-257.5 559,-257.5 559,-236.5 459,-236.5"/>
-<text text-anchor="start" x="462" y="-244.3" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
-<polygon fill="none" stroke="black" points="315,-213.5 315,-234.5 457,-234.5 457,-213.5 315,-213.5"/>
-<text text-anchor="start" x="351" y="-220.3" font-family="Avenir" font-size="14.00">description</text>
-<polygon fill="none" stroke="black" points="459,-213.5 459,-234.5 559,-234.5 559,-213.5 459,-213.5"/>
-<text text-anchor="start" x="462" y="-221.3" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
-<polygon fill="none" stroke="black" points="315,-190.5 315,-211.5 457,-211.5 457,-190.5 315,-190.5"/>
-<text text-anchor="start" x="328.5" y="-197.3" font-family="Avenir" font-size="14.00">typographicFamily</text>
-<polygon fill="none" stroke="black" points="459,-190.5 459,-211.5 559,-211.5 559,-190.5 459,-190.5"/>
-<text text-anchor="start" x="462" y="-198.3" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
-<polygon fill="none" stroke="black" points="315,-167.5 315,-188.5 457,-188.5 457,-167.5 315,-167.5"/>
-<text text-anchor="start" x="318" y="-174.3" font-family="Avenir" font-size="14.00">typographicSubfamily</text>
-<polygon fill="none" stroke="black" points="459,-167.5 459,-188.5 559,-188.5 559,-167.5 459,-167.5"/>
-<text text-anchor="start" x="462" y="-175.3" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
-<polygon fill="none" stroke="black" points="315,-144.5 315,-165.5 457,-165.5 457,-144.5 315,-144.5"/>
-<text text-anchor="start" x="321" y="-151.3" font-family="Avenir" font-size="14.00">compatibleFullName</text>
-<polygon fill="none" stroke="black" points="459,-144.5 459,-165.5 559,-165.5 559,-144.5 459,-144.5"/>
-<text text-anchor="start" x="462" y="-152.3" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
-<polygon fill="none" stroke="black" points="315,-121.5 315,-142.5 457,-142.5 457,-121.5 315,-121.5"/>
-<text text-anchor="start" x="350.5" y="-128.3" font-family="Avenir" font-size="14.00">sampleText</text>
-<polygon fill="none" stroke="black" points="459,-121.5 459,-142.5 559,-142.5 559,-121.5 459,-121.5"/>
-<text text-anchor="start" x="462" y="-129.3" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
-<polygon fill="none" stroke="black" points="315,-98.5 315,-119.5 457,-119.5 457,-98.5 315,-98.5"/>
-<text text-anchor="start" x="329.5" y="-105.3" font-family="Avenir" font-size="14.00">WWSFamilyName</text>
-<polygon fill="none" stroke="black" points="459,-98.5 459,-119.5 559,-119.5 559,-98.5 459,-98.5"/>
-<text text-anchor="start" x="462" y="-106.3" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
-<polygon fill="none" stroke="black" points="315,-75.5 315,-96.5 457,-96.5 457,-75.5 315,-75.5"/>
-<text text-anchor="start" x="319.5" y="-82.3" font-family="Avenir" font-size="14.00">WWSSubfamilyName</text>
-<polygon fill="none" stroke="black" points="459,-75.5 459,-96.5 559,-96.5 559,-75.5 459,-75.5"/>
-<text text-anchor="start" x="462" y="-83.3" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
-<polygon fill="none" stroke="black" points="315,-52.5 315,-73.5 457,-73.5 457,-52.5 315,-52.5"/>
-<text text-anchor="start" x="356" y="-59.3" font-family="Avenir" font-size="14.00">copyright</text>
-<polygon fill="none" stroke="black" points="459,-52.5 459,-73.5 559,-73.5 559,-52.5 459,-52.5"/>
-<text text-anchor="start" x="462" y="-60.3" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
-<polygon fill="none" stroke="black" points="315,-29.5 315,-50.5 457,-50.5 457,-29.5 315,-29.5"/>
-<text text-anchor="start" x="318" y="-36.3" font-family="Avenir" font-size="14.00">styleMapFamilyName</text>
-<polygon fill="none" stroke="black" points="459,-29.5 459,-50.5 559,-50.5 559,-29.5 459,-29.5"/>
-<text text-anchor="start" x="462" y="-37.3" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
-<polygon fill="none" stroke="black" points="315,-6.5 315,-27.5 457,-27.5 457,-6.5 315,-6.5"/>
-<text text-anchor="start" x="353" y="-13.3" font-family="Avenir" font-size="14.00">trademark</text>
-<polygon fill="none" stroke="black" points="459,-6.5 459,-27.5 559,-27.5 559,-6.5 459,-6.5"/>
-<text text-anchor="start" x="462" y="-14.3" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
-<polygon fill="none" stroke="black" points="312,-4 312,-489 562,-489 562,-4 312,-4"/>
+<g id="a_node7"><a xlink:href="Names.html" xlink:title="&lt;TABLE&gt;">
+<text text-anchor="start" x="418.5" y="-624.94" font-family="Avenir" font-weight="bold" font-size="14.00">Names</text>
+<polygon fill="none" stroke="black" points="320,-589.24 320,-614.24 461,-614.24 461,-589.24 320,-589.24"/>
+<text text-anchor="start" x="342.88" y="-597.94" font-family="Avenir" font-size="14.00">_formatspecific</text>
+<polygon fill="none" stroke="black" points="463,-589.24 463,-614.24 562,-614.24 562,-589.24 463,-589.24"/>
+<text text-anchor="start" x="500.88" y="-598.94" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
+<polygon fill="none" stroke="black" points="320,-562.24 320,-587.24 461,-587.24 461,-562.24 320,-562.24"/>
+<text text-anchor="start" x="353" y="-570.94" font-family="Avenir" font-size="14.00">familyName</text>
+<polygon fill="none" stroke="black" points="463,-562.24 463,-587.24 562,-587.24 562,-562.24 463,-562.24"/>
+<text text-anchor="start" x="465.62" y="-571.94" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
+<polygon fill="none" stroke="black" points="320,-535.24 320,-560.24 461,-560.24 461,-535.24 320,-535.24"/>
+<text text-anchor="start" x="363.88" y="-543.94" font-family="Avenir" font-size="14.00">designer</text>
+<polygon fill="none" stroke="black" points="463,-535.24 463,-560.24 562,-560.24 562,-535.24 463,-535.24"/>
+<text text-anchor="start" x="465.62" y="-544.94" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
+<polygon fill="none" stroke="black" points="320,-508.24 320,-533.24 461,-533.24 461,-508.24 320,-508.24"/>
+<text text-anchor="start" x="351.5" y="-516.94" font-family="Avenir" font-size="14.00">designerURL</text>
+<polygon fill="none" stroke="black" points="463,-508.24 463,-533.24 562,-533.24 562,-508.24 463,-508.24"/>
+<text text-anchor="start" x="465.62" y="-517.94" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
+<polygon fill="none" stroke="black" points="320,-481.24 320,-506.24 461,-506.24 461,-481.24 320,-481.24"/>
+<text text-anchor="start" x="348.88" y="-489.94" font-family="Avenir" font-size="14.00">manufacturer</text>
+<polygon fill="none" stroke="black" points="463,-481.24 463,-506.24 562,-506.24 562,-481.24 463,-481.24"/>
+<text text-anchor="start" x="465.62" y="-490.94" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
+<polygon fill="none" stroke="black" points="320,-454.24 320,-479.24 461,-479.24 461,-454.24 320,-454.24"/>
+<text text-anchor="start" x="336.5" y="-462.94" font-family="Avenir" font-size="14.00">manufacturerURL</text>
+<polygon fill="none" stroke="black" points="463,-454.24 463,-479.24 562,-479.24 562,-454.24 463,-454.24"/>
+<text text-anchor="start" x="465.62" y="-463.94" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
+<polygon fill="none" stroke="black" points="320,-427.24 320,-452.24 461,-452.24 461,-427.24 320,-427.24"/>
+<text text-anchor="start" x="369.88" y="-435.94" font-family="Avenir" font-size="14.00">license</text>
+<polygon fill="none" stroke="black" points="463,-427.24 463,-452.24 562,-452.24 562,-427.24 463,-427.24"/>
+<text text-anchor="start" x="465.62" y="-436.94" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
+<polygon fill="none" stroke="black" points="320,-400.24 320,-425.24 461,-425.24 461,-400.24 320,-400.24"/>
+<text text-anchor="start" x="357.5" y="-408.94" font-family="Avenir" font-size="14.00">licenseURL</text>
+<polygon fill="none" stroke="black" points="463,-400.24 463,-425.24 562,-425.24 562,-400.24 463,-400.24"/>
+<text text-anchor="start" x="465.62" y="-409.94" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
+<polygon fill="none" stroke="black" points="320,-373.24 320,-398.24 461,-398.24 461,-373.24 320,-373.24"/>
+<text text-anchor="start" x="368.38" y="-381.94" font-family="Avenir" font-size="14.00">version</text>
+<polygon fill="none" stroke="black" points="463,-373.24 463,-398.24 562,-398.24 562,-373.24 463,-373.24"/>
+<text text-anchor="start" x="465.62" y="-382.94" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
+<polygon fill="none" stroke="black" points="320,-346.24 320,-371.24 461,-371.24 461,-346.24 320,-346.24"/>
+<text text-anchor="start" x="362.75" y="-354.94" font-family="Avenir" font-size="14.00">uniqueID</text>
+<polygon fill="none" stroke="black" points="463,-346.24 463,-371.24 562,-371.24 562,-346.24 463,-346.24"/>
+<text text-anchor="start" x="465.62" y="-355.94" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
+<polygon fill="none" stroke="black" points="320,-319.24 320,-344.24 461,-344.24 461,-319.24 320,-319.24"/>
+<text text-anchor="start" x="356" y="-327.94" font-family="Avenir" font-size="14.00">description</text>
+<polygon fill="none" stroke="black" points="463,-319.24 463,-344.24 562,-344.24 562,-319.24 463,-319.24"/>
+<text text-anchor="start" x="465.62" y="-328.94" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
+<polygon fill="none" stroke="black" points="320,-292.24 320,-317.24 461,-317.24 461,-292.24 320,-292.24"/>
+<text text-anchor="start" x="333.12" y="-300.94" font-family="Avenir" font-size="14.00">typographicFamily</text>
+<polygon fill="none" stroke="black" points="463,-292.24 463,-317.24 562,-317.24 562,-292.24 463,-292.24"/>
+<text text-anchor="start" x="465.62" y="-301.94" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
+<polygon fill="none" stroke="black" points="320,-265.24 320,-290.24 461,-290.24 461,-265.24 320,-265.24"/>
+<text text-anchor="start" x="323" y="-273.94" font-family="Avenir" font-size="14.00">typographicSubfamily</text>
+<polygon fill="none" stroke="black" points="463,-265.24 463,-290.24 562,-290.24 562,-265.24 463,-265.24"/>
+<text text-anchor="start" x="465.62" y="-274.94" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
+<polygon fill="none" stroke="black" points="320,-238.24 320,-263.24 461,-263.24 461,-238.24 320,-238.24"/>
+<text text-anchor="start" x="326" y="-246.94" font-family="Avenir" font-size="14.00">compatibleFullName</text>
+<polygon fill="none" stroke="black" points="463,-238.24 463,-263.24 562,-263.24 562,-238.24 463,-238.24"/>
+<text text-anchor="start" x="465.62" y="-247.94" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
+<polygon fill="none" stroke="black" points="320,-211.24 320,-236.24 461,-236.24 461,-211.24 320,-211.24"/>
+<text text-anchor="start" x="355.25" y="-219.94" font-family="Avenir" font-size="14.00">sampleText</text>
+<polygon fill="none" stroke="black" points="463,-211.24 463,-236.24 562,-236.24 562,-211.24 463,-211.24"/>
+<text text-anchor="start" x="465.62" y="-220.94" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
+<polygon fill="none" stroke="black" points="320,-184.24 320,-209.24 461,-209.24 461,-184.24 320,-184.24"/>
+<text text-anchor="start" x="334.25" y="-192.94" font-family="Avenir" font-size="14.00">WWSFamilyName</text>
+<polygon fill="none" stroke="black" points="463,-184.24 463,-209.24 562,-209.24 562,-184.24 463,-184.24"/>
+<text text-anchor="start" x="465.62" y="-193.94" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
+<polygon fill="none" stroke="black" points="320,-157.24 320,-182.24 461,-182.24 461,-157.24 320,-157.24"/>
+<text text-anchor="start" x="324.12" y="-165.94" font-family="Avenir" font-size="14.00">WWSSubfamilyName</text>
+<polygon fill="none" stroke="black" points="463,-157.24 463,-182.24 562,-182.24 562,-157.24 463,-157.24"/>
+<text text-anchor="start" x="465.62" y="-166.94" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
+<polygon fill="none" stroke="black" points="320,-130.24 320,-155.24 461,-155.24 461,-130.24 320,-130.24"/>
+<text text-anchor="start" x="360.88" y="-138.94" font-family="Avenir" font-size="14.00">copyright</text>
+<polygon fill="none" stroke="black" points="463,-130.24 463,-155.24 562,-155.24 562,-130.24 463,-130.24"/>
+<text text-anchor="start" x="465.62" y="-139.94" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
+<polygon fill="none" stroke="black" points="320,-103.24 320,-128.24 461,-128.24 461,-103.24 320,-103.24"/>
+<text text-anchor="start" x="323" y="-111.94" font-family="Avenir" font-size="14.00">styleMapFamilyName</text>
+<polygon fill="none" stroke="black" points="463,-103.24 463,-128.24 562,-128.24 562,-103.24 463,-103.24"/>
+<text text-anchor="start" x="465.62" y="-112.94" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
+<polygon fill="none" stroke="black" points="320,-76.24 320,-101.24 461,-101.24 461,-76.24 320,-76.24"/>
+<text text-anchor="start" x="357.88" y="-84.94" font-family="Avenir" font-size="14.00">trademark</text>
+<polygon fill="none" stroke="black" points="463,-76.24 463,-101.24 562,-101.24 562,-76.24 463,-76.24"/>
+<text text-anchor="start" x="465.62" y="-85.94" font-family="Avenir" font-style="italic" font-size="14.00">I18NDictionary</text>
+<polygon fill="none" stroke="black" points="317,-73.24 317,-642.24 565,-642.24 565,-73.24 317,-73.24"/>
 </a>
 </g>
 </g>
 <!-- Font&#45;&gt;Names -->
-<g id="edge5" class="edge">
+<g id="edge6" class="edge">
 <title>Font:names&#45;&gt;Names</title>
-<path fill="none" stroke="black" d="M258,-663.5C329.78,-663.5 280.84,-578.51 303.99,-502.79"/>
-<polygon fill="black" stroke="black" points="307.37,-503.73 307.37,-493.13 300.76,-501.41 307.37,-503.73"/>
+<path fill="none" stroke="black" d="M256,-831.74C336.85,-831.74 274.68,-731.83 302,-655.74 302.99,-652.98 304,-650.21 305.02,-647.44"/>
+<polygon fill="black" stroke="black" points="308.28,-648.7 308.5,-638.11 301.72,-646.26 308.28,-648.7"/>
 </g>
 <!-- Glyph -->
-<g id="node10" class="node">
+<g id="node8" class="node">
 <title>Glyph</title>
-<g id="a_node10"><a xlink:href="Glyph.html" xlink:title="&lt;TABLE&gt;">
-<text text-anchor="start" x="417.5" y="-708.3" font-family="Avenir" font-weight="bold" font-size="14.00">Glyph</text>
-<polygon fill="none" stroke="black" points="355,-678.5 355,-699.5 470,-699.5 470,-678.5 355,-678.5"/>
-<text text-anchor="start" x="394" y="-686.3" font-family="Avenir" font-weight="bold" font-size="14.00">name</text>
-<polygon fill="none" stroke="black" points="472,-678.5 472,-699.5 520,-699.5 520,-678.5 472,-678.5"/>
-<text text-anchor="start" x="487.5" y="-686.3" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
-<polygon fill="none" stroke="black" points="355,-655.5 355,-676.5 470,-676.5 470,-655.5 355,-655.5"/>
-<text text-anchor="start" x="358" y="-662.3" font-family="Avenir" font-size="14.00">production_name</text>
-<polygon fill="none" stroke="black" points="472,-655.5 472,-676.5 520,-676.5 520,-655.5 472,-655.5"/>
-<text text-anchor="start" x="487.5" y="-663.3" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
-<polygon fill="none" stroke="black" points="355,-632.5 355,-653.5 470,-653.5 470,-632.5 355,-632.5"/>
-<text text-anchor="start" x="384.5" y="-639.3" font-family="Avenir" font-size="14.00">category</text>
-<polygon fill="none" stroke="black" points="472,-632.5 472,-653.5 520,-653.5 520,-632.5 472,-632.5"/>
-<text text-anchor="start" x="487.5" y="-640.3" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
-<polygon fill="none" stroke="black" points="355,-609.5 355,-630.5 470,-630.5 470,-609.5 355,-609.5"/>
-<text text-anchor="start" x="377.5" y="-616.3" font-family="Avenir" font-size="14.00">codepoints</text>
-<polygon fill="none" stroke="black" points="472,-609.5 472,-630.5 520,-630.5 520,-609.5 472,-609.5"/>
-<text text-anchor="start" x="484" y="-617.3" font-family="Avenir" font-style="italic" font-size="14.00">[int]</text>
-<polygon fill="none" stroke="black" points="355,-586.5 355,-607.5 470,-607.5 470,-586.5 355,-586.5"/>
-<text text-anchor="start" x="394" y="-593.3" font-family="Avenir" font-size="14.00">layers</text>
-<polygon fill="none" stroke="black" points="472,-586.5 472,-607.5 520,-607.5 520,-586.5 472,-586.5"/>
-<text text-anchor="start" x="475" y="-594.3" font-family="Avenir" font-style="italic" font-size="14.00">[Layer]</text>
-<polygon fill="none" stroke="black" points="355,-563.5 355,-584.5 470,-584.5 470,-563.5 355,-563.5"/>
-<text text-anchor="start" x="383.5" y="-570.3" font-family="Avenir" font-size="14.00">exported</text>
-<polygon fill="none" stroke="black" points="472,-563.5 472,-584.5 520,-584.5 520,-563.5 472,-563.5"/>
-<text text-anchor="start" x="482" y="-571.3" font-family="Avenir" font-style="italic" font-size="14.00">bool</text>
-<polygon fill="none" stroke="black" points="355,-540.5 355,-561.5 470,-561.5 470,-540.5 355,-540.5"/>
-<text text-anchor="start" x="385" y="-547.3" font-family="Avenir" font-size="14.00">direction</text>
-<polygon fill="none" stroke="black" points="472,-540.5 472,-561.5 520,-561.5 520,-540.5 472,-540.5"/>
-<text text-anchor="start" x="487.5" y="-548.3" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
-<polygon fill="none" stroke="black" points="355,-517.5 355,-538.5 470,-538.5 470,-517.5 355,-517.5"/>
-<text text-anchor="start" x="364.5" y="-524.3" font-family="Avenir" font-size="14.00">_formatspecific</text>
-<polygon fill="none" stroke="black" points="472,-517.5 472,-538.5 520,-538.5 520,-517.5 472,-517.5"/>
-<text text-anchor="start" x="484" y="-525.3" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
-<polygon fill="none" stroke="black" points="351.5,-515 351.5,-724 522.5,-724 522.5,-515 351.5,-515"/>
+<g id="a_node8"><a xlink:href="Glyph.html" xlink:title="&lt;TABLE&gt;">
+<text text-anchor="start" x="421.12" y="-895.94" font-family="Avenir" font-weight="bold" font-size="14.00">Glyph</text>
+<polygon fill="none" stroke="black" points="353,-860.24 353,-885.24 467,-885.24 467,-860.24 353,-860.24"/>
+<text text-anchor="start" x="392" y="-869.94" font-family="Avenir" font-weight="bold" font-size="14.00">name</text>
+<polygon fill="none" stroke="black" points="469,-860.24 469,-885.24 529,-885.24 529,-860.24 469,-860.24"/>
+<text text-anchor="start" x="490.75" y="-869.94" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
+<polygon fill="none" stroke="black" points="353,-833.24 353,-858.24 467,-858.24 467,-833.24 353,-833.24"/>
+<text text-anchor="start" x="355.62" y="-841.94" font-family="Avenir" font-size="14.00">production_name</text>
+<polygon fill="none" stroke="black" points="469,-833.24 469,-858.24 529,-858.24 529,-833.24 469,-833.24"/>
+<text text-anchor="start" x="471.62" y="-842.94" font-family="Avenir" font-style="italic" font-size="14.00">Optional</text>
+<polygon fill="none" stroke="black" points="353,-806.24 353,-831.24 467,-831.24 467,-806.24 353,-806.24"/>
+<text text-anchor="start" x="382.25" y="-814.94" font-family="Avenir" font-size="14.00">category</text>
+<polygon fill="none" stroke="black" points="469,-806.24 469,-831.24 529,-831.24 529,-806.24 469,-806.24"/>
+<text text-anchor="start" x="490.75" y="-815.94" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
+<polygon fill="none" stroke="black" points="353,-779.24 353,-804.24 467,-804.24 467,-779.24 353,-779.24"/>
+<text text-anchor="start" x="375.5" y="-787.94" font-family="Avenir" font-size="14.00">codepoints</text>
+<polygon fill="none" stroke="black" points="469,-779.24 469,-804.24 529,-804.24 529,-779.24 469,-779.24"/>
+<text text-anchor="start" x="488.5" y="-788.94" font-family="Avenir" font-style="italic" font-size="14.00">List</text>
+<polygon fill="none" stroke="black" points="353,-752.24 353,-777.24 467,-777.24 467,-752.24 353,-752.24"/>
+<text text-anchor="start" x="392" y="-760.94" font-family="Avenir" font-size="14.00">layers</text>
+<polygon fill="none" stroke="black" points="469,-752.24 469,-777.24 529,-777.24 529,-752.24 469,-752.24"/>
+<text text-anchor="start" x="488.5" y="-761.94" font-family="Avenir" font-style="italic" font-size="14.00">List</text>
+<polygon fill="none" stroke="black" points="353,-725.24 353,-750.24 467,-750.24 467,-725.24 353,-725.24"/>
+<text text-anchor="start" x="381.5" y="-733.94" font-family="Avenir" font-size="14.00">exported</text>
+<polygon fill="none" stroke="black" points="469,-725.24 469,-750.24 529,-750.24 529,-725.24 469,-725.24"/>
+<text text-anchor="start" x="485.12" y="-734.94" font-family="Avenir" font-style="italic" font-size="14.00">bool</text>
+<polygon fill="none" stroke="black" points="353,-698.24 353,-723.24 467,-723.24 467,-698.24 353,-698.24"/>
+<text text-anchor="start" x="383" y="-706.94" font-family="Avenir" font-size="14.00">direction</text>
+<polygon fill="none" stroke="black" points="469,-698.24 469,-723.24 529,-723.24 529,-698.24 469,-698.24"/>
+<text text-anchor="start" x="490.75" y="-707.94" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
+<polygon fill="none" stroke="black" points="353,-671.24 353,-696.24 467,-696.24 467,-671.24 353,-671.24"/>
+<text text-anchor="start" x="362.38" y="-679.94" font-family="Avenir" font-size="14.00">_formatspecific</text>
+<polygon fill="none" stroke="black" points="469,-671.24 469,-696.24 529,-696.24 529,-671.24 469,-671.24"/>
+<text text-anchor="start" x="487.38" y="-680.94" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
+<polygon fill="none" stroke="black" points="350,-668.24 350,-913.24 532,-913.24 532,-668.24 350,-668.24"/>
 </a>
 </g>
 </g>
 <!-- Font&#45;&gt;Glyph -->
-<g id="edge10" class="edge">
+<g id="edge8" class="edge">
 <title>Font:glyphs&#45;&gt;Glyph</title>
-<path fill="none" stroke="black" d="M258,-732.5C284.78,-732.5 310.79,-723.27 334.28,-710.09"/>
-<polygon fill="black" stroke="black" points="336.32,-712.95 343.16,-704.86 332.76,-706.92 336.32,-712.95"/>
+<path fill="none" stroke="black" d="M256,-912.74C282.95,-912.74 308.98,-903.54 332.55,-890.18"/>
+<polygon fill="black" stroke="black" points="334.07,-893.36 340.86,-885.22 330.48,-887.35 334.07,-893.36"/>
 </g>
 <!-- Guide -->
 <g id="node4" class="node">
 <title>Guide</title>
 <g id="a_node4"><a xlink:href="Guide.html" xlink:title="&lt;TABLE&gt;">
-<text text-anchor="start" x="945.5" y="-825.3" font-family="Avenir" font-weight="bold" font-size="14.00">Guide</text>
-<polygon fill="none" stroke="black" points="886,-795.5 886,-816.5 988,-816.5 988,-795.5 886,-795.5"/>
-<text text-anchor="start" x="925" y="-803.3" font-family="Avenir" font-weight="bold" font-size="14.00">pos</text>
-<polygon fill="none" stroke="black" points="990,-795.5 990,-816.5 1046,-816.5 1046,-795.5 990,-795.5"/>
-<text text-anchor="start" x="993" y="-803.3" font-family="Avenir" font-style="italic" font-size="14.00">Position</text>
-<polygon fill="none" stroke="black" points="886,-772.5 886,-793.5 988,-793.5 988,-772.5 886,-772.5"/>
-<text text-anchor="start" x="919.5" y="-779.3" font-family="Avenir" font-size="14.00">name</text>
-<polygon fill="none" stroke="black" points="990,-772.5 990,-793.5 1046,-793.5 1046,-772.5 990,-772.5"/>
-<text text-anchor="start" x="1009.5" y="-780.3" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
-<polygon fill="none" stroke="black" points="886,-749.5 886,-770.5 988,-770.5 988,-749.5 886,-749.5"/>
-<text text-anchor="start" x="921" y="-756.3" font-family="Avenir" font-size="14.00">color</text>
-<polygon fill="none" stroke="black" points="990,-749.5 990,-770.5 1046,-770.5 1046,-749.5 990,-749.5"/>
-<text text-anchor="start" x="1000.5" y="-757.3" font-family="Avenir" font-style="italic" font-size="14.00">Color</text>
-<polygon fill="none" stroke="black" points="886,-726.5 886,-747.5 988,-747.5 988,-726.5 886,-726.5"/>
-<text text-anchor="start" x="889" y="-733.3" font-family="Avenir" font-size="14.00">_formatspecific</text>
-<polygon fill="none" stroke="black" points="990,-726.5 990,-747.5 1046,-747.5 1046,-726.5 990,-726.5"/>
-<text text-anchor="start" x="1006" y="-734.3" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
-<polygon fill="none" stroke="black" points="883,-724 883,-841 1049,-841 1049,-724 883,-724"/>
+<text text-anchor="start" x="685.75" y="-1113.94" font-family="Avenir" font-weight="bold" font-size="14.00">Guide</text>
+<polygon fill="none" stroke="black" points="627,-1078.24 627,-1103.24 728,-1103.24 728,-1078.24 627,-1078.24"/>
+<text text-anchor="start" x="665.88" y="-1087.94" font-family="Avenir" font-weight="bold" font-size="14.00">pos</text>
+<polygon fill="none" stroke="black" points="730,-1078.24 730,-1103.24 785,-1103.24 785,-1078.24 730,-1078.24"/>
+<text text-anchor="start" x="732.75" y="-1087.94" font-family="Avenir" font-style="italic" font-size="14.00">Position</text>
+<polygon fill="none" stroke="black" points="627,-1051.24 627,-1076.24 728,-1076.24 728,-1051.24 627,-1051.24"/>
+<text text-anchor="start" x="660.25" y="-1059.94" font-family="Avenir" font-size="14.00">name</text>
+<polygon fill="none" stroke="black" points="730,-1051.24 730,-1076.24 785,-1076.24 785,-1051.24 730,-1051.24"/>
+<text text-anchor="start" x="749.25" y="-1060.94" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
+<polygon fill="none" stroke="black" points="627,-1024.24 627,-1049.24 728,-1049.24 728,-1024.24 627,-1024.24"/>
+<text text-anchor="start" x="661.75" y="-1032.94" font-family="Avenir" font-size="14.00">color</text>
+<polygon fill="none" stroke="black" points="730,-1024.24 730,-1049.24 785,-1049.24 785,-1024.24 730,-1024.24"/>
+<text text-anchor="start" x="740.25" y="-1033.94" font-family="Avenir" font-style="italic" font-size="14.00">Color</text>
+<polygon fill="none" stroke="black" points="627,-997.24 627,-1022.24 728,-1022.24 728,-997.24 627,-997.24"/>
+<text text-anchor="start" x="629.88" y="-1005.94" font-family="Avenir" font-size="14.00">_formatspecific</text>
+<polygon fill="none" stroke="black" points="730,-997.24 730,-1022.24 785,-1022.24 785,-997.24 730,-997.24"/>
+<text text-anchor="start" x="745.88" y="-1006.94" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
+<polygon fill="none" stroke="black" points="624,-994.24 624,-1131.24 788,-1131.24 788,-994.24 624,-994.24"/>
 </a>
 </g>
 </g>
 <!-- Master&#45;&gt;Guide -->
 <g id="edge3" class="edge">
 <title>Master:guides&#45;&gt;Guide</title>
-<path fill="none" stroke="black" d="M822,-805.5C835.86,-805.5 850.38,-804.43 864.64,-802.76"/>
-<polygon fill="black" stroke="black" points="865.48,-806.18 874.96,-801.44 864.59,-799.24 865.48,-806.18"/>
+<path fill="none" stroke="black" d="M570,-1062.74C581.28,-1062.74 593.09,-1062.74 604.83,-1062.74"/>
+<polygon fill="black" stroke="black" points="604.53,-1066.24 614.53,-1062.74 604.53,-1059.24 604.53,-1066.24"/>
 </g>
-<!-- Layer -->
-<g id="node7" class="node">
-<title>Layer</title>
-<g id="a_node7"><a xlink:href="Layer.html" xlink:title="&lt;TABLE&gt;">
-<text text-anchor="start" x="701" y="-682.3" font-family="Avenir" font-weight="bold" font-size="14.00">Layer</text>
-<polygon fill="none" stroke="black" points="638,-652.5 638,-673.5 740,-673.5 740,-652.5 638,-652.5"/>
-<text text-anchor="start" x="671.5" y="-659.3" font-family="Avenir" font-size="14.00">width</text>
-<polygon fill="none" stroke="black" points="742,-652.5 742,-673.5 801,-673.5 801,-652.5 742,-652.5"/>
-<text text-anchor="start" x="763.5" y="-660.3" font-family="Avenir" font-style="italic" font-size="14.00">int</text>
-<polygon fill="none" stroke="black" points="638,-629.5 638,-650.5 740,-650.5 740,-629.5 638,-629.5"/>
-<text text-anchor="start" x="671.5" y="-636.3" font-family="Avenir" font-size="14.00">name</text>
-<polygon fill="none" stroke="black" points="742,-629.5 742,-650.5 801,-650.5 801,-629.5 742,-629.5"/>
-<text text-anchor="start" x="763" y="-637.3" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
-<polygon fill="none" stroke="black" points="638,-606.5 638,-627.5 740,-627.5 740,-606.5 638,-606.5"/>
-<text text-anchor="start" x="663.5" y="-613.3" font-family="Avenir" font-size="14.00">_master</text>
-<polygon fill="none" stroke="black" points="742,-606.5 742,-627.5 801,-627.5 801,-606.5 742,-606.5"/>
-<text text-anchor="start" x="763" y="-614.3" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
-<polygon fill="none" stroke="black" points="638,-583.5 638,-604.5 740,-604.5 740,-583.5 638,-583.5"/>
-<text text-anchor="start" x="683" y="-590.3" font-family="Avenir" font-size="14.00">id</text>
-<polygon fill="none" stroke="black" points="742,-583.5 742,-604.5 801,-604.5 801,-583.5 742,-583.5"/>
-<text text-anchor="start" x="763" y="-591.3" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
-<polygon fill="none" stroke="black" points="638,-560.5 638,-581.5 740,-581.5 740,-560.5 638,-560.5"/>
-<text text-anchor="start" x="668.5" y="-567.3" font-family="Avenir" font-size="14.00">guides</text>
-<polygon fill="none" stroke="black" points="742,-560.5 742,-581.5 801,-581.5 801,-560.5 742,-560.5"/>
-<text text-anchor="start" x="748.5" y="-568.3" font-family="Avenir" font-style="italic" font-size="14.00">[Guide]</text>
-<polygon fill="none" stroke="black" points="638,-537.5 638,-558.5 740,-558.5 740,-537.5 638,-537.5"/>
-<text text-anchor="start" x="667.5" y="-544.3" font-family="Avenir" font-size="14.00">shapes</text>
-<polygon fill="none" stroke="black" points="742,-537.5 742,-558.5 801,-558.5 801,-537.5 742,-537.5"/>
-<text text-anchor="start" x="748.5" y="-545.3" font-family="Avenir" font-style="italic" font-size="14.00">[Shape]</text>
-<polygon fill="none" stroke="black" points="638,-514.5 638,-535.5 740,-535.5 740,-514.5 638,-514.5"/>
-<text text-anchor="start" x="664.5" y="-521.3" font-family="Avenir" font-size="14.00">anchors</text>
-<polygon fill="none" stroke="black" points="742,-514.5 742,-535.5 801,-535.5 801,-514.5 742,-514.5"/>
-<text text-anchor="start" x="745" y="-522.3" font-family="Avenir" font-style="italic" font-size="14.00">[Anchor]</text>
-<polygon fill="none" stroke="black" points="638,-491.5 638,-512.5 740,-512.5 740,-491.5 638,-491.5"/>
-<text text-anchor="start" x="673" y="-498.3" font-family="Avenir" font-size="14.00">color</text>
-<polygon fill="none" stroke="black" points="742,-491.5 742,-512.5 801,-512.5 801,-491.5 742,-491.5"/>
-<text text-anchor="start" x="754" y="-499.3" font-family="Avenir" font-style="italic" font-size="14.00">Color</text>
-<polygon fill="none" stroke="black" points="638,-468.5 638,-489.5 740,-489.5 740,-468.5 638,-468.5"/>
-<text text-anchor="start" x="657" y="-475.3" font-family="Avenir" font-size="14.00">layerIndex</text>
-<polygon fill="none" stroke="black" points="742,-468.5 742,-489.5 801,-489.5 801,-468.5 742,-468.5"/>
-<text text-anchor="start" x="763.5" y="-476.3" font-family="Avenir" font-style="italic" font-size="14.00">int</text>
-<polygon fill="none" stroke="black" points="638,-445.5 638,-466.5 740,-466.5 740,-445.5 638,-445.5"/>
-<text text-anchor="start" x="648.5" y="-452.3" font-family="Avenir" font-size="14.00">_background</text>
-<polygon fill="none" stroke="black" points="742,-445.5 742,-466.5 801,-466.5 801,-445.5 742,-445.5"/>
-<text text-anchor="start" x="763" y="-453.3" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
-<polygon fill="none" stroke="black" points="638,-422.5 638,-443.5 740,-443.5 740,-422.5 638,-422.5"/>
-<text text-anchor="start" x="647" y="-429.3" font-family="Avenir" font-size="14.00">isBackground</text>
-<polygon fill="none" stroke="black" points="742,-422.5 742,-443.5 801,-443.5 801,-422.5 742,-422.5"/>
-<text text-anchor="start" x="757.5" y="-430.3" font-family="Avenir" font-style="italic" font-size="14.00">bool</text>
-<polygon fill="none" stroke="black" points="638,-399.5 638,-420.5 740,-420.5 740,-399.5 638,-399.5"/>
-<text text-anchor="start" x="664" y="-406.3" font-family="Avenir" font-size="14.00">location</text>
-<polygon fill="none" stroke="black" points="742,-399.5 742,-420.5 801,-420.5 801,-399.5 742,-399.5"/>
-<text text-anchor="start" x="753" y="-407.3" font-family="Avenir" font-style="italic" font-size="14.00">[float]</text>
-<polygon fill="none" stroke="black" points="638,-376.5 638,-397.5 740,-397.5 740,-376.5 638,-376.5"/>
-<text text-anchor="start" x="641" y="-383.3" font-family="Avenir" font-size="14.00">_formatspecific</text>
-<polygon fill="none" stroke="black" points="742,-376.5 742,-397.5 801,-397.5 801,-376.5 742,-376.5"/>
-<text text-anchor="start" x="759.5" y="-384.3" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
-<polygon fill="none" stroke="black" points="634.5,-373.5 634.5,-697.5 803.5,-697.5 803.5,-373.5 634.5,-373.5"/>
-</a>
-</g>
-</g>
-<!-- Layer&#45;&gt;Guide -->
-<g id="edge6" class="edge">
-<title>Layer:guides&#45;&gt;Guide</title>
-<path fill="none" stroke="black" d="M802,-571.5C853.41,-571.5 836.81,-625.63 868,-666.5 879.46,-681.52 892.14,-697.26 904.45,-712.13"/>
-<polygon fill="black" stroke="black" points="901.76,-714.37 910.85,-719.82 907.14,-709.89 901.76,-714.37"/>
-</g>
-<!-- Shape -->
-<g id="node8" class="node">
-<title>Shape</title>
-<g id="a_node8"><a xlink:href="Shape.html" xlink:title="&lt;TABLE&gt;">
-<text text-anchor="start" x="945" y="-637.3" font-family="Avenir" font-weight="bold" font-size="14.00">Shape</text>
-<polygon fill="none" stroke="black" points="879,-607.5 879,-628.5 981,-628.5 981,-607.5 879,-607.5"/>
-<text text-anchor="start" x="921.5" y="-614.3" font-family="Avenir" font-size="14.00">ref</text>
-<polygon fill="none" stroke="black" points="983,-607.5 983,-628.5 1053,-628.5 1053,-607.5 983,-607.5"/>
-<text text-anchor="start" x="1009.5" y="-615.3" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
-<polygon fill="none" stroke="black" points="879,-584.5 879,-605.5 981,-605.5 981,-584.5 879,-584.5"/>
-<text text-anchor="start" x="899" y="-591.3" font-family="Avenir" font-size="14.00">transform</text>
-<polygon fill="none" stroke="black" points="983,-584.5 983,-605.5 1053,-605.5 1053,-584.5 983,-584.5"/>
-<text text-anchor="start" x="986" y="-592.3" font-family="Avenir" font-style="italic" font-size="14.00">Transform</text>
-<polygon fill="none" stroke="black" points="879,-561.5 879,-582.5 981,-582.5 981,-561.5 879,-561.5"/>
-<text text-anchor="start" x="911" y="-568.3" font-family="Avenir" font-size="14.00">nodes</text>
-<polygon fill="none" stroke="black" points="983,-561.5 983,-582.5 1053,-582.5 1053,-561.5 983,-561.5"/>
-<text text-anchor="start" x="996.5" y="-569.3" font-family="Avenir" font-style="italic" font-size="14.00">[Node]</text>
-<polygon fill="none" stroke="black" points="879,-538.5 879,-559.5 981,-559.5 981,-538.5 879,-538.5"/>
-<text text-anchor="start" x="910" y="-545.3" font-family="Avenir" font-size="14.00">closed</text>
-<polygon fill="none" stroke="black" points="983,-538.5 983,-559.5 1053,-559.5 1053,-538.5 983,-538.5"/>
-<text text-anchor="start" x="1004" y="-546.3" font-family="Avenir" font-style="italic" font-size="14.00">bool</text>
-<polygon fill="none" stroke="black" points="879,-515.5 879,-536.5 981,-536.5 981,-515.5 879,-515.5"/>
-<text text-anchor="start" x="902.5" y="-522.3" font-family="Avenir" font-size="14.00">direction</text>
-<polygon fill="none" stroke="black" points="983,-515.5 983,-536.5 1053,-536.5 1053,-515.5 983,-515.5"/>
-<text text-anchor="start" x="1010" y="-523.3" font-family="Avenir" font-style="italic" font-size="14.00">int</text>
-<polygon fill="none" stroke="black" points="879,-492.5 879,-513.5 981,-513.5 981,-492.5 879,-492.5"/>
-<text text-anchor="start" x="882" y="-499.3" font-family="Avenir" font-size="14.00">_formatspecific</text>
-<polygon fill="none" stroke="black" points="983,-492.5 983,-513.5 1053,-513.5 1053,-492.5 983,-492.5"/>
-<text text-anchor="start" x="1006" y="-500.3" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
-<polygon fill="none" stroke="black" points="876,-490 876,-653 1056,-653 1056,-490 876,-490"/>
-</a>
-</g>
-</g>
-<!-- Layer&#45;&gt;Shape -->
-<g id="edge7" class="edge">
-<title>Layer:shapes&#45;&gt;Shape</title>
-<path fill="none" stroke="black" d="M802,-548.5C820.17,-548.5 839.37,-549.92 857.96,-552.05"/>
-<polygon fill="black" stroke="black" points="857.57,-555.53 867.92,-553.27 858.42,-548.58 857.57,-555.53"/>
-</g>
-<!-- Anchor -->
-<g id="node9" class="node">
-<title>Anchor</title>
-<g id="a_node9"><a xlink:href="Anchor.html" xlink:title="&lt;TABLE&gt;">
-<text text-anchor="start" x="942.5" y="-448.3" font-family="Avenir" font-weight="bold" font-size="14.00">Anchor</text>
-<polygon fill="none" stroke="black" points="899,-418.5 899,-439.5 1001,-439.5 1001,-418.5 899,-418.5"/>
-<text text-anchor="start" x="931.5" y="-426.3" font-family="Avenir" font-weight="bold" font-size="14.00">name</text>
-<polygon fill="none" stroke="black" points="1003,-418.5 1003,-439.5 1033,-439.5 1033,-418.5 1003,-418.5"/>
-<text text-anchor="start" x="1009.5" y="-426.3" font-family="Avenir" font-style="italic" font-size="14.00">str</text>
-<polygon fill="none" stroke="black" points="899,-395.5 899,-416.5 1001,-416.5 1001,-395.5 899,-395.5"/>
-<text text-anchor="start" x="946.5" y="-402.3" font-family="Avenir" font-size="14.00">x</text>
-<polygon fill="none" stroke="black" points="1003,-395.5 1003,-416.5 1033,-416.5 1033,-395.5 1003,-395.5"/>
-<text text-anchor="start" x="1010" y="-403.3" font-family="Avenir" font-style="italic" font-size="14.00">int</text>
-<polygon fill="none" stroke="black" points="899,-372.5 899,-393.5 1001,-393.5 1001,-372.5 899,-372.5"/>
-<text text-anchor="start" x="946.5" y="-379.3" font-family="Avenir" font-size="14.00">y</text>
-<polygon fill="none" stroke="black" points="1003,-372.5 1003,-393.5 1033,-393.5 1033,-372.5 1003,-372.5"/>
-<text text-anchor="start" x="1010" y="-380.3" font-family="Avenir" font-style="italic" font-size="14.00">int</text>
-<polygon fill="none" stroke="black" points="899,-349.5 899,-370.5 1001,-370.5 1001,-349.5 899,-349.5"/>
-<text text-anchor="start" x="902" y="-356.3" font-family="Avenir" font-size="14.00">_formatspecific</text>
-<polygon fill="none" stroke="black" points="1003,-349.5 1003,-370.5 1033,-370.5 1033,-349.5 1003,-349.5"/>
-<text text-anchor="start" x="1006" y="-357.3" font-family="Avenir" font-style="italic" font-size="14.00">dict</text>
-<polygon fill="none" stroke="black" points="896,-347 896,-464 1036,-464 1036,-347 896,-347"/>
-</a>
-</g>
-</g>
-<!-- Layer&#45;&gt;Anchor -->
-<g id="edge8" class="edge">
-<title>Layer:anchors&#45;&gt;Anchor</title>
-<path fill="none" stroke="black" d="M802,-524.5C802.17,-524.5 840.23,-496.71 879.53,-468"/>
-<polygon fill="black" stroke="black" points="881.91,-470.59 887.92,-461.86 877.78,-464.94 881.91,-470.59"/>
-</g>
-<!-- Glyph&#45;&gt;Layer -->
-<g id="edge9" class="edge">
-<title>Glyph:layers&#45;&gt;Layer</title>
-<path fill="none" stroke="black" d="M521,-596.5C552.82,-596.5 586.29,-589.15 616.44,-579.55"/>
-<polygon fill="black" stroke="black" points="617.7,-582.82 626.1,-576.36 615.5,-576.17 617.7,-582.82"/>
+<!-- Master&#45;&gt;OTValue -->
+<g id="edge4" class="edge">
+<title>Master:customOpenTypeValues&#45;&gt;OTValue</title>
+<path fill="none" stroke="black" d="M570,-981.74C658.93,-981.74 690.82,-685.75 700.88,-546.98"/>
+<polygon fill="black" stroke="black" points="704.36,-547.39 701.58,-537.17 697.38,-546.9 704.36,-547.39"/>
 </g>
 </g>
 </svg>
