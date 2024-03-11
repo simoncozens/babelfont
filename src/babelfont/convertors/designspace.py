@@ -1,11 +1,25 @@
-from babelfont import *
-from babelfont.convertors import BaseConvertor
-from fontTools.designspaceLib import DesignSpaceDocument
-from fontTools import designspaceLib
-import ufoLib2
-import uuid
 import logging
+from typing import Dict, List
+import uuid
 
+import ufoLib2
+from fontTools import designspaceLib
+from fontTools.designspaceLib import DesignSpaceDocument
+
+from babelfont import (
+    Font,
+    Master,
+    Instance,
+    Glyph,
+    Layer,
+    Shape,
+    Node,
+    Anchor,
+    Guide,
+    Axis,
+    I18NDictionary,
+)
+from babelfont.convertors import BaseConvertor
 
 log = logging.getLogger(__name__)
 
@@ -14,7 +28,7 @@ class Designspace(BaseConvertor):
     suffix = ".designspace"
 
     @classmethod
-    def load(cls, convertor):
+    def load(cls, convertor, compile_only=False):
         self = cls()
         self.ds = DesignSpaceDocument.fromfile(convertor.filename)
         self.ds.loadSourceFonts(ufoLib2.Font.open)
@@ -40,9 +54,10 @@ class Designspace(BaseConvertor):
             for ufo_layer in source.font.layers:
                 for g in source.font.glyphOrder:
                     if g not in glyphs_dict:
-                        log.warn(
-                            "Incompatible glyph set: %s appears in %s but is not in default"
-                            % (g, source.filename)
+                        log.warning(
+                            "Incompatible glyph set: %s appears in %s but is not in default",
+                            g,
+                            source.filename,
                         )
                         continue
                     if g not in ufo_layer:
@@ -51,11 +66,11 @@ class Designspace(BaseConvertor):
         self._fixup_glyph_exported(self.ds.sources[0].font)
         return self.font
 
-    def _fixup_glyph_exported(self, ufo):
+    def _fixup_glyph_exported(self, ufo: ufoLib2.Font):
         for glyph in ufo.lib.get("public.skipExportGlyphs", []):
             self.font.glyphs[glyph].exported = False
 
-    def _load_glyphs(self, master):
+    def _load_glyphs(self, master: ufoLib2.Font):
         glyphs_dict = {}
         for g in master.glyphOrder:
             glyphs_dict[g] = self._load_glyph(master[g])
@@ -75,8 +90,9 @@ class Designspace(BaseConvertor):
                 )
             )
 
-    def _load_master(self, source):
-        i = source.font.info
+    def _load_master(self, source: designspaceLib.SourceDescriptor):
+        font: ufoLib2.Font = source.font
+        i = font.info
         master = Master(
             name=source.name,
             id=(source.name or uuid.uuid1()),
@@ -91,32 +107,34 @@ class Designspace(BaseConvertor):
         master.location = {_axis_name_to_id[k]: v for k, v in source.location.items()}
         master.font = self.font
         master.kerning = self._load_kerning(source)
-        self._load_groups(source.name, source.font.groups)
+        self._load_groups(source.name, font.groups)
         assert master.valid
         return master
 
-    def _load_groups(self, sourcename, groups):
+    def _load_groups(self, sourcename: str, groups: Dict[str, List[str]]):
         for name, value in groups.items():
             if (
                 name in self.font.features.namedClasses
                 and self.font.features.namedClasses[name] != value
             ):
-                log.warn(
-                    "Inconsistent definition of glyph class @%s found in %s"
-                    % (name, sourcename)
+                log.warning(
+                    "Inconsistent definition of glyph class @%s found in %s",
+                    name,
+                    sourcename,
                 )
             self.font.features.namedClasses[name] = value
 
-    def _load_guide(self, ufo_guide):
+    def _load_guide(self, ufo_guide: ufoLib2.objects.Guideline):
         return Guide(
             pos=[ufo_guide.x, ufo_guide.y, ufo_guide.angle],
             name=ufo_guide.name,
             color=ufo_guide.color,
         )
 
-    def _load_kerning(self, source):
+    def _load_kerning(self, source: designspaceLib.SourceDescriptor):
+        font: ufoLib2.Font = source.font
         kerning = {}
-        for (l, r), value in source.font.kerning.items():
+        for (l, r), value in font.kerning.items():
             if l.startswith("public.kern"):
                 l = "@" + l
             if r.startswith("public.kern"):
@@ -124,7 +142,7 @@ class Designspace(BaseConvertor):
             kerning[(l, r)] = value
         return kerning
 
-    def _load_glyph(self, ufo_glyph):
+    def _load_glyph(self, ufo_glyph: ufoLib2.objects.Glyph):
         cp = ufo_glyph.unicodes or [ufo_glyph.unicode]
         lib = self.ds.sources[0].font.lib
         category = lib.get("public.openTypeCategories", {}).get(ufo_glyph.name, "base")
@@ -133,7 +151,9 @@ class Designspace(BaseConvertor):
             g.production_name = lib["public.postscriptNames"][g.name]
         return g
 
-    def _load_layer(self, source, ufo_layer, glyphname):
+    def _load_layer(
+        self, source: designspaceLib.SourceDescriptor, ufo_layer, glyphname: str
+    ):
         if ufo_layer.name == "public.default":
             layer_id = source._babelfont_master.id
         else:
@@ -152,11 +172,11 @@ class Designspace(BaseConvertor):
         assert l.valid
         return l
 
-    def _load_component(self, shape):
+    def _load_component(self, shape: ufoLib2.objects.Component):
         c = Shape(ref=shape.baseGlyph, transform=shape.transformation)
         return c
 
-    def _load_anchor(self, anchor):
+    def _load_anchor(self, anchor: ufoLib2.objects.Anchor):
         return Anchor(name=anchor.name, x=int(anchor.x), y=int(anchor.y))
 
     def _load_contour(self, contour):
@@ -241,6 +261,14 @@ class Designspace(BaseConvertor):
             axisDescriptor.map = axis.map
             self.ds.addAxis(axisDescriptor)
 
+    def _master_filename(self, master):
+        return (
+            self.font.names.familyName.get_default().replace(" ", "")
+            + "-"
+            + master.name.get_default().replace(" ", "")
+            + ".ufo"
+        )
+
     def save_sources(self):
         font = self.font
         for master in font.masters:
@@ -248,12 +276,7 @@ class Designspace(BaseConvertor):
             sourceDescriptor.name = (
                 font.names.familyName.get_default() + " " + master.name.get_default()
             )
-            sourceDescriptor.filename = (
-                font.names.familyName.get_default().replace(" ", "")
-                + "-"
-                + master.name.get_default().replace(" ", "")
-                + ".ufo"
-            )
+            sourceDescriptor.filename = self._master_filename(master)
             sourceDescriptor.styleName = master.name.get_default()
             sourceDescriptor.familyName = font.names.familyName.get_default()
             if master == self.font.default_master:
@@ -274,3 +297,52 @@ class Designspace(BaseConvertor):
             else:
                 sourceDescriptor.location = {"Weight": 100}
             self.ds.addSource(sourceDescriptor)
+            self.save_master_to_ufo(master)
+
+    def save_master_to_ufo(self, master, filename):
+        ufo = ufoLib2.Font()
+        ufo.info.unitsPerEm = self.font.upm
+        ufo.info.versionMajor, ufo.info.versionMinor = self.font.version
+        ufo.info.note = self.font.note
+        for ours, theirs in self.names_dict.items():
+            our_value = getattr(self.font.names, ours).get_default()
+            if our_value != "unknown":
+                setattr(ufo.info, theirs, getattr(self.font.names, ours).get_default())
+        for glyph in self.font.glyphs:
+            ufo.newGlyph(glyph.name)
+        for glyph in self.font.glyphs:
+            ufo_glyph = ufo[glyph.name]
+            self.save_layer_to_ufo(ufo_glyph, master.get_glyph_layer(glyph.name))
+        # Metrics
+        for metric in Master.CORE_METRICS:
+            if metric in master.metrics:
+                setattr(ufo.info, metric, master.metrics[metric])
+        ufo.save(filename)
+
+    def save_layer_to_ufo(self, ufo_glyph: ufoLib2.objects.Glyph, layer: Layer):
+        for shape in layer.shapes:
+            if shape.is_component:
+                self.save_component_to_ufo(ufo_glyph, shape)
+            else:
+                self.save_contour_to_ufo(ufo_glyph, shape)
+        for anchor in layer.anchors:
+            self.save_anchor_to_ufo(ufo_glyph, anchor)
+        ufo_glyph.width = layer.width
+
+    def save_anchor_to_ufo(self, ufo_glyph: ufoLib2.objects.Glyph, anchor: Anchor):
+        ufo_glyph.appendAnchor(
+            name=anchor.name, x=anchor.x, y=anchor.y, color=anchor.color
+        )
+    
+    def save_component_to_ufo(self, ufo_glyph: ufoLib2.objects.Glyph, shape: Shape):
+        ufo_glyph.components.append(ufoLib2.objects.Component(
+            baseGlyph=shape.ref,
+            transformation=shape.transform,
+        ))
+    
+    def save_contour_to_ufo(self, ufo_glyph: ufoLib2.objects.Glyph, shape: Shape):
+        pen = ufo_glyph.getPointPen()
+        pen.beginPath()
+        for node in shape.nodes:
+            pen.addPoint((node.x, node.y), segmentType=Node._to_pen_type[node.type[0]])
+        pen.endPath()

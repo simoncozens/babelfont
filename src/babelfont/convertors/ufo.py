@@ -22,3 +22,8 @@ class UFO(Designspace):
         self.ds.addSource(s1)
         self.font = Font()
         return self._load()
+
+    def _save(self):
+        if len(self.font.masters) > 1:
+            raise ValueError("Only single master fonts can be saved as UFO")
+        self.save_master_to_ufo(self.font.masters[0], self.filename)
