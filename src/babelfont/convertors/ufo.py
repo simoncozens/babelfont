@@ -1,4 +1,4 @@
-from babelfont import *
+from babelfont import Font
 from babelfont.convertors.designspace import Designspace
 from fontTools.designspaceLib import DesignSpaceDocument, SourceDescriptor
 import ufoLib2
@@ -26,4 +26,4 @@ class UFO(Designspace):
     def _save(self):
         if len(self.font.masters) > 1:
             raise ValueError("Only single master fonts can be saved as UFO")
-        self.save_master_to_ufo(self.font.masters[0], self.filename)
+        self.save_master_to_ufo(self.font.masters[0], self.filename, is_default=True)

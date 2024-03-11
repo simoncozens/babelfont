@@ -19,9 +19,58 @@ from babelfont import (
     Axis,
     I18NDictionary,
 )
+from babelfont.BaseObject import OTValue
 from babelfont.convertors import BaseConvertor
 
 log = logging.getLogger(__name__)
+
+metrics = {
+    "xHeight": "xHeight",
+    "capHeight": "capHeight",
+    "ascender": "ascender",
+    "descender": "descender",
+    "italicAngle": "italicAngle",
+    "hheaAscender": "openTypeHheaAscender",
+    "hheaDescender": "openTypeHheaDescender",
+    "hheaLineGap": "openTypeHheaLineGap",
+    "winAscent": "openTypeOS2WinAscent",
+    "winDescent": "openTypeOS2WinDescent",
+    "typoAscender": "openTypeOS2TypoAscender",
+    "typoDescender": "openTypeOS2TypoDescender",
+    "typoLineGap": "openTypeOS2TypoLineGap",
+    "subscriptXSize": "openTypeOS2SubscriptXSize",
+    "subscriptYSize": "openTypeOS2SubscriptYSize",
+    "subscriptXOffset": "openTypeOS2SubscriptXOffset",
+    "subscriptYOffset": "openTypeOS2SubscriptYOffset",
+    "superscriptXSize": "openTypeOS2SuperscriptXSize",
+    "superscriptYSize": "openTypeOS2SuperscriptYSize",
+    "superscriptXOffset": "openTypeOS2SuperscriptXOffset",
+    "superscriptYOffset": "openTypeOS2SuperscriptYOffset",
+    "strikeoutSize": "openTypeOS2StrikeoutSize",
+    "strikeoutPosition": "openTypeOS2StrikeoutPosition",
+    "underlinePosition": "postscriptUnderlinePosition",
+    "underlineThickness": "postscriptUnderlineThickness",
+    "hheaCaretSlopeRise": "openTypeHheaCaretSlopeRise",
+    "hheaCaretSlopeRun": "openTypeHheaCaretSlopeRun",
+    "hheaCaretOffset": "openTypeHheaCaretOffset",
+}
+
+# Unicode ranges / code page ranges are special
+
+custom_opentype_values = {
+    "openTypeGaspRangeRecords": ("GASP", "gaspRange"),
+    # XX more gasp here
+    "openTypeHeadCreated": ("head", "created"),
+    "openTypeHeadLowestRecPPEM": ("head", "lowestRecPPEM"),
+    "openTypeHeadFlags": ("head", "flags"),
+    "openTypeOS2WidthClass": ("OS/2", "usWidthClass"),
+    "openTypeOS2WeightClass": ("OS/2", "usWeightClass"),
+    "openTypeOS2Selection": ("OS/2", "fsSelection"),
+    "openTypeOS2VendorID": ("OS/2", "achVendID"),
+    "openTypeOS2Panose": ("OS/2", "bPanose"),
+    "openTypeOS2FamilyClass": ("OS/2", "sFamilyClass"),
+    "openTypeOS2Type": ("OS/2", "fsType"),
+}
 
 
 class Designspace(BaseConvertor):
@@ -52,7 +101,7 @@ class Designspace(BaseConvertor):
         # Right, let's find all the layers. This will be messy.
         for source in self.ds.sources:
             for ufo_layer in source.font.layers:
-                for g in source.font.glyphOrder:
+                for g in source.font.keys():
                     if g not in glyphs_dict:
                         log.warning(
                             "Incompatible glyph set: %s appears in %s but is not in default",
@@ -72,7 +121,7 @@ class Designspace(BaseConvertor):
 
     def _load_glyphs(self, master: ufoLib2.Font):
         glyphs_dict = {}
-        for g in master.glyphOrder:
+        for g in master.keys():
             glyphs_dict[g] = self._load_glyph(master[g])
             self.font.glyphs.append(glyphs_dict[g])
         return glyphs_dict
@@ -97,10 +146,9 @@ class Designspace(BaseConvertor):
             name=source.name,
             id=(source.name or uuid.uuid1()),
         )
-        for metric in Master.CORE_METRICS:
-            master.metrics[metric] = getattr(i, metric)
+        for our_metric, their_metric in metrics.items():
+            master.metrics[our_metric] = getattr(i, their_metric)
         _axis_name_to_id = {a.name.get_default(): a.tag for a in self.font.axes}
-        # italic angle
         # names XXX
         # guidelines
         master.guides = [self._load_guide(g) for g in (i.guidelines or [])]
@@ -229,6 +277,13 @@ class Designspace(BaseConvertor):
             their_value = getattr(firstfontinfo, theirs)
             if their_value:
                 getattr(self.font.names, ours).set_default(their_value)
+        for ufofield, (table, field) in custom_opentype_values.items():
+            if getattr(firstfontinfo, ufofield):
+                self.font.customOpenTypeValues.append(
+                    OTValue(
+                        table=table, field=field, value=getattr(firstfontinfo, ufofield)
+                    )
+                )
 
     def _save(self):
         font = self.font
@@ -299,9 +354,9 @@ class Designspace(BaseConvertor):
             else:
                 sourceDescriptor.location = {"Weight": 100}
             self.ds.addSource(sourceDescriptor)
-            self.save_master_to_ufo(master)
+            self.save_master_to_ufo(master, self._master_filename(master), is_default=(master == self.font.default_master))
 
-    def save_master_to_ufo(self, master, filename):
+    def save_master_to_ufo(self, master, filename, is_default=False):
         ufo = ufoLib2.Font()
         ufo.info.unitsPerEm = self.font.upm
         ufo.info.versionMajor, ufo.info.versionMinor = self.font.version
@@ -317,10 +372,14 @@ class Designspace(BaseConvertor):
             self.save_layer_to_ufo(ufo_glyph, master.get_glyph_layer(glyph.name))
             ufo_glyph.unicodes = [int(cp) for cp in glyph.codepoints]
         # Metrics
-        for metric in Master.CORE_METRICS:
-            if metric in master.metrics:
-                setattr(ufo.info, metric, master.metrics[metric])
-        ufo.save(filename)
+        for our_metric, their_metric in metrics.items():
+            setattr(ufo.info, their_metric, master.metrics[our_metric])
+        if is_default:
+            for info_tag, (table, field) in custom_opentype_values.items():
+                for otv in self.font.customOpenTypeValues:
+                    if otv.table == table and otv.field == field:
+                        setattr(ufo.info, info_tag, otv.value)
+        ufo.save(filename, overwrite=True)
 
     def save_layer_to_ufo(self, ufo_glyph: ufoLib2.objects.Glyph, layer: Layer):
         for shape in layer.shapes:
@@ -334,15 +393,17 @@ class Designspace(BaseConvertor):
 
     def save_anchor_to_ufo(self, ufo_glyph: ufoLib2.objects.Glyph, anchor: Anchor):
         ufo_glyph.appendAnchor(
-            name=anchor.name, x=anchor.x, y=anchor.y, color=anchor.color
+            ufoLib2.objects.Anchor(name=anchor.name, x=anchor.x, y=anchor.y)
         )
-    
+
     def save_component_to_ufo(self, ufo_glyph: ufoLib2.objects.Glyph, shape: Shape):
-        ufo_glyph.components.append(ufoLib2.objects.Component(
-            baseGlyph=shape.ref,
-            transformation=shape.transform,
-        ))
-    
+        ufo_glyph.components.append(
+            ufoLib2.objects.Component(
+                baseGlyph=shape.ref,
+                transformation=shape.transform,
+            )
+        )
+
     def save_contour_to_ufo(self, ufo_glyph: ufoLib2.objects.Glyph, shape: Shape):
         pen = ufo_glyph.getPointPen()
         pen.beginPath()
