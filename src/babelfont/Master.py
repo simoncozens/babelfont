@@ -2,7 +2,38 @@ from dataclasses import dataclass, field
 from .BaseObject import BaseObject, I18NDictionary
 from .Guide import Guide
 
-CORE_METRICS = ["xHeight", "capHeight", "ascender", "descender"]
+# Anything which can be varied in MVAR is a master-specific metric
+CORE_METRICS = [
+    "xHeight",
+    "capHeight",
+    "ascender",
+    "descender",
+    "italicAngle",
+    "hheaAscender",
+    "hheaDescender",
+    "hheaLineGap",
+    "winAscent",
+    "winDescent",
+    "typoAscender",
+    "typoDescender",
+    "typoLineGap",
+    "subscriptXSize",
+    "subscriptYSize",
+    "subscriptXOffset",
+    "subscriptYOffset",
+    "superscriptXSize",
+    "superscriptYSize",
+    "superscriptXOffset",
+    "superscriptYOffset",
+    "strikeoutSize",
+    "strikeoutPosition",
+    "underlinePosition",
+    "underlineThickness",
+    "hheaCaretSlopeRise",
+    "hheaCaretSlopeRun",
+    "hheaCaretOffset",
+    
+]
 
 
 @dataclass

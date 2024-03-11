@@ -91,7 +91,7 @@ to the current date/time*.""",
     customOpenTypeValues: [OTValue] = field(
         default_factory=list,
         metadata={
-            "description": "Any values to be placed in OpenType tables on export to override defaults"
+            "description": "Any values to be placed in OpenType tables on export to override defaults; these must be font-wide. Metrics which may vary by master should be placed in the `metrics` field of a Master."
         },
     )
     features: FontFeatures = field(
