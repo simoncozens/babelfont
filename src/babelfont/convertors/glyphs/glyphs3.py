@@ -208,7 +208,7 @@ class GlyphsThree(BaseConvertor):
 
         returns = [layer]
         if "background" in gslayer:
-            (background,) = self.load_gslayer(gslayer["background"], width=layer.width)
+            (background,) = self.load_layer(gslayer["background"], width=layer.width)
             # If it doesn't have an ID, we need to generate one
             background.id = background.id or str(uuid.uuid1())
             background.isBackground = True
