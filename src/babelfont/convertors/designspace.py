@@ -143,7 +143,9 @@ class Designspace(BaseConvertor):
         return kerning
 
     def _load_glyph(self, ufo_glyph: ufoLib2.objects.Glyph):
-        cp = ufo_glyph.unicodes or [ufo_glyph.unicode]
+        cp = []
+        if ufo_glyph.unicodes or ufo_glyph.unicode:
+            cp = ufo_glyph.unicodes or [ufo_glyph.unicode]
         lib = self.ds.sources[0].font.lib
         category = lib.get("public.openTypeCategories", {}).get(ufo_glyph.name, "base")
         g = Glyph(name=ufo_glyph.name, codepoints=cp, category=category)
@@ -313,6 +315,7 @@ class Designspace(BaseConvertor):
         for glyph in self.font.glyphs:
             ufo_glyph = ufo[glyph.name]
             self.save_layer_to_ufo(ufo_glyph, master.get_glyph_layer(glyph.name))
+            ufo_glyph.unicodes = [int(cp) for cp in glyph.codepoints]
         # Metrics
         for metric in Master.CORE_METRICS:
             if metric in master.metrics:
