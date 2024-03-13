@@ -9,6 +9,7 @@ import openstep_plist
 from babelfont import (
     Anchor,
     Axis,
+    Features,
     Glyph,
     Guide,
     Instance,
@@ -18,7 +19,6 @@ from babelfont import (
     Shape,
     Transform,
 )
-from babelfont.Master import CORE_METRICS
 from babelfont.convertors import BaseConvertor
 from babelfont.convertors.glyphs.utils import (
     _copyattrs,
@@ -33,6 +33,7 @@ from babelfont.convertors.glyphs.utils import (
     glyphs_i18ndict,
     to_bitfield,
 )
+from babelfont.Master import CORE_METRICS
 
 
 class GlyphsThree(BaseConvertor):
@@ -186,7 +187,7 @@ class GlyphsThree(BaseConvertor):
     def load_layer(self, gslayer, width=None):
         if width is None:
             width = gslayer["width"]
-        layer = Layer(width=width, id=gslayer.pop("gslayerId", ""), _font=self.font)
+        layer = Layer(width=width, id=gslayer.pop("layerId", ""), _font=self.font)
         layer.name = gslayer.pop("name", "")
         if [x for x in self.font.masters if x.id == layer.id]:
             layer._master = layer.id
@@ -222,7 +223,11 @@ class GlyphsThree(BaseConvertor):
         return returns
 
     def load_guide(self, gguide):
-        g = Guide(pos=[*gguide.get("pos", (0, 0)), gguide.get("angle", 0)])
+        g = Guide(pos=[*gguide.get("pos", (0, 0)), gguide.get("angle", 0)], name=gguide.get("name", None))
+        if gguide.get("locked"):
+            if g.name is None:
+                g.name = ""
+            g.name += " [locked]"
         _stash(g, gguide)
         return g
 
@@ -284,6 +289,9 @@ class GlyphsThree(BaseConvertor):
         shape.nodes = [Node(*n) for n in path["nodes"]]
         shape.closed = path["closed"]
         _stash(shape, path)
+        if len(shape.nodes):
+            # Bring it to front
+            shape.nodes = shape.nodes[-1:] + shape.nodes[:-1]
         return shape
 
     def get_codepoint(self, gglyph):
@@ -305,7 +313,7 @@ class GlyphsThree(BaseConvertor):
                 kerngroups[f"MMK_R_{right_group}"].append(g.name)
 
         for k, v in kerngroups.items():
-            self.font.features.namedClasses[k] = tuple(v)
+            self.font.features.classes[k] = tuple(v)
 
     def interpret_linked_kerning(self):
         name_to_master = {m.name.get_default(): m for m in self.font.masters}
@@ -388,11 +396,14 @@ class GlyphsThree(BaseConvertor):
             _stash(self.font.default_master, {"customParameters": new_cps})
 
     def interpret_features(self):
-        ff = "# Classes\n"
+        self.font.features = Features()
         for glyphclass in _g(self.font, "classes", [], pop=True):
-            ff += f"@{glyphclass['name']} = [{glyphclass['code']}]"
-
-        self.font.features = ff
+            # Beware of tokens XXX
+            self.font.features.classes[glyphclass["name"]] = glyphclass["code"].split()
+        for prefix in _g(self.font, "featurePrefixes", [], pop=True):
+            self.font.features.prefixes[prefix["name"]] = prefix["code"]
+        for feature in _g(self.font, "features", [], pop=True):
+            self.font.features.features.append((feature["tag"], feature["code"]))
 
     def _save(self):
         font = self.font

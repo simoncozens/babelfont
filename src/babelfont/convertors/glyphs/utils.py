@@ -53,16 +53,6 @@ def _copyattrs(src, dst, attrs, convertor=lambda x: x):
 
 
 opentype_custom_parameters = {
-    "typoAscender": ("OS/2", "sTypoAscender"),
-    "typoDescender": ("OS/2", "sTypoDescender"),
-    "typoLineGap": ("OS/2", "sTypoLineGap"),
-    "winAscent": ("OS/2", "usWinAscent"),
-    "winDescent": ("OS/2", "usWinDescent"),
-    "hheaAscender": ("hhea", "ascent"),
-    "hheaDescender": ("hhea", "descent"),
-    "hheaLineGap": ("hhea", "lineGap"),
-    "underlinePosition": ("post", "underlinePosition"),
-    "underlineThickness": ("post", "underlineThickness"),
 }
 
 _rename_metrics = {"x-height": "xHeight", "cap height": "capHeight"}
