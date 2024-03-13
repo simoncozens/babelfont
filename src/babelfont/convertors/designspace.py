@@ -24,6 +24,8 @@ from babelfont.convertors import BaseConvertor
 
 log = logging.getLogger(__name__)
 
+UFO_KEY = "org.unifiedfontobject"
+
 metrics = {
     "xHeight": "xHeight",
     "capHeight": "capHeight",
@@ -155,6 +157,12 @@ class Designspace(BaseConvertor):
         master.location = {_axis_name_to_id[k]: v for k, v in source.location.items()}
         master.font = self.font
         master.kerning = self._load_kerning(source)
+        for key, value in font.lib.items():
+            if not key.startswith("public."):
+                if not UFO_KEY in master._formatspecific:
+                    master._formatspecific[UFO_KEY] = {}
+                master._formatspecific[UFO_KEY][key] = value
+
         self._load_groups(source.name, font.groups)
         assert master.valid
         return master
@@ -266,6 +274,9 @@ class Designspace(BaseConvertor):
         "styleMapFamilyName": "styleMapFamilyName",
         "familyName": "familyName",
         "trademark": "trademark",
+        "styleName": "styleName",
+        "styleMapStyleName": "styleMapStyleName",
+        "preferredSubfamilyName": "openTypeNamePreferredSubfamilyName",
     }
 
     def _load_metadata(self, ufo):
@@ -382,6 +393,22 @@ class Designspace(BaseConvertor):
                 for otv in self.font.customOpenTypeValues:
                     if otv.table == table and otv.field == field:
                         setattr(ufo.info, info_tag, otv.value)
+        # Guides
+        if master.guides:
+            ufo.info.guidelines = []
+        for guide in master.guides:
+            ufo.info.guidelines.append(
+                ufoLib2.objects.Guideline(
+                    x=guide.pos[0],
+                    y=guide.pos[1],
+                    angle=guide.pos[2],
+                    name=guide.name,
+                    color=guide.color,
+                )
+            )
+        # Lib
+        for key, value in master._formatspecific.get(UFO_KEY, {}).items():
+            ufo.lib[key] = value
         ufo.save(filename, overwrite=True)
 
     def save_layer_to_ufo(self, ufo_glyph: ufoLib2.objects.Glyph, layer: Layer):

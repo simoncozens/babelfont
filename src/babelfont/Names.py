@@ -24,7 +24,10 @@ class Names(BaseObject):
     WWSSubfamilyName: I18NDictionary = None
     copyright: I18NDictionary = None
     styleMapFamilyName: I18NDictionary = None
+    styleMapStyleName: I18NDictionary = None
+    styleName: I18NDictionary = None
     trademark: I18NDictionary = None
+    preferredSubfamilyName: I18NDictionary = None
 
     def __post_init__(self):
         for k in self.__dataclass_fields__.keys():
