@@ -1,17 +1,18 @@
+import functools
+import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from .BaseObject import BaseObject, OTValue, IncompatibleMastersError
-from .Glyph import GlyphList
+
+from fontTools.feaLib.variableScalar import VariableScalar
+from fontTools.varLib.models import VariationModel
+
 from .Axis import Axis
+from .BaseObject import BaseObject, IncompatibleMastersError, OTValue
+from .Features import Features
+from .Glyph import GlyphList
 from .Instance import Instance
 from .Master import Master
 from .Names import Names
-import functools
-from fontTools.varLib.models import VariationModel
-from fontTools.feaLib.variableScalar import VariableScalar
-from fontFeatures import FontFeatures
-import logging
-
 
 log = logging.getLogger(__name__)
 
@@ -94,8 +95,8 @@ to the current date/time*.""",
             "description": "Any values to be placed in OpenType tables on export to override defaults; these must be font-wide. Metrics which may vary by master should be placed in the `metrics` field of a Master."
         },
     )
-    features: FontFeatures = field(
-        default_factory=FontFeatures,
+    features: Features = field(
+        default_factory=Features,
         metadata={
             "description": "A representation of the font's OpenType features",
         },
