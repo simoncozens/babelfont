@@ -123,7 +123,11 @@ class Designspace(BaseConvertor):
 
     def _load_glyphs(self, master: ufoLib2.Font):
         glyphs_dict = {}
-        for g in master.keys():
+        # Start with glyph order if there is one
+        order = master.lib.get("public.glyphOrder", [])
+        # Then add any remaining glyphs
+        order += [g for g in master.keys() if g not in order]
+        for g in order:
             glyphs_dict[g] = self._load_glyph(master[g])
             self.font.glyphs.append(glyphs_dict[g])
         return glyphs_dict
@@ -205,6 +209,7 @@ class Designspace(BaseConvertor):
         lib = self.ds.sources[0].font.lib
         category = lib.get("public.openTypeCategories", {}).get(ufo_glyph.name, "base")
         g = Glyph(name=ufo_glyph.name, codepoints=cp, category=category)
+
         if "public.postscriptNames" in lib and g.name in lib["public.postscriptNames"]:
             g.production_name = lib["public.postscriptNames"][g.name]
         return g
@@ -289,7 +294,7 @@ class Designspace(BaseConvertor):
             if their_value:
                 getattr(self.font.names, ours).set_default(their_value)
         for ufofield, (table, field) in custom_opentype_values.items():
-            if getattr(firstfontinfo, ufofield):
+            if getattr(firstfontinfo, ufofield) is not None:
                 self.font.customOpenTypeValues.append(
                     OTValue(
                         table=table, field=field, value=getattr(firstfontinfo, ufofield)
@@ -407,6 +412,13 @@ class Designspace(BaseConvertor):
                 )
             )
         # Lib
+        ufo.lib["public.glyphOrder"] = [g.name for g in self.font.glyphs]
+        psnames = {
+            g.name: g.production_name for g in self.font.glyphs
+            if g.production_name
+        }
+        if psnames:
+            ufo.lib["public.postscriptNames"] = psnames
         for key, value in master._formatspecific.get(UFO_KEY, {}).items():
             ufo.lib[key] = value
         ufo.save(filename, overwrite=True)
