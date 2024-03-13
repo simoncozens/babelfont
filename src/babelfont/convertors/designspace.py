@@ -7,6 +7,7 @@ from fontTools import designspaceLib
 from fontTools.designspaceLib import DesignSpaceDocument
 
 from babelfont import (
+    Features,
     Font,
     Master,
     Instance,
@@ -167,22 +168,14 @@ class Designspace(BaseConvertor):
                     master._formatspecific[UFO_KEY] = {}
                 master._formatspecific[UFO_KEY][key] = value
 
-        self._load_groups(source.name, font.groups)
+        master.features = Features.from_fea(font.features.text)
+        self._load_groups(font.groups)
         assert master.valid
         return master
 
-    def _load_groups(self, sourcename: str, groups: Dict[str, List[str]]):
+    def _load_groups(self, groups: Dict[str, List[str]]):
         for name, value in groups.items():
-            if (
-                name in self.font.features.namedClasses
-                and self.font.features.namedClasses[name] != value
-            ):
-                log.warning(
-                    "Inconsistent definition of glyph class @%s found in %s",
-                    name,
-                    sourcename,
-                )
-            self.font.features.namedClasses[name] = value
+            self.font.features.classes[name] = value
 
     def _load_guide(self, ufo_guide: ufoLib2.objects.Guideline):
         return Guide(
@@ -388,11 +381,14 @@ class Designspace(BaseConvertor):
             ufo.newGlyph(glyph.name)
         for glyph in self.font.glyphs:
             ufo_glyph = ufo[glyph.name]
-            self.save_layer_to_ufo(ufo_glyph, master.get_glyph_layer(glyph.name))
+            layer = master.get_glyph_layer(glyph.name)
+            assert layer
+            self.save_layer_to_ufo(ufo_glyph, layer)
             ufo_glyph.unicodes = [int(cp) for cp in glyph.codepoints]
         # Metrics
         for our_metric, their_metric in metrics.items():
-            setattr(ufo.info, their_metric, master.metrics[our_metric])
+            if our_metric in master.metrics:
+                setattr(ufo.info, their_metric, master.metrics[our_metric])
         if is_default:
             for info_tag, (table, field) in custom_opentype_values.items():
                 for otv in self.font.customOpenTypeValues:
@@ -411,6 +407,8 @@ class Designspace(BaseConvertor):
                     color=guide.color,
                 )
             )
+        # Features and groups
+        ufo.features.text = self.font.features.to_fea()
         # Lib
         ufo.lib["public.glyphOrder"] = [g.name for g in self.font.glyphs]
         psnames = {
@@ -450,5 +448,5 @@ class Designspace(BaseConvertor):
         pen = ufo_glyph.getPointPen()
         pen.beginPath()
         for node in shape.nodes:
-            pen.addPoint((node.x, node.y), segmentType=Node._to_pen_type[node.type[0]])
+            pen.addPoint((node.x, node.y), segmentType=Node._to_pen_type[node.type[0]], smooth=node.is_smooth)
         pen.endPath()

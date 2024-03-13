@@ -4,7 +4,7 @@ import pkgutil
 import inspect
 import importlib
 
-from babelfont import Font
+from babelfont.Font import Font
 
 
 class BaseConvertor:
