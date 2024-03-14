@@ -49,6 +49,8 @@ class Layer(BaseObject, _LayerFields):
     @property
     def master(self):
         assert self._font
+        if not self._master:
+            return None
         return self._font.master(self._master)
 
     @property
