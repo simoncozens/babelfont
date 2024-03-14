@@ -33,7 +33,7 @@ class _LayerFields:
     color: Color = None
     layerIndex: int = 0
     # hints: [Hint]
-    _background: str = field(default=None, repr=False)
+    background: Optional[str] = field(default=None, repr=False)
     isBackground: bool = field(default=False, repr=False)
     location: [float] = None
     _font: Optional["Font"] = field(
@@ -59,17 +59,58 @@ class Layer(BaseObject, _LayerFields):
     def components(self) -> List[Shape]:
         return [x for x in self.shapes if x.is_component]
 
-    def recursiveComponentSet(self):
+    def recursive_component_set(self):
         mine = set([x.ref for x in self.components])
         theirs = set()
         for c in mine:
-            theirs |= self.master.get_glyph_layer(c).recursiveComponentSet()
+            other_layer = self.master.get_glyph_layer(c)
+            theirs |= other_layer.recursive_component_set()
         return mine | theirs
+
+    def _background_of(self) -> Optional["Layer"]:
+        for layer in self._glyph.layers:
+            if layer.background == self.id:
+                return layer
+
+    def _background_layer(self) -> Optional["Layer"]:
+        if not self.background:
+            return
+        for layer in self._glyph.layers:
+            if layer.id == self.background:
+                return layer
+
+    def _nested_component_dict(self) -> dict[str, "Layer"]:
+        result = {}
+        todo = [x.ref for x in self.components]
+        while todo:
+            current = todo.pop()
+            if current in result:
+                continue
+            if self.master:
+                result[current] = self.master.get_glyph_layer(current)
+            else:
+                # Find a glyph with same layerid?
+                for layer in self._font.glyphs[current].layers:
+                    if layer.id == self.id:
+                        result[current] = layer
+                        break
+                if current not in result and self.isBackground:
+                    master_layer = self._background_of()
+                    if master_layer:
+                        master = master_layer._font.master(master_layer._master)
+                        result[current] = master.get_glyph_layer(current)
+                        if result[current] and result[current]._background_layer():
+                            result[current] = result[current]._background_layer()
+
+                if current not in result or not result[current]:
+                    raise ValueError("Could not find layer")
+            todo.extend([x.ref for x in result[current].components])
+        return result
 
     @cached_property
     def bounds(self):
         glyphset = {}
-        for c in list(self.recursiveComponentSet()):
+        for c in list(self.recursive_component_set()):
             glyphset[c] = self.master.get_glyph_layer(c)
         pen = BoundsPen(glyphset)
         self.draw(pen)
@@ -122,19 +163,8 @@ class Layer(BaseObject, _LayerFields):
     def getPen(self):
         return SegmentToPointPen(LayerPen(self))
 
-    def _nestedComponentDict(self):
-        result = {}
-        todo = [x.ref for x in self.components]
-        while todo:
-            current = todo.pop()
-            if current in result:
-                continue
-            result[current] = self.master.get_glyph_layer(current)
-            todo.extend([x.ref for x in result[current].components])
-        return result
-
     def decompose(self):
-        pen = DecomposingRecordingPen(self._nestedComponentDict())
+        pen = DecomposingRecordingPen(self._nested_component_dict())
         self.draw(pen)
         self.clearContours()
         pen.replay(self.getPen())

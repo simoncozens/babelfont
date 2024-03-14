@@ -215,7 +215,7 @@ class GSObject(BaseConvertor):
             # background.isBackground = True
             del background._master
 
-            l._background = background.id
+            l.background = background.id
             returns.append(background)
         # TODO backgroundImage, metricTop/Bottom/etc, vertOrigin, vertWidth.
         for r in returns:

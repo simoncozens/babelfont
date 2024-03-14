@@ -220,7 +220,7 @@ class GlyphsThree(BaseConvertor):
             background.id = background.id or str(uuid.uuid1())
             background.isBackground = True
 
-            layer._background = background.id
+            layer.background = background.id
             returns.append(background)
         for r in returns:
             assert r.valid

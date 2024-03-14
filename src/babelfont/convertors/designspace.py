@@ -386,6 +386,18 @@ class Designspace(BaseConvertor):
             assert layer
             self.save_layer_to_ufo(ufo_glyph, layer)
             ufo_glyph.unicodes = [int(cp) for cp in glyph.codepoints]
+            if layer.background is not None:
+                if not "public.background" in ufo.layers:
+                    ufo.layers.newLayer("public.background")
+                background_layer = None
+                for possible_background_layer in glyph.layers:
+                    if possible_background_layer.id == layer.background:
+                        background_layer = possible_background_layer
+                if background_layer:
+                    background_glyph = ufo.layers["public.background"].newGlyph(
+                        glyph.name
+                    )
+                    self.save_layer_to_ufo(background_glyph, background_layer)
         # Metrics
         for our_metric, their_metric in metrics.items():
             if our_metric in master.metrics:

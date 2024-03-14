@@ -275,7 +275,7 @@ class Glyphs2(BaseConvertor):
             background.id = background.id or str(uuid.uuid1())
             background.isBackground = True
 
-            l._background = background.id
+            l.background = background.id
             returns.append(background)
         # TODO backgroundImage, metricTop/Bottom/etc, vertOrigin, vertWidth.
         for r in returns:
