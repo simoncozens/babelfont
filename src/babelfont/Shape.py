@@ -31,7 +31,7 @@ class Shape(BaseObject, _ShapeFields):
         return bool(self.ref)
 
     @property
-    def component_layer(self):
+    def component_layer(self) -> Optional["Layer"]:
         if not self.is_component:
             return None
         return self._layer.master.get_glyph_layer(self.ref)

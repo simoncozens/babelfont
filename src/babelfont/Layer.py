@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from functools import cached_property
+from typing import List, Optional
 
 from fontTools.ufoLib.pointPen import (
     PointToSegmentPen,
@@ -35,9 +36,12 @@ class _LayerFields:
     _background: str = field(default=None, repr=False)
     isBackground: bool = field(default=False, repr=False)
     location: [float] = None
-    _font: object = field(
+    _font: Optional["Font"] = field(
         default=None, repr=False, metadata={"python_only": True}
-    )  # Can't type Font because of circularity
+    )
+    _glyph: Optional["Glyph"] = field(
+        default=None, repr=False, metadata={"python_only": True}
+    )
 
 
 @dataclass
@@ -48,11 +52,11 @@ class Layer(BaseObject, _LayerFields):
         return self._font.master(self._master)
 
     @property
-    def paths(self):
+    def paths(self) -> List[Shape]:
         return [x for x in self.shapes if x.is_path]
 
     @property
-    def components(self):
+    def components(self) -> List[Shape]:
         return [x for x in self.shapes if x.is_component]
 
     def recursiveComponentSet(self):
