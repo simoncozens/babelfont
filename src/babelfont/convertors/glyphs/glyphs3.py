@@ -311,18 +311,14 @@ class GlyphsThree(BaseConvertor):
             return [int(x) for x in cp]
 
     def interpret_kern_groups(self):
-        kerngroups = defaultdict(list)
         for g in self.font.glyphs:
             left_group = _g(g, "kernLeft", pop=True)
-            right_group = _g(g, "kernRight", pop=True)
-
             if left_group:
-                kerngroups[f"MMK_L_{left_group}"].append(g.name)
-            if right_group:
-                kerngroups[f"MMK_R_{right_group}"].append(g.name)
+                self.font.second_kern_groups.setdefault(left_group, []).append(g.name)
 
-        for k, v in kerngroups.items():
-            self.font.features.classes[k] = tuple(v)
+            right_group = _g(g, "kernRight", pop=True)
+            if right_group:
+                self.font.first_kern_groups.setdefault(right_group, []).append(g.name)
 
     def interpret_linked_kerning(self):
         name_to_master = {m.name.get_default(): m for m in self.font.masters}
@@ -337,8 +333,15 @@ class GlyphsThree(BaseConvertor):
                     master.kerning = kernmaster.kerning
 
     def load_kerning(self, kerndict):
+        def ungroup(groupname):
+            if groupname[0] != "@":
+                return groupname
+            return groupname.replace("@MMK_L", "@first_group").replace(
+                "@MMK_R", "@second_group"
+            )
+
         return {
-            (left, right): value
+            (ungroup(left), ungroup(right)): value
             for left, level2 in kerndict.items()
             for right, value in level2.items()
         }
@@ -516,6 +519,12 @@ class GlyphsThree(BaseConvertor):
         if not glyph.exported:
             gglyph["export"] = 0
         # Check for kern groups
+        for group, members in self.font.second_kern_groups:
+            if glyph.name in members:
+                gglyph["kernLeft"] = group
+        for group, members in self.font.first_kern_groups:
+            if glyph.name in members:
+                gglyph["kernRight"] = group
         # XXX
         return gglyph
 

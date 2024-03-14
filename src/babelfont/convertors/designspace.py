@@ -408,6 +408,18 @@ class Designspace(BaseConvertor):
                     color=guide.color,
                 )
             )
+        # Kerning
+        for group, members in self.font.first_kern_groups.items():
+            ufo.groups["public.kern1." + group] = members
+        for group, members in self.font.second_kern_groups.items():
+            ufo.groups["public.kern2." + group] = members
+        for (left, right), value in master.kerning.items():
+            if left.startswith("@first_group_"):
+                left = "public.kern1." + left[13:]
+            if right.startswith("@second_group_"):
+                right = "public.kern2." + right[14:]
+            ufo.kerning[left, right] = value
+
         # Features and groups
         ufo.features.text = self.font.features.to_fea()
         # Lib

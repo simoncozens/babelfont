@@ -2,6 +2,7 @@ import functools
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
+from typing import Dict, List
 
 from fontTools.feaLib.variableScalar import VariableScalar
 from fontTools.varLib.models import VariationModel
@@ -99,6 +100,18 @@ to the current date/time*.""",
         default_factory=Features,
         metadata={
             "description": "A representation of the font's OpenType features",
+        },
+    )
+    first_kern_groups: Dict[str, List[str]] = field(
+        default_factory=dict,
+        metadata={
+            "description": "A dictionary of kerning groups, where the key is the group name and the value is a list of glyph names in the group."
+        },
+    )
+    second_kern_groups: Dict[str, List[str]] = field(
+        default_factory=dict,
+        metadata={
+            "description": "A dictionary of kerning groups, where the key is the group name and the value is a list of glyph names in the group."
         },
     )
 
