@@ -48,6 +48,14 @@ master locations on export."""
             "description": """The mapping between userspace and designspace coordinates."""
         },
     )
+    hidden: bool = field(
+        default=False,
+        metadata={
+            "description": """If `True`, this axis is hidden from the user interface.
+            Hidden axes are used for internal font generation and are not displayed in the
+            user interface."""
+        },
+    )
 
 
 @dataclass
