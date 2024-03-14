@@ -1,4 +1,5 @@
 from babelfont.convertors import Convert
+from babelfont.fontFilters import FILTERS
 import argparse
 import sys
 
@@ -6,6 +7,13 @@ import sys
 def main():
     parser = argparse.ArgumentParser(
         prog="babelfont", description="Convert between font formats"
+    )
+    parser.add_argument(
+        "--filter",
+        "-f",
+        help="Filter to apply",
+        action="append",
+        choices=FILTERS.keys(),
     )
     parser.add_argument("input", metavar="IN", help="Input file")
     parser.add_argument("output", metavar="OUT", help="Output file")
@@ -17,6 +25,12 @@ def main():
         print("Couldn't read %s: %s" % (args.input, e))
         raise e
         sys.exit(1)
+
+    for filter in args.filter:
+        if filter not in FILTERS:
+            print("Unknown filter %s" % filter)
+            continue
+        FILTERS[filter](font)
 
     try:
         Convert(args.output).save(font)
