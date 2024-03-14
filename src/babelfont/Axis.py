@@ -1,3 +1,4 @@
+from typing import Optional, Dict, Tuple
 from .BaseObject import BaseObject, I18NDictionary
 from dataclasses import dataclass, field
 import uuid
@@ -104,6 +105,12 @@ class Axis(BaseObject, _AxisFields):
     @property
     def defaultValue(self):
         return self.default
+
+    @property
+    def inverted_map(self) -> Optional[Tuple[float, float]]:
+        if not self.map:
+            return None
+        return [(v, k) for k, v in self.map]
 
     # Stolen from fontTools.designspaceLib
 

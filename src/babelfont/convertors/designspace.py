@@ -321,10 +321,10 @@ class Designspace(BaseConvertor):
             if other_names:
                 axis.labelNames = other_names
             axisDescriptor.tag = axis.tag
-            axisDescriptor.minimum = axis.min
-            axisDescriptor.maximum = axis.max
-            axisDescriptor.default = axis.default
-            axisDescriptor.map = axis.map
+            axisDescriptor.minimum = axis.map_forward(axis.min)
+            axisDescriptor.maximum = axis.map_forward(axis.max)
+            axisDescriptor.default = axis.map_forward(axis.default)
+            axisDescriptor.map = axis.inverted_map
             self.ds.addAxis(axisDescriptor)
 
     def _master_filename(self, master):
