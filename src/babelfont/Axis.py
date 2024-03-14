@@ -72,7 +72,7 @@ class Axis(BaseObject, _AxisFields):
 
     def normalize_value(self, value):
         return normalizeValue(
-            value,
+            self.map_forward(value),
             (
                 self.map_forward(self.min),
                 self.map_forward(self.default),
