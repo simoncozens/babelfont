@@ -219,6 +219,7 @@ class Designspace(BaseConvertor):
         layer = Layer(width=width, id=layer_id)
         layer._master = source._babelfont_master.id
         layer._font = self.font
+        layer._glyph = self.font.glyphs[glyphname]
         for contour in ufo_glyph:
             layer.shapes.append(self._load_contour(contour))
         for component in ufo_glyph.components:

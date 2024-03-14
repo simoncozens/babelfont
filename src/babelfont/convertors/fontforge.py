@@ -251,6 +251,7 @@ class FontForgeSFDIR(BaseConvertor):
                 id=self.font.masters[0].id,
                 _master=self.font.masters[0].id,
                 _font=self.font,
+                _glyph=self.current_glyph,
             )
         ]
 

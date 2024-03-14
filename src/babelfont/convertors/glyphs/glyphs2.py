@@ -240,15 +240,15 @@ class Glyphs2(BaseConvertor):
         g.production_name = gglyph.pop("production", None)
 
         for layer in gglyph.pop("layers"):
-            g.layers.extend(self._load_layer(layer))
+            g.layers.extend(self._load_layer(layer, g))
 
         _stash(g, gglyph)
         return g
 
-    def _load_layer(self, layer, width=None):
+    def _load_layer(self, layer, glyph, width=None):
         if width is None:
             width = layer["width"]
-        l = Layer(width=width, id=layer.get("layerId"), _font=self.font)
+        l = Layer(width=width, id=layer.get("layerId"), _font=self.font, _glyph=glyph)
         l.name = layer.get("name")
         if [x for x in self.font.masters if x.id == l.id]:
             l._master = l.id

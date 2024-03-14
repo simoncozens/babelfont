@@ -89,7 +89,7 @@ class Layer(BaseObject, _LayerFields):
 
     @property
     def valid(self):
-        if not self._font:
+        if not self._font or not self._glyph:
             return False
         return True
 

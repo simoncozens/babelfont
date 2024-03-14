@@ -133,16 +133,17 @@ class TrueType(BaseConvertor):
                 name=glyph, codepoints=list(mapping.get(glyph, [])), category=category
             )
             self.font.glyphs.append(glyphs_dict[glyph])
-            glyphs_dict[glyph].layers = self._load_layers(glyph)
+            glyphs_dict[glyph].layers = self._load_layers(glyph, glyphs_dict[glyph])
         return glyphs_dict
 
-    def _load_layers(self, g):
-        ttglyph = self.tt.getGlyphSet()[g]  # _TTGlyphGlyf object
-        width = self.tt["hmtx"][g][0]
+    def _load_layers(self, glyphname, glyph):
+        ttglyph = self.tt.getGlyphSet()[glyphname]  # _TTGlyphGlyf object
+        width = self.tt["hmtx"][glyphname][0]
         # leftMargin = self.tt["hmtx"][g][1]
         layer = Layer(width=width, id=str(uuid.uuid1()))
         layer._master = self.font.masters[0].id
         layer._font = self.font
+        layer._glyph = glyph
         ttglyph.draw(layer.getPen())
         return [layer]
 
