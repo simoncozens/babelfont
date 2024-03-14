@@ -1,8 +1,11 @@
-from dataclasses import dataclass
-from .BaseObject import BaseObject
-from fontTools.misc.transform import Transform
-from .Node import Node
 import math
+from dataclasses import dataclass
+from typing import Optional
+
+from fontTools.misc.transform import Transform
+
+from .BaseObject import BaseObject
+from .Node import Node
 
 
 @dataclass
