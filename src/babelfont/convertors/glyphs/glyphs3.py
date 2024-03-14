@@ -625,7 +625,8 @@ class GlyphsThree(BaseConvertor):
     def save_features(self, out):
         if self.font.features:
             out["classes"] = [
-                {"name": k, "code": " ".join(v)} for k, v in self.font.features.classes.items()
+                {"name": k, "code": " ".join(v)}
+                for k, v in self.font.features.classes.items()
             ]
             out["featurePrefixes"] = [
                 {"name": k, "code": v} for k, v in self.font.features.prefixes.items()

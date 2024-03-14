@@ -369,11 +369,12 @@ class Designspace(BaseConvertor):
                 is_default=(master == self.font.default_master),
             )
 
-    def save_master_to_ufo(self, master, filename, is_default=False):
+    def save_master_to_ufo(self, master: Master, filename, is_default=False):
         ufo = ufoLib2.Font()
         ufo.info.unitsPerEm = self.font.upm
         ufo.info.versionMajor, ufo.info.versionMinor = self.font.version
-        ufo.info.note = self.font.note
+        if self.font.note and is_default:
+            ufo.info.note = self.font.note
         for ours, theirs in self.names_dict.items():
             our_value = getattr(self.font.names, ours).get_default()
             if our_value != "unknown":
@@ -415,7 +416,7 @@ class Designspace(BaseConvertor):
                 ufoLib2.objects.Guideline(
                     x=guide.pos[0],
                     y=guide.pos[1],
-                    angle=guide.pos[2],
+                    angle=guide.pos[2] % 360,
                     name=guide.name,
                     color=guide.color,
                 )
@@ -437,8 +438,7 @@ class Designspace(BaseConvertor):
         # Lib
         ufo.lib["public.glyphOrder"] = [g.name for g in self.font.glyphs]
         psnames = {
-            g.name: g.production_name for g in self.font.glyphs
-            if g.production_name
+            g.name: g.production_name for g in self.font.glyphs if g.production_name
         }
         if psnames:
             ufo.lib["public.postscriptNames"] = psnames
@@ -473,5 +473,9 @@ class Designspace(BaseConvertor):
         pen = ufo_glyph.getPointPen()
         pen.beginPath()
         for node in shape.nodes:
-            pen.addPoint((node.x, node.y), segmentType=Node._to_pen_type[node.type[0]], smooth=node.is_smooth)
+            pen.addPoint(
+                (node.x, node.y),
+                segmentType=Node._to_pen_type[node.type[0]],
+                smooth=node.is_smooth,
+            )
         pen.endPath()

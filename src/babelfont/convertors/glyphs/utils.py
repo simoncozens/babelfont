@@ -55,7 +55,11 @@ def _copyattrs(src, dst, attrs, convertor=lambda x: x):
 opentype_custom_parameters = {
 }
 
-_rename_metrics = {"x-height": "xHeight", "cap height": "capHeight"}
+_rename_metrics = {
+    "x-height": "xHeight",
+    "cap height": "capHeight",
+    "italic angle": "italicAngle"
+}
 _reverse_rename_metrics = {v: k for k, v in _rename_metrics.items()}
 
 
