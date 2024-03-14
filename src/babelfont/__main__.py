@@ -26,7 +26,7 @@ def main():
         raise e
         sys.exit(1)
 
-    for filter in args.filter:
+    for filter in args.filter or []:
         if filter not in FILTERS:
             print("Unknown filter %s" % filter)
             continue
