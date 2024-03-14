@@ -164,7 +164,7 @@ class Designspace(BaseConvertor):
         master.kerning = self._load_kerning(source)
         for key, value in font.lib.items():
             if not key.startswith("public."):
-                if not UFO_KEY in master._formatspecific:
+                if UFO_KEY not in master._formatspecific:
                     master._formatspecific[UFO_KEY] = {}
                 master._formatspecific[UFO_KEY][key] = value
 
@@ -388,7 +388,7 @@ class Designspace(BaseConvertor):
             self.save_layer_to_ufo(ufo_glyph, layer)
             ufo_glyph.unicodes = [int(cp) for cp in glyph.codepoints]
             if layer.background is not None:
-                if not "public.background" in ufo.layers:
+                if "public.background" not in ufo.layers:
                     ufo.layers.newLayer("public.background")
                 background_layer = None
                 for possible_background_layer in glyph.layers:

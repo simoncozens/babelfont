@@ -4,7 +4,6 @@ import re
 import uuid
 
 import openstep_plist
-from fontFeatures.feaLib import FeaParser
 
 from babelfont import (
     Anchor,

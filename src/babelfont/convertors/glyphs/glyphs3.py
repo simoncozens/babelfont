@@ -3,7 +3,7 @@ import math
 import re
 from typing import List
 import uuid
-from collections import OrderedDict, defaultdict
+from collections import OrderedDict
 
 import openstep_plist
 
