@@ -1,4 +1,7 @@
 from dataclasses import dataclass, field
+from typing import Optional, Union
+
+from babelfont import Layer
 from .BaseObject import BaseObject, I18NDictionary
 from .Guide import Guide
 
@@ -32,7 +35,6 @@ CORE_METRICS = [
     "hheaCaretSlopeRise",
     "hheaCaretSlopeRun",
     "hheaCaretOffset",
-    "italicAngle",
 ]
 
 
@@ -100,34 +102,34 @@ class Master(BaseObject, _MasterFields):
         if isinstance(self.name, str):
             self.name = I18NDictionary.with_default(self.name)
 
-    def get_glyph_layer(self, glyphname):
+    def get_glyph_layer(self, glyphname: str) -> Optional[Layer]:
         g = self.font.glyphs[glyphname]
         for layer in g.layers:
             if layer._master == self.id:
                 return layer
 
     @property
-    def normalized_location(self):
+    def normalized_location(self) -> dict[str, float]:
         return {a.tag: a.normalize_value(self.location[a.tag]) for a in self.font.axes}
 
     @property
-    def xHeight(self):
+    def xHeight(self) -> Union[int,float]:
         return self.metrics.get("xHeight", 0)
 
     @property
-    def capHeight(self):
+    def capHeight(self) -> Union[int,float]:
         return self.metrics.get("capHeight", 0)
 
     @property
-    def ascender(self):
+    def ascender(self) -> Union[int,float]:
         return self.metrics.get("ascender", 0)
 
     @property
-    def descender(self):
+    def descender(self) -> Union[int,float]:
         return self.metrics.get("descender", 0)
 
     @property
-    def valid(self):
+    def valid(self) -> bool:
         if not self.font:
             return False
         if self.location and list(self.location.keys()) != [
