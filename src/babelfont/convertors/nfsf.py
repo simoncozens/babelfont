@@ -95,7 +95,7 @@ class Babelfont(BaseConvertor):
 
         with open(path / "features.fea", "w") as f:
             if self.font.features:
-                f.write(self.font.features)
+                f.write(self.font.features.to_fea())
 
         with open(path / "glyphs.json", "wb") as f:
             for g in self.font.glyphs:
