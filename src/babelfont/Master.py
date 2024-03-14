@@ -113,19 +113,19 @@ class Master(BaseObject, _MasterFields):
         return {a.tag: a.normalize_value(self.location[a.tag]) for a in self.font.axes}
 
     @property
-    def xHeight(self) -> Union[int,float]:
+    def xHeight(self) -> Union[int, float]:
         return self.metrics.get("xHeight", 0)
 
     @property
-    def capHeight(self) -> Union[int,float]:
+    def capHeight(self) -> Union[int, float]:
         return self.metrics.get("capHeight", 0)
 
     @property
-    def ascender(self) -> Union[int,float]:
+    def ascender(self) -> Union[int, float]:
         return self.metrics.get("ascender", 0)
 
     @property
-    def descender(self) -> Union[int,float]:
+    def descender(self) -> Union[int, float]:
         return self.metrics.get("descender", 0)
 
     @property
