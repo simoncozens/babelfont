@@ -44,7 +44,7 @@ class Fontlab(BaseConvertor):
 
     def _load_kerning(self, flkerning):
         for kclass in flkerning.get("kerningClasses", []):
-            self.font.features.namedClasses[kclass["name"]] = kclass["names"]
+            self.font.features.classes[kclass["name"]] = kclass["names"]
         kerning = {}
         for left, rvalue in flkerning.get("pairs", {}).items():
             for right, value in rvalue.items():

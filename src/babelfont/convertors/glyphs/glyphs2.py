@@ -380,7 +380,7 @@ class Glyphs2(BaseConvertor):
             kerngroups.setdefault("MMK_R_" + l_class, []).append(g["glyphname"])
             kerngroups.setdefault("MMK_L_" + r_class, []).append(g["glyphname"])
         for k, v in kerngroups.items():
-            self.font.features.namedClasses[k] = tuple(v)
+            self.font.features.classes[k] = tuple(v)
 
     def _load_kerning(self, kerndict):
         return {
@@ -437,23 +437,23 @@ class Glyphs2(BaseConvertor):
 
     def _load_features(self):
         for c in self.glyphs.get("classes", []):
-            self.font.features.namedClasses[c["name"]] = tuple(c["code"].split())
+            self.font.features.classes[c["name"]] = tuple(c["code"].split())
 
-        featurefile = ""
-        for f in self.glyphs.get("featurePrefixes", []):
-            featurefile = featurefile + f.get("code")
-        for f in self.glyphs.get("features", []):
-            tag = f.get("tag", f.get("name", ""))
-            feacode = "feature %s { %s\n} %s;" % (tag, f["code"], tag)
-            featurefile = featurefile + feacode
+        # featurefile = ""
+        # for f in self.glyphs.get("featurePrefixes", []):
+        #     featurefile = featurefile + f.get("code")
+        # for f in self.glyphs.get("features", []):
+        #     tag = f.get("tag", f.get("name", ""))
+        #     feacode = "feature %s { %s\n} %s;" % (tag, f["code"], tag)
+        #     featurefile = featurefile + feacode
 
-        glyphNames = {g.name for g in self.font.glyphs}
-        feaparser = FeaParser(featurefile, glyphNames=glyphNames)
-        ast = feaparser.parser.ast
-        for name, members in self.font.features.namedClasses.items():
-            glyphclass = ast.GlyphClassDefinition(
-                name, ast.GlyphClass([m for m in members])
-            )
-            feaparser.parser.glyphclasses_.define(name, glyphclass)
-        feaparser.parse()
-        self.font.features += feaparser.ff
+        # glyphNames = {g.name for g in self.font.glyphs}
+        # feaparser = FeaParser(featurefile, glyphNames=glyphNames)
+        # ast = feaparser.parser.ast
+        # for name, members in self.font.features.classes.items():
+        #     glyphclass = ast.GlyphClassDefinition(
+        #         name, ast.GlyphClass([m for m in members])
+        #     )
+        #     feaparser.parser.glyphclasses_.define(name, glyphclass)
+        # feaparser.parse()
+        # self.font.features += feaparser.ff

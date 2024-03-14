@@ -1,6 +1,7 @@
 import datetime
 import math
 import re
+from typing import List
 import uuid
 from collections import OrderedDict, defaultdict
 
@@ -160,7 +161,7 @@ class GlyphsThree(BaseConvertor):
         assert master.valid
         return master
 
-    def load_glyph(self, gglyph):
+    def load_glyph(self, gglyph: dict):
         name = gglyph["glyphname"]
         c = gglyph.get("category")
         sc = gglyph.get("subCategory")
@@ -178,16 +179,18 @@ class GlyphsThree(BaseConvertor):
         g.production_name = gglyph.pop("production", None)
 
         for layer in gglyph.pop("layers", []):
-            g.layers.extend(self.load_layer(layer))
+            g.layers.extend(self.load_layer(layer, g))
 
         _stash(g, gglyph)
 
         return g
 
-    def load_layer(self, gslayer, width=None):
-        if width is None:
-            width = gslayer["width"]
-        layer = Layer(width=width, id=gslayer.pop("layerId", ""), _font=self.font)
+    def load_layer(self, gslayer: dict, glyph: Glyph, width=None) -> List[Layer]:
+        if width is None and "width" in gslayer:
+            width = gslayer.pop("width")
+        layer = Layer(
+            width=width, id=gslayer.pop("layerId", ""), _font=self.font, _glyph=glyph
+        )
         layer.name = gslayer.pop("name", "")
         if [x for x in self.font.masters if x.id == layer.id]:
             layer._master = layer.id
@@ -208,8 +211,11 @@ class GlyphsThree(BaseConvertor):
             layer.anchors.append(self.load_anchor(anchor))
 
         returns = [layer]
+        layer.glyph = glyph
         if "background" in gslayer:
-            (background,) = self.load_layer(gslayer["background"], width=layer.width)
+            (background,) = self.load_layer(
+                gslayer["background"], glyph, width=layer.width
+            )
             # If it doesn't have an ID, we need to generate one
             background.id = background.id or str(uuid.uuid1())
             background.isBackground = True
@@ -223,7 +229,10 @@ class GlyphsThree(BaseConvertor):
         return returns
 
     def load_guide(self, gguide):
-        g = Guide(pos=[*gguide.get("pos", (0, 0)), gguide.get("angle", 0)], name=gguide.get("name", None))
+        g = Guide(
+            pos=[*gguide.get("pos", (0, 0)), gguide.get("angle", 0)],
+            name=gguide.get("name", None),
+        )
         if gguide.get("locked"):
             if g.name is None:
                 g.name = ""
@@ -448,6 +457,7 @@ class GlyphsThree(BaseConvertor):
 
         self.save_metadata(out)
         self.save_custom_parameters(out)
+        self.save_features(out)
 
         with open(self.filename, "wb") as file:
             openstep_plist.dump(out, file, indent=0, single_line_tuples=True)
@@ -525,7 +535,12 @@ class GlyphsThree(BaseConvertor):
         gshape = _moveformatspecific(shape)
         if shape.is_path:
             gshape["closed"] = shape.closed
-            gshape["nodes"] = [self.save_node(n) for n in shape.nodes]
+            outputnodes = []
+            if len(shape.nodes):
+                # Put front back at end
+                outputnodes = shape.nodes[1:] + [shape.nodes[0]]
+
+            gshape["nodes"] = [self.save_node(n) for n in outputnodes]
         else:
             _copyattrs(shape, gshape, ["ref", "angle"])
             if shape.pos != (0, 0):
@@ -597,3 +612,25 @@ class GlyphsThree(BaseConvertor):
                     )
         if not out["customParameters"]:
             del out["customParameters"]
+
+    def save_features(self, out):
+        if self.font.features:
+            out["classes"] = [
+                {"name": k, "code": " ".join(v)} for k, v in self.font.features.classes.items()
+            ]
+            out["featurePrefixes"] = [
+                {"name": k, "code": v} for k, v in self.font.features.prefixes.items()
+            ]
+            out["features"] = [
+                {"tag": k, "code": v} for k, v in self.font.features.features
+            ]
+        else:
+            out["classes"] = []
+            out["featurePrefixes"] = []
+            out["features"] = []
+        if not out["classes"]:
+            del out["classes"]
+        if not out["featurePrefixes"]:
+            del out["featurePrefixes"]
+        if not out["features"]:
+            del out["features"]
