@@ -32,6 +32,7 @@ CORE_METRICS = [
     "hheaCaretSlopeRise",
     "hheaCaretSlopeRun",
     "hheaCaretOffset",
+    "italicAngle",
 ]
 
 
