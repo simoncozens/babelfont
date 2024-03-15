@@ -76,6 +76,10 @@ custom_opentype_values = {
 }
 
 
+def ribbi(style: str) -> bool:
+    return style.lower() in ["regular", "italic", "bold", "bold italic"]
+
+
 class Designspace(BaseConvertor):
     suffix = ".designspace"
 
@@ -299,7 +303,11 @@ class Designspace(BaseConvertor):
         self.ds = DesignSpaceDocument()
         self.save_axes()
         self.save_sources()
-        # self.save_instances()
+        self.save_instances()
+        # Lib
+        unexported = [g.name for g in self.font.glyphs if not g.exported]
+        if unexported:
+            self.ds.lib["public.skipExportGlyphs"] = sorted(unexported)
         self.ds.write(self.filename)
 
     def save_axes(self):
@@ -368,6 +376,37 @@ class Designspace(BaseConvertor):
                 self._master_filename(master),
                 is_default=(master == self.font.default_master),
             )
+
+    def save_instances(self):
+        for instance in self.font.instances:
+            instanceDescriptor = designspaceLib.InstanceDescriptor()
+            instanceDescriptor.name = (
+                self.font.names.familyName.get_default()
+                + " "
+                + instance.name.get_default()
+            )
+            names = self.font.names
+            instanceDescriptor.familyName = names.familyName.get_default()
+            instanceDescriptor.styleName = instance.name.get_default()
+            instanceDescriptor.styleMapFamilyName = (
+                names.styleMapFamilyName.get_default() or names.familyName.get_default()
+            )
+            if not ribbi(instance.name.get_default()):
+                instanceDescriptor.styleMapFamilyName += (
+                    " " + instance.name.get_default()
+                )
+                instanceDescriptor.styleMapStyleName = "regular"
+            axis_tags_to_names = {
+                axis.tag: axis.name.get_default() for axis in self.font.axes
+            }
+            if instance.location:
+                instanceDescriptor.location = {
+                    axis_tags_to_names[ax]: value
+                    for ax, value in instance.location.items()
+                }
+            else:
+                instanceDescriptor.location = {"Weight": 400}
+            self.ds.addInstance(instanceDescriptor)
 
     def save_master_to_ufo(self, master: Master, filename, is_default=False):
         ufo = ufoLib2.Font()
