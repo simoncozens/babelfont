@@ -25,17 +25,17 @@ class _LayerFields:
     name: str = None
     _master: str = None
     id: str = field(default_factory=lambda: str(uuid.uuid1()))
-    guides: [Guide] = field(default_factory=list, repr=False)
-    shapes: [Shape] = field(
+    guides: List[Guide] = field(default_factory=list, repr=False)
+    shapes: List[Shape] = field(
         default_factory=list, repr=False, metadata={"separate_items": True}
     )
-    anchors: [Anchor] = field(default_factory=list, repr=False)
+    anchors: List[Anchor] = field(default_factory=list, repr=False)
     color: Color = None
     layerIndex: int = 0
-    # hints: [Hint]
+    # hints: List[Hint]
     background: Optional[str] = field(default=None, repr=False)
     isBackground: bool = field(default=False, repr=False)
-    location: [float] = None
+    location: List[float] = None
     _font: Optional["Font"] = field(
         default=None, repr=False, metadata={"python_only": True}
     )
