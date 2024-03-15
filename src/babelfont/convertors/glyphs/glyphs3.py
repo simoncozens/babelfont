@@ -1,9 +1,9 @@
 import datetime
 import math
 import re
-from typing import List
 import uuid
 from collections import OrderedDict
+from typing import List
 
 import openstep_plist
 
