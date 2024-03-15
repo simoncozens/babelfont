@@ -377,7 +377,7 @@ class Designspace(BaseConvertor):
             ufo.info.note = self.font.note
         for ours, theirs in self.names_dict.items():
             our_value = getattr(self.font.names, ours).get_default()
-            if our_value != "unknown":
+            if our_value is not None:
                 setattr(ufo.info, theirs, getattr(self.font.names, ours).get_default())
         for glyph in self.font.glyphs:
             ufo.newGlyph(glyph.name)

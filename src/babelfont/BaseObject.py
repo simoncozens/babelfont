@@ -44,8 +44,6 @@ class I18NDictionary(dict):
             return self["dflt"]
         elif len(list(self.values())):
             return list(self.values())[0]
-        else:
-            return "unknown"
 
     def set_default(self, value):
         if value:
