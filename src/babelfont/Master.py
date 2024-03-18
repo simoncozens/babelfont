@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Optional, Union
 
-from babelfont import Layer
+from .Layer import Layer
 from .BaseObject import BaseObject, I18NDictionary
 from .Guide import Guide
 
