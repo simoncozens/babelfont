@@ -33,6 +33,7 @@ from babelfont.convertors.glyphs.utils import (
     _stashed_cp,
     glyphs_i18ndict,
     to_bitfield,
+    custom_parameter_metrics,
 )
 from babelfont.Master import CORE_METRICS
 
@@ -99,7 +100,6 @@ class GlyphsThree(BaseConvertor):
         self.interpret_kern_groups()
         self.interpret_metric_custom_parameters()
         self.interpret_features()
-
         return font
 
     def load_metadata(self):
@@ -191,6 +191,7 @@ class GlyphsThree(BaseConvertor):
         layer = Layer(
             width=width, id=gslayer.pop("layerId", ""), _font=self.font, _glyph=glyph
         )
+        layer.vertWidth = gslayer.pop("vertWidth", None)
         layer.name = gslayer.pop("name", "")
         if [x for x in self.font.masters if x.id == layer.id]:
             layer._master = layer.id
@@ -351,6 +352,7 @@ class GlyphsThree(BaseConvertor):
         metric_types = [_metrics_dict_to_name(k) for k in metrics]
         for master in self.font.masters:
             metric_values = _g(master, "metricValues", [], pop=True)
+            master.metrics["italicAngle"] = 0
             for k, v in zip(metric_types, metric_values):
                 pos = v.get("pos", 0)
                 master.metrics[k] = pos
@@ -405,7 +407,7 @@ class GlyphsThree(BaseConvertor):
                     master.metrics[param["name"]] = param["value"]
                 else:
                     new_cps.append(param)
-            _stash(self.font.default_master, {"customParameters": new_cps})
+            _stash(master, {"customParameters": new_cps})
 
     def interpret_features(self):
         self.font.features = Features()
@@ -436,6 +438,8 @@ class GlyphsThree(BaseConvertor):
         # Ensure we have all the metrics
         for m in font.masters:
             for k in m.metrics.keys():
+                if k in custom_parameter_metrics:
+                    continue
                 if k.endswith(" overshoot"):
                     continue  # We'll write it into the other metric
                 k = _metrics_name_to_dict(k)
@@ -474,6 +478,12 @@ class GlyphsThree(BaseConvertor):
     def save_kerning(self, kerntable):
         newtable = {}
         for (left, right), val in kerntable.items():
+            left = left.replace("@first_group", "@MMK_L").replace(
+                "@second_group", "@MMK_R"
+            )
+            right = right.replace("@first_group", "@MMK_L").replace(
+                "@second_group", "@MMK_R"
+            )
             newtable.setdefault(left, {})[right] = val
         return newtable
 
@@ -482,6 +492,17 @@ class GlyphsThree(BaseConvertor):
         if master.location:
             gmaster["axesValues"] = list(master.location.values())
         gmaster["metricValues"] = []
+        if not gmaster["customParameters"]:
+            gmaster["customParameters"] = []
+        for metric in custom_parameter_metrics:
+            if metric in self.font.default_master.metrics:
+                gmaster["customParameters"].append(
+                    {
+                        "name": metric,
+                        "value": self.font.default_master.metrics[metric],
+                    }
+                )
+
         for k in self.glyphs["metrics"]:
             metric = {}
             pos = master.metrics.get(_metrics_dict_to_name(k))
@@ -513,16 +534,18 @@ class GlyphsThree(BaseConvertor):
             # gglyph["unicode"] = "%04x" % glyph.codepoints[0]
         elif len(glyph.codepoints) > 1:
             gglyph["unicode"] = glyph.codepoints
-        gglyph["layers"] = [self.save_layer(layer) for layer in glyph.layers]
+        gglyph["layers"] = [
+            self.save_layer(layer) for layer in glyph.layers if not layer.isBackground
+        ]
         if glyph.production_name is not None and glyph.production_name != glyph.name:
             gglyph["production"] = glyph.production_name
         if not glyph.exported:
             gglyph["export"] = 0
         # Check for kern groups
-        for group, members in self.font.second_kern_groups:
+        for group, members in self.font.second_kern_groups.items():
             if glyph.name in members:
                 gglyph["kernLeft"] = group
-        for group, members in self.font.first_kern_groups:
+        for group, members in self.font.first_kern_groups.items():
             if glyph.name in members:
                 gglyph["kernRight"] = group
         # XXX
@@ -531,6 +554,8 @@ class GlyphsThree(BaseConvertor):
     def save_layer(self, layer):
         glayer = _moveformatspecific(layer)
         _copyattrs(layer, glayer, ["width", "name"])
+        if layer.vertWidth is not None:
+            glayer["vertWidth"] = layer.vertWidth
         glayer["layerId"] = str(layer.id)
         if layer.guides:
             glayer["guides"] = [self.save_guide(g) for g in layer.guides]
@@ -538,6 +563,12 @@ class GlyphsThree(BaseConvertor):
             glayer["shapes"] = [self.save_shape(s) for s in layer.shapes]
         if layer._master and layer._master != layer.id:
             glayer["associatedMasterId"] = layer._master
+        if layer.anchors:
+            glayer["anchors"] = [self.save_anchor(a) for a in layer.anchors]
+        if layer.background:
+            glayer["background"] = self.save_layer(layer._background_layer())
+            del glayer["background"]["width"]
+            del glayer["background"]["layerId"]
         return glayer
 
     def save_shape(self, shape):
@@ -570,6 +601,12 @@ class GlyphsThree(BaseConvertor):
         ginstance["axesValues"] = [instance.location[ax.tag] for ax in self.font.axes]
 
         return ginstance
+
+    def save_anchor(self, anchor):
+        ganchor = _moveformatspecific(anchor)
+        ganchor["name"] = anchor.name
+        ganchor["pos"] = (anchor.x, anchor.y)
+        return ganchor
 
     def save_metadata(self, out):
         if self.font.note:

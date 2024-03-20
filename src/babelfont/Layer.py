@@ -22,6 +22,7 @@ import uuid
 class _LayerFields:
     width: int = 0
     height: int = 0
+    vertWidth: Optional[int] = None
     name: str = None
     _master: str = None
     id: str = field(default_factory=lambda: str(uuid.uuid1()))

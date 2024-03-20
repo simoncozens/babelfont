@@ -441,7 +441,10 @@ class Designspace(BaseConvertor):
         # Metrics
         for our_metric, their_metric in metrics.items():
             if our_metric in master.metrics:
-                setattr(ufo.info, their_metric, master.metrics[our_metric])
+                metric_value = master.metrics[our_metric]
+                if their_metric in ["openTypeOS2WinDescent"] and metric_value < 0:
+                    metric_value = -metric_value
+                setattr(ufo.info, their_metric, metric_value)
         if is_default:
             for info_tag, (table, field) in custom_opentype_values.items():
                 for otv in self.font.customOpenTypeValues:
@@ -494,6 +497,8 @@ class Designspace(BaseConvertor):
         for anchor in layer.anchors:
             self.save_anchor_to_ufo(ufo_glyph, anchor)
         ufo_glyph.width = layer.width
+        if layer.height:
+            ufo_glyph.height = layer.height
 
     def save_anchor_to_ufo(self, ufo_glyph: ufoLib2.objects.Glyph, anchor: Anchor):
         ufo_glyph.appendAnchor(

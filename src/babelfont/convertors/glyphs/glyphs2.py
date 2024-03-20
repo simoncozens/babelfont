@@ -22,7 +22,6 @@ from babelfont.convertors import BaseConvertor
 from babelfont.convertors.glyphs.utils import (
     _glyphs_metrics_to_ours,
     _stash,
-    opentype_custom_parameters,
 )
 
 
@@ -417,16 +416,16 @@ class Glyphs2(BaseConvertor):
 
         # Any customparameters in the default master which look like
         # custom OT values need to move there.
-        cp = self.font.default_master._formatspecific.get("com.glyphsapp", {}).get(
-            "customParameters", {}
-        )
-        for param in cp:
-            ot_param = opentype_custom_parameters.get(param["name"])
-            if not ot_param:
-                continue
-            self.font.customOpenTypeValues.append(
-                OTValue(ot_param[0], ot_param[1], param["value"])
-            )
+        # cp = self.font.default_master._formatspecific.get("com.glyphsapp", {}).get(
+        #     "customParameters", {}
+        # )
+        # for param in cp:
+        #     ot_param = opentype_custom_parameters.get(param["name"])
+        #     if not ot_param:
+        #         continue
+        #     self.font.customOpenTypeValues.append(
+        #         OTValue(ot_param[0], ot_param[1], param["value"])
+        #     )
 
         self.font.note = self.glyphs.get("note")
         self.font.date = datetime.datetime.strptime(

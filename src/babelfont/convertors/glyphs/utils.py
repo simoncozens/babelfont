@@ -1,6 +1,8 @@
 from babelfont.BaseObject import I18NDictionary
 import re
 
+from babelfont.Master import CORE_METRICS
+
 
 def _stash(item, glyphs, include=None, exclude=None):
     if include:
@@ -52,13 +54,16 @@ def _copyattrs(src, dst, attrs, convertor=lambda x: x):
             dst[a] = convertor(v)
 
 
-opentype_custom_parameters = {
-}
+# These are things which are core metrics both for us and glyphs; other
+# metrics which we believe to be metrics are stored by Glyphs as custom
+# parameters
+shared_core_metrics = ["xHeight", "capHeight", "ascender", "descender", "italicAngle"]
+custom_parameter_metrics = [x for x in CORE_METRICS if x not in shared_core_metrics]
 
 _rename_metrics = {
     "x-height": "xHeight",
     "cap height": "capHeight",
-    "italic angle": "italicAngle"
+    "italic angle": "italicAngle",
 }
 _reverse_rename_metrics = {v: k for k, v in _rename_metrics.items()}
 
