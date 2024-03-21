@@ -75,6 +75,21 @@ custom_opentype_values = {
     "openTypeOS2Type": ("OS/2", "fsType"),
 }
 
+BITARRAY = [
+    ("head", "flags"),
+    ("GASP", "gaspRange"),
+    ("OS/2", "fsType"),
+    ("OS/2", "fsSelection"),
+]
+
+
+def bitarray_to_int(value):
+    return sum(2**i for i in value)
+
+
+def int_to_bitarray(value):
+    return [i for i in range(32) if value & 2**i]
+
 
 def ribbi(style: str) -> bool:
     return style.lower() in ["regular", "italic", "bold", "bold italic"]
@@ -293,10 +308,11 @@ class Designspace(BaseConvertor):
                 getattr(self.font.names, ours).set_default(their_value)
         for ufofield, (table, field) in custom_opentype_values.items():
             if getattr(firstfontinfo, ufofield) is not None:
+                value = getattr(firstfontinfo, ufofield)
+                if (table, field) in BITARRAY:
+                    value = bitarray_to_int(value)
                 self.font.customOpenTypeValues.append(
-                    OTValue(
-                        table=table, field=field, value=getattr(firstfontinfo, ufofield)
-                    )
+                    OTValue(table=table, field=field, value=value)
                 )
 
     def _save(self):
@@ -449,7 +465,10 @@ class Designspace(BaseConvertor):
             for info_tag, (table, field) in custom_opentype_values.items():
                 for otv in self.font.customOpenTypeValues:
                     if otv.table == table and otv.field == field:
-                        setattr(ufo.info, info_tag, otv.value)
+                        value = otv.value
+                        if (table, field) in BITARRAY:
+                            value = int_to_bitarray(value)
+                        setattr(ufo.info, info_tag, value)
         # Guides
         if master.guides:
             ufo.info.guidelines = []
