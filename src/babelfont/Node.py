@@ -1,9 +1,13 @@
-from collections import namedtuple
-
-_Node = namedtuple("Node", "x,y,type,userdata", defaults=[0, 0, "c", None])
+from dataclasses import dataclass
 
 
-class Node(_Node):
+@dataclass
+class Node:
+    x: int = 0
+    y: int = 0
+    type: str = "c"
+    userdata: str = None
+
     _to_pen_type = {"o": None, "c": "curve", "l": "line", "q": "qcurve"}
     _from_pen_type = {v: k for k, v in _to_pen_type.items()}
 
