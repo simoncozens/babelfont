@@ -3,6 +3,7 @@ import sys
 import pkgutil
 import inspect
 import importlib
+import logging
 
 from babelfont.Font import Font
 
@@ -14,6 +15,9 @@ class BaseConvertor:
     compile_only: bool
 
     suffix = ".XXX"
+
+    def __init__(self):
+        self.logger = logging.getLogger(self.__class__.__name__)
 
     @classmethod
     def can_load(cls, other, **kwargs):

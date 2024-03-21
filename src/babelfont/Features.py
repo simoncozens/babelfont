@@ -20,7 +20,7 @@ class Features(BaseObject):
         default_factory=dict,
         metadata={
             "separate_items": True,
-            "description": "A dictionary of classes. Each group is a list of glyph names or class names.",
+            "description": "A dictionary of classes. Each group is a list of glyph names or class names. The key should not start with @.",
         },
     )
     prefixes: Dict[str, str] = field(
@@ -48,7 +48,9 @@ class Features(BaseObject):
             if isinstance(statement, ast.GlyphClassDefinition):
                 statement.glyphs.asFea()  # This builds .original
                 if statement.glyphs.original:
-                    features.classes[statement.name] = [ast.asFea(x) for x in statement.glyphs.original]
+                    features.classes[statement.name] = [
+                        ast.asFea(x) for x in statement.glyphs.original
+                    ]
                 else:
                     features.classes[statement.name] = list(statement.glyphs.glyphs)
             elif isinstance(statement, ast.FeatureBlock):
