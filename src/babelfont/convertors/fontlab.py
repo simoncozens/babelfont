@@ -21,13 +21,25 @@ class Fontlab(BaseConvertor):
         if "defaultMaster" in self.fontlab:
             default = self.font.master(self.fontlab["defaultMaster"])
             if self.font.axes:
-                def_loc = self.font.map_backward(default.location)
+                def_loc = default.location
                 for axis in self.font.axes:
                     if axis.tag in default.location:
                         axis.default = def_loc[axis.tag]
             assert self.font.default_master
         for g in self.fontlab.get("glyphs", []):
             glyph = self._load_thing(g, self.glyph_loader)
+            # Fontlab allows glyphs to elide layers with no shapes
+            # so we need to ensure there is a layer for each master
+            layer_ids = [l.id for l in glyph.layers]
+            for master in self.font.masters:
+                if master.id not in layer_ids:
+                    layer = Layer(
+                        name=master.id,
+                        _master=master.id,
+                    )
+                    layer._font = self.font
+                    glyph.layers.append(layer)
+
             self.font.glyphs.append(glyph)
         for cls in self.fontlab.get("classes", []):
             self._load_class(cls)
@@ -105,6 +117,12 @@ class Fontlab(BaseConvertor):
                     contour = Shape(nodes=[])
                     for n in flcontour["nodes"]:
                         contour.nodes.extend(self._load_node(n))
+                    if (
+                        contour.nodes[0].type == "ls"
+                        and contour.nodes[-1].type[0] == "q"
+                    ):
+                        contour.nodes[0].type = "cs"
+                        contour.nodes[-1].type = "o"
                     shapes.append(contour)
         return shapes
 
@@ -137,14 +155,12 @@ class Fontlab(BaseConvertor):
                 ntyp = "l"
             elif len(stuff) == 3 and ix == 2:
                 ntyp = "c"
-                if m[3]:
-                    ntyp = ntyp + "s"
             elif len(stuff) == 2 and ix == 1:
                 ntyp = "q"
-                if m[3]:
-                    ntyp = ntyp + "s"
             else:
                 ntyp = "o"
+            if m[3]:
+                ntyp = ntyp + "s"
             rv.append(Node(x=float(m[1]), y=float(m[2]), type=ntyp))
         return rv
 
@@ -160,7 +176,10 @@ class Fontlab(BaseConvertor):
             "kerning": ("kerning", _load_kerning),
             "location": (
                 "location",
-                lambda s, x: {s.axis_name_map[k].tag: v for k, v in x.items()},
+                lambda s, x: {
+                    s.axis_name_map[k].tag: s.axis_name_map[k].map_backward(v)
+                    for k, v in x.items()
+                },
             ),
         },
     )
