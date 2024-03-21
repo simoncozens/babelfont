@@ -1,9 +1,8 @@
 {
-.appVersion = "3039";
+.appVersion = "3243";
 .formatVersion = 3;
 DisplayStrings = (
 A,
-"",
 AO
 );
 axes = (
@@ -51,6 +50,8 @@ over = -16;
 {
 over = -16;
 pos = -200;
+},
+{
 }
 );
 name = Regular;
@@ -76,6 +77,8 @@ pos = 500;
 },
 {
 pos = -200;
+},
+{
 }
 );
 name = Bold;
@@ -106,6 +109,8 @@ over = -16;
 {
 over = -16;
 pos = -200;
+},
+{
 }
 );
 name = "Regular Skewed";
@@ -131,6 +136,8 @@ pos = 500;
 },
 {
 pos = -200;
+},
+{
 }
 );
 name = "Bold Skewed";
@@ -501,6 +508,9 @@ type = baseline;
 },
 {
 type = descender;
+},
+{
+type = "italic angle";
 }
 );
 unitsPerEm = 1000;

@@ -32,6 +32,7 @@ from babelfont.convertors.glyphs.utils import (
     _stash,
     _stashed_cp,
     glyphs_i18ndict,
+    labels_to_feature,
     to_bitfield,
     custom_parameter_metrics,
 )
@@ -411,13 +412,27 @@ class GlyphsThree(BaseConvertor):
 
     def interpret_features(self):
         self.font.features = Features()
+
+        def code_with_notes(feature):
+            code = feature["code"]
+            if "disabled" in feature:
+                code = "# Disabled\n# " + code.replace("\n", "\n# ")
+            if "automatic" in feature:
+                code = "# Automatic\n" + code
+            if "labels" in feature:
+                code += "\n".join(labels_to_feature(feature["labels"]))
+
+            return code
+
         for glyphclass in _g(self.font, "classes", [], pop=True):
             # Beware of tokens XXX
             self.font.features.classes[glyphclass["name"]] = glyphclass["code"].split()
         for prefix in _g(self.font, "featurePrefixes", [], pop=True):
-            self.font.features.prefixes[prefix["name"]] = prefix["code"]
+            self.font.features.prefixes[prefix["name"]] = code_with_notes(prefix)
         for feature in _g(self.font, "features", [], pop=True):
-            self.font.features.features.append((feature["tag"], feature["code"]))
+            self.font.features.features.append(
+                (feature["tag"], code_with_notes(feature))
+            )
 
     def _save(self):
         font = self.font
@@ -492,7 +507,7 @@ class GlyphsThree(BaseConvertor):
         if master.location:
             gmaster["axesValues"] = list(master.location.values())
         gmaster["metricValues"] = []
-        if not gmaster["customParameters"]:
+        if "customParameters" not in gmaster:
             gmaster["customParameters"] = []
         for metric in custom_parameter_metrics:
             if metric in self.font.default_master.metrics:
@@ -502,6 +517,8 @@ class GlyphsThree(BaseConvertor):
                         "value": self.font.default_master.metrics[metric],
                     }
                 )
+        if not gmaster["customParameters"]:
+            del gmaster["customParameters"]
 
         for k in self.glyphs["metrics"]:
             metric = {}
@@ -660,16 +677,29 @@ class GlyphsThree(BaseConvertor):
             del out["customParameters"]
 
     def save_features(self, out):
+        # In truth we should probably steal glyphsLib.builder.features._process_feature_block
+        def _save_item(key, value, name):
+            item = {}
+            item[name] = key
+            if value.startswith("# Automatic\n"):
+                item["automatic"] = True
+                value = re.sub("^# Automatic\n", "", value, flags=re.MULTILINE)
+            if value.startswith("# Disabled\n"):
+                item["disabled"] = True
+                value = re.sub("^#", "", value[10:], flags=re.MULTILINE)
+            item["code"] = value
+            return item
+
         if self.font.features:
             out["classes"] = [
                 {"name": k, "code": " ".join(v)}
                 for k, v in self.font.features.classes.items()
             ]
             out["featurePrefixes"] = [
-                {"name": k, "code": v} for k, v in self.font.features.prefixes.items()
+                _save_item(k, v, "name") for k, v in self.font.features.prefixes.items()
             ]
             out["features"] = [
-                {"tag": k, "code": v} for k, v in self.font.features.features
+                _save_item(k, v, "tag") for k, v in self.font.features.features
             ]
         else:
             out["classes"] = []
