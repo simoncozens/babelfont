@@ -53,7 +53,7 @@ without the layers becoming lost.)"""
         default=None,
         metadata={
             "description": """A dictionary mapping axis tags to coordinates
-in order to locate this instance in the design space."""
+in order to locate this master in the design space. The coordinates are in designspace units."""
         },
     )
     guides: [Guide] = field(
