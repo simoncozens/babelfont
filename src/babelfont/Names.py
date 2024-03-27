@@ -36,8 +36,13 @@ class Names(BaseObject):
 
     def as_nametable_dict(self):
         rv = {}
+        ft_names = {
+            "manufacturerURL": "vendorURL",
+            "license": "licenseDescription",
+            "licenseURL": "licenseInfoURL",
+        }
         for k, v in asdict(self).items():
             if not v:
                 continue
-            rv[k] = v.default_or_dict()
+            rv[ft_names.get(k, k)] = v.default_or_dict()
         return rv
