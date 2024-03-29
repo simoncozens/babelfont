@@ -511,6 +511,7 @@ class Designspace(BaseConvertor):
             ufo.lib["public.postscriptNames"] = psnames
         for key, value in master._formatspecific.get(UFO_KEY, {}).items():
             ufo.lib[key] = value
+        self.logger.info("Saving %s", filename)
         ufo.save(filename, overwrite=True)
 
     def save_layer_to_ufo(self, ufo_glyph: ufoLib2.objects.Glyph, layer: Layer):
