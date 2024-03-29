@@ -24,7 +24,7 @@ class Fontlab(BaseConvertor):
                 def_loc = default.location
                 for axis in self.font.axes:
                     if axis.tag in default.location:
-                        axis.default = def_loc[axis.tag]
+                        axis.default = axis.designspace_to_userspace(def_loc[axis.tag])
             assert self.font.default_master
         for g in self.fontlab.get("glyphs", []):
             glyph = self._load_thing(g, self.glyph_loader)
@@ -181,10 +181,7 @@ class Fontlab(BaseConvertor):
             "kerning": ("kerning", _load_kerning),
             "location": (
                 "location",
-                lambda s, x: {
-                    s.axis_name_map[k].tag: s.axis_name_map[k].map_backward(v)
-                    for k, v in x.items()
-                },
+                lambda s, x: {s.axis_name_map[k].tag: v for k, v in x.items()},
             ),
         },
     )
