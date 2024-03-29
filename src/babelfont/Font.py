@@ -150,7 +150,7 @@ class Font(_FontFields, BaseObject):
 
     @functools.cached_property
     def default_master(self):
-        default_loc = {a.tag: a.default for a in self.axes}
+        default_loc = {a.tag: a.userspace_to_designspace(a.default) for a in self.axes}
         for m in self.masters:
             if m.location == default_loc:
                 return m

@@ -127,7 +127,7 @@ class Axis(BaseObject, _AxisFields):
 
         if not self.map:
             return v
-        return piecewiseLinearMap(v, {k: v for k, v in self.map})
+        return piecewiseLinearMap(v, dict(self.map))
 
     def map_backward(self, v):
         from fontTools.varLib.models import piecewiseLinearMap
@@ -135,3 +135,10 @@ class Axis(BaseObject, _AxisFields):
         if not self.map:
             return v
         return piecewiseLinearMap(v, {v: k for k, v in self.map})
+
+    # These are just better names
+    def userspace_to_designspace(self, v):
+        return self.map_forward(v)
+
+    def designspace_to_userspace(self, v):
+        return self.map_backward(v)

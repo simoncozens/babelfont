@@ -96,6 +96,12 @@ class GlyphsThree(BaseConvertor):
         self.interpret_metrics()
         self.interpret_axes()
         self.interpret_axis_mappings()
+        # Oops, we put the axes in designspace coordinates
+        for axis in self.font.axes:
+            axis.default = axis.designspace_to_userspace(axis.default)
+            axis.min = axis.designspace_to_userspace(axis.min)
+            axis.max = axis.designspace_to_userspace(axis.max)
+
         self.interpret_linked_kerning()
         assert self.font.default_master
         self.interpret_kern_groups()
@@ -380,7 +386,18 @@ class GlyphsThree(BaseConvertor):
                     axis.max = thisLoc
 
     def interpret_axis_mappings(self):
+        # There may be a "Axis Mappings" custom parameter, if so use that
         axes_by_name = {a.name.get_default(): a for a in self.font.axes}
+
+        if mapping := _stashed_cp(self.font, "Axis Mappings"):
+            axes_by_tag = {a.tag: a for a in self.font.axes}
+            for axistag, axismap in mapping.items():
+                ax = axes_by_tag[axistag]
+                ax.map = []
+                for designspace, userspace in axismap.items():
+                    ax.map.append((userspace, float(designspace)))
+            return
+
         for instance in self.font.instances:
             c = (
                 _custom_parameter(
