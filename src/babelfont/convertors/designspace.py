@@ -434,6 +434,8 @@ class Designspace(BaseConvertor):
             our_value = getattr(self.font.names, ours).get_default()
             if our_value is not None:
                 setattr(ufo.info, theirs, getattr(self.font.names, ours).get_default())
+        if not ufo.info.styleName:
+            ufo.info.styleName = master.name.get_default()
         for glyph in self.font.glyphs:
             ufo.newGlyph(glyph.name)
         for glyph in self.font.glyphs:
@@ -467,7 +469,11 @@ class Designspace(BaseConvertor):
                     if otv.table == table and otv.field == field:
                         value = otv.value
                         if (table, field) in BITARRAY:
+                            if info_tag == "openTypeOS2Selection":
+                                # "Bits 0 (italic), 5 (bold) and 6 (regular) must not be set here"
+                                value = value & 0b11111100
                             value = int_to_bitarray(value)
+
                         setattr(ufo.info, info_tag, value)
         # Guides
         if master.guides:
