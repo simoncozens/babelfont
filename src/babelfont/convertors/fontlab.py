@@ -53,7 +53,12 @@ class Fontlab(BaseConvertor):
         count = 0
         if "name" in feature:
             # Remove the "feature ... {" first line and "} tag;" last line
-            feature["feature"] = "\n".join(feature["feature"].split("\n")[1:-1])
+            feature["feature"] = re.sub(
+                r"^\s*feature\s+(\w+)\s*{(.*)\s*}\s*\1\s*;",
+                r"\2",
+                feature["feature"],
+                flags=re.DOTALL,
+            )
             self.font.features.features.append((feature["name"], feature["feature"]))
         else:
             self.font.features.prefixes["Anonymous prefix " + str(count)] = feature[
