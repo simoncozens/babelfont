@@ -118,7 +118,7 @@ class Fontlab(BaseConvertor):
                     for n in flcontour["nodes"]:
                         contour.nodes.extend(self._load_node(n))
                     if (
-                        contour.nodes[0].type == "ls"
+                        contour.nodes[0].type[0] == "l"
                         and contour.nodes[-1].type[0] == "q"
                     ):
                         contour.nodes[0].type = "cs"
