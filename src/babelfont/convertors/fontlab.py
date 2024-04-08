@@ -89,7 +89,11 @@ class Fontlab(BaseConvertor):
                 self.font.second_kern_groups[kclass["name"]] = kclass["names"]
         kerning = {}
         for left, rvalue in flkerning.get("pairs", {}).items():
+            if left.startswith("@"):
+                left = "@first_group_" + left[1:]
             for right, value in rvalue.items():
+                if right.startswith("@"):
+                    right = "@second_group_" + right[1:]
                 kerning[(left, right)] = int(value)
         return kerning
 
