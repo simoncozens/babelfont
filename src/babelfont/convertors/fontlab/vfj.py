@@ -10,7 +10,7 @@ from babelfont.BaseObject import Color, I18NDictionary, OTValue
 from babelfont.convertors import BaseConvertor
 
 
-class Fontlab(BaseConvertor):
+class FontlabVFJ(BaseConvertor):
     suffix = ".vfj"
 
     def _load(self):
