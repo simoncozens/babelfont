@@ -26,11 +26,12 @@ ignore = [
     "Background Bitmap",
     "Glyph Origin",
     "Glyph Anchors Supplemental",
+    "Links",
 ]
 names = {
     "description": "description",
     "License": "license",
-    "LicenseURL": "licenseURL",
+    "License URL": "licenseURL",
     "designer": "designer",
     "designerURL": "designerURL",
     "manufacturer": "manufacturer",
@@ -38,6 +39,7 @@ names = {
     "copyright": "copyright",
     "sgn": "familyName",
     "tfn": "familyName",
+    "versionFull": "version",
 }
 
 
@@ -62,8 +64,6 @@ class FontlabVFB(BaseConvertor):
             if name == "psn":
                 # Postscript name, hey we don't have that.
                 pass
-            elif name == "version full":
-                self.font.version = tuple(int(x) for x in data.split("."))
             elif name in names:
                 if data:
                     setattr(
@@ -71,6 +71,16 @@ class FontlabVFB(BaseConvertor):
                     )
             elif name == "ffn":  # Full family name?
                 pass
+            elif name == "upm":
+                self.font.upm = int(data)
+            elif name == "versionMajor":
+                self.font.version = (int(data), self.font.version[1])
+            elif name == "versionMinor":
+                self.font.version = (self.font.version[0], int(data))
+            elif name == "vendorID":
+                self.font.customOpenTypeValues.append(
+                    OTValue("OS/2", "achVendID", data)
+                )
             elif name == "Glyph":
                 self.current_glyph = Glyph(name=data["name"])
                 self.font.glyphs.append(self.current_glyph)
