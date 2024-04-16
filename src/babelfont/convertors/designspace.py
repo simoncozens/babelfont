@@ -1,10 +1,12 @@
 import logging
 from typing import Dict, List
+import time
 import uuid
 
 import ufoLib2
 from fontTools import designspaceLib
 from fontTools.designspaceLib import DesignSpaceDocument
+from fontTools.misc import timeTools
 
 from babelfont import (
     Features,
@@ -473,6 +475,11 @@ class Designspace(BaseConvertor):
                                 # "Bits 0 (italic), 5 (bold) and 6 (regular) must not be set here"
                                 value = value & 0b11111100
                             value = int_to_bitarray(value)
+                        if info_tag == "openTypeHeadCreated":
+                            value = time.strftime(
+                                "%Y/%m/%d %H:%M:%S",
+                                time.gmtime(timeTools.epoch_diff + value),
+                            )
 
                         setattr(ufo.info, info_tag, value)
         # Guides
