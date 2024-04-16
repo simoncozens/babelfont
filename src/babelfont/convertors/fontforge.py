@@ -3,6 +3,8 @@ import uuid
 import logging
 from pathlib import Path
 
+from fontTools.misc.timeTools import epoch_diff
+
 from babelfont.BaseObject import OTValue
 from babelfont.convertors import BaseConvertor
 
@@ -44,6 +46,8 @@ class FontForgeSFDIR(BaseConvertor):
         "Validated",
         "Flags",
         "Lookup",
+        "GlifName",
+        "AnchorPoint",  # XXX
     ]
 
     @classmethod
@@ -62,7 +66,7 @@ class FontForgeSFDIR(BaseConvertor):
         # Probe once for glyphorder
         self.glyph_order = {}
         for fontfile in Path(self.filename).glob("*.glyph"):
-            self._probe_glyphorder(fontfile)
+            self._probe_glyphorder(open(fontfile).readlines())
         for gid in sorted(self.glyph_order.keys()):
             self.font.glyphs.append(Glyph(name=self.glyph_order[gid]))
 
@@ -72,26 +76,29 @@ class FontForgeSFDIR(BaseConvertor):
 
         return font
 
-    def _probe_glyphorder(self, file):
+    def _probe_glyphorder(self, lines):
         glyphname = ""
-        for line in open(file).readlines():
+        for line in lines:
             if m := re.match(r"StartChar: (.*)", line):
                 glyphname = m.group(1)
                 continue
             if m := re.match(r"Encoding: (\d+) (-?\d+) (\d+)", line):
                 gid = int(m.group(3))
                 if not glyphname:
-                    raise ValueError(f"Bad file {file} - no StartChar")
+                    raise ValueError(f"Bad file - no StartChar")
                 self.glyph_order[gid] = glyphname
-                break
 
     def _load_line(self, mode):
         while self.info:
             line = self.info.pop(0)
-            if line == "EndSplineFont" and mode == "info":
+            if line == "EndSplineFont":
+                break
+            if line.startswith("BeginChars") and mode == "info":
                 break
             if line == "EndChar" and mode == "glyph":
                 break
+            if not line:
+                continue
             if ": " not in line:
                 if hasattr(self, "_handle_" + line):
                     getattr(self, "_handle_" + line)()
@@ -104,7 +111,8 @@ class FontForgeSFDIR(BaseConvertor):
             if hasattr(self, "_handle_" + key):
                 getattr(self, "_handle_" + key)(value)
             else:
-                log.warn("Unknown info key %s", key)
+                # log.warn("Unknown info key %s", key)
+                pass
 
     def _handle_FamilyName(self, value):
         self.font.names.familyName.set_default(value)
@@ -169,6 +177,7 @@ class FontForgeSFDIR(BaseConvertor):
         )
 
     def _handle_OS2Vendor(self, value):
+        value = value.replace("'", "")
         self.font.customOpenTypeValues.append(OTValue("OS/2", "achVendID", value))
 
     def _handle_hheaAscent(self, value):
@@ -215,10 +224,14 @@ class FontForgeSFDIR(BaseConvertor):
         self.font.customOpenTypeValues.append(OTValue("OS/2", "fsSelection", 7))
 
     def _handle_CreationTime(self, value):
-        self.font.customOpenTypeValues.append(OTValue("head", "created", int(value)))
+        self.font.customOpenTypeValues.append(
+            OTValue("head", "created", int(value) - epoch_diff)
+        )
 
     def _handle_ModificationTime(self, value):
-        self.font.customOpenTypeValues.append(OTValue("head", "modified", int(value)))
+        self.font.customOpenTypeValues.append(
+            OTValue("head", "modified", int(value) - epoch_diff)
+        )
 
     def _handle_ShortTable(self, value):
         # Ignore short table for now
@@ -271,8 +284,25 @@ class FontForgeSFDIR(BaseConvertor):
     def _handle_GlyphClass(self, value):
         pass
 
+    def _handle_Back(self):
+        background = Layer(
+            name="background",
+            id=str(uuid.uuid1()),
+            _master=self.font.masters[0].id,
+            _font=self.font,
+            _glyph=self.current_glyph,
+            isBackground=True,
+            width=0,
+        )
+        # self.current_glyph.layers[0].background = background.id
+        # self.current_glyph.layers.append(background)
+        self._expect_splineset(background.getPen())
+
     def _handle_Fore(self):
         self._expect_splineset(self.current_glyph.layers[0].getPen())
+
+    def _handle_EndChars(self):
+        pass
 
     def _handle_Refer(self, value: str):
         gid, unicode, style, xx, xy, yx, yy, dx, dy, ttflag = value.split(None, 10)
@@ -323,3 +353,24 @@ class FontForgeSFDIR(BaseConvertor):
         if paths:
             pen.closePath()
         return
+
+
+class FontForgeSFD(FontForgeSFDIR):
+    suffix = ".sfd"
+
+    def _load(self):
+        font = self.font
+        self.current_glyph = None
+        # I'm going to assume a single master font
+        font.masters = [Master(name="Regular", id=str(uuid.uuid4()), font=font)]
+        font.instances = [Instance(name="Regular", styleName="Regular", location={})]
+
+        self.info = open(Path(self.filename)).read().splitlines()
+        self.glyph_order = {}
+        self._probe_glyphorder(self.info)
+        for gid in sorted(self.glyph_order.keys()):
+            self.font.glyphs.append(Glyph(name=self.glyph_order[gid]))
+        self._load_line("info")
+        while self.info:
+            self._load_line("glyph")
+        return self.font
