@@ -188,9 +188,6 @@ class Designspace(BaseConvertor):
                 if UFO_KEY not in master._formatspecific:
                     master._formatspecific[UFO_KEY] = {}
                 master._formatspecific[UFO_KEY][key] = value
-
-        master.features = Features.from_fea(font.features.text)
-        self._load_groups(font.groups)
         assert master.valid
         return master
 
@@ -316,6 +313,9 @@ class Designspace(BaseConvertor):
                 self.font.customOpenTypeValues.append(
                     OTValue(table=table, field=field, value=value)
                 )
+
+        self.font.features = Features.from_fea(ufo.features.text)
+        self._load_groups(ufo.groups)
 
     def _save(self):
         self.ds = DesignSpaceDocument()
