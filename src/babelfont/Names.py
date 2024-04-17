@@ -1,6 +1,32 @@
 from .BaseObject import BaseObject, I18NDictionary
 from dataclasses import dataclass, asdict
 
+OPENTYPE_NAMES = [
+    "copyright",
+    "familyName",
+    "preferredSubfamilyName",
+    "uniqueID",
+    "fullName",  # XXX?
+    "version",
+    "postscriptName",
+    "trademark",
+    "manufacturer",
+    "designer",
+    "description",
+    "manufacturerURL",
+    "designerURL",
+    "license",
+    "licenseURL",
+    "reserved",
+    "typographicFamily",
+    "typographicSubfamily",
+    "compatibleFullName",
+    "sampleText",
+    "postscriptCIDname",  # XXX?
+    "WWSFamilyName",
+    "WWSSubfamilyName",
+]
+
 
 @dataclass
 class Names(BaseObject):
@@ -15,6 +41,8 @@ class Names(BaseObject):
     licenseURL: I18NDictionary = None
     version: I18NDictionary = None
     uniqueID: I18NDictionary = None
+    postscriptName: I18NDictionary = None
+    fullName: I18NDictionary = None
     description: I18NDictionary = None
     typographicFamily: I18NDictionary = None
     typographicSubfamily: I18NDictionary = None
