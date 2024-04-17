@@ -1,29 +1,43 @@
-[tool.poetry]
+[build-system]
+requires = [
+   "setuptools>=45",
+   "setuptools_scm[toml]>=6.2"
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project]
+dynamic = ["version"]
 name = "babelfont"
-version = "3.0.1"
 description = "Load, examine and save fonts in a variety of formats"
-authors = ["Simon Cozens <simon@simon-cozens.org>"]
+authors = [
+    { name = "Simon Cozens", email= "simon@simon-cozens.org" }
+]
 readme = "README.md"
 
-[tool.poetry.dependencies]
-python = ">=3.8"
-orjson = "^3.5.1"
-fonttools = ">=4.40.0"
-ufoLib2 = ">=0.11.1"
-openstep-plist = ">=0.2.2"
-glyphsLib = ">=5.3.2"
-fontfeatures = "^1.0.6"
+dependencies = [
+    "python >=3.8",
+    "orjson ~= 3.5.1",
+    "fonttools >=4.40.0",
+    "ufoLib2 >=0.11.1",
+    "openstep-plist >=0.2.2",
+    "glyphsLib >=5.3.2",
+    "fontfeatures ~= 1.0.6",
+]
 
-[tool.poetry.dev-dependencies]
-pytest = "*"
-defcon = "*"
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "defcon"
+]
 
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.scripts]
+[project.scripts]
 babelfont = 'babelfont.__main__:main'
 
 [tool.pytest.ini_options]
 filterwarnings = "ignore::DeprecationWarning"
+
+[tool.setuptools_scm]
+git_describe_command = "git describe --match 'v*' --tags"
