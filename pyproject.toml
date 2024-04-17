@@ -18,7 +18,6 @@ authors = [
 readme = "README.md"
 
 dependencies = [
-    "python >=3.8",
     "orjson ~= 3.5.1",
     "fonttools >=4.40.0",
     "ufoLib2 >=0.11.1",
