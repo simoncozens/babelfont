@@ -1,4 +1,5 @@
 import re
+import shlex
 import uuid
 import logging
 from pathlib import Path
@@ -7,6 +8,7 @@ from fontTools.misc.timeTools import epoch_diff
 
 from babelfont.BaseObject import OTValue
 from babelfont.convertors import BaseConvertor
+from babelfont.Names import OPENTYPE_NAMES
 
 from babelfont import (
     Anchor,
@@ -55,13 +57,16 @@ class FontForgeSFDIR(BaseConvertor):
     def can_save(cls, convertor, **kwargs):
         return False
 
-    def _load(self):
+    def _setupfont(self):
         font = self.font
-        self.current_glyph = None
+        font.upm = 1024
         # I'm going to assume a single master font
         font.masters = [Master(name="Regular", id=str(uuid.uuid4()), font=font)]
         font.instances = [Instance(name="Regular", styleName="Regular", location={})]
 
+    def _load(self):
+        self._setupfont()
+        self.current_glyph = None
         self.info = open(Path(self.filename) / "font.props").read().splitlines()
         self._load_line("info")
         # Probe once for glyphorder
@@ -75,7 +80,7 @@ class FontForgeSFDIR(BaseConvertor):
             self.info = open(fontfile).read().splitlines()
             self._load_line("glyph")
 
-        return font
+        return self.font
 
     def _probe_glyphorder(self, lines):
         glyphname = ""
@@ -230,10 +235,21 @@ class FontForgeSFDIR(BaseConvertor):
         self.font.customOpenTypeValues.append(OTValue("OS/2", "fsType", int(value)))
 
     def _handle_OS2_WeightWidthSlopeOnly(self, value):
-        # XXX
+        pass
+
+    def _handle_TTFWeight(self, value):
         self.font.customOpenTypeValues.append(
-            OTValue("OS/2", "fsSelection", int(value))
+            OTValue("OS/2", "usWeightClass", int(value))
         )
+
+    def _handle_TTFWidth(self, value):
+        self.font.customOpenTypeValues.append(
+            OTValue("OS/2", "usWidthClass", int(value))
+        )
+
+    def _handle_Panose(self, value):
+        bits = [int(v) for v in value.split()]
+        self.font.customOpenTypeValues.append(OTValue("OS/2", "bPanose", bits))
 
     def _handle_OS2_UseTypoMetrics(self, value):
         if not value:
@@ -242,7 +258,7 @@ class FontForgeSFDIR(BaseConvertor):
             if otval.table == "OS/2" and otval.field == "fsSelection":
                 otval.value = otval.value | 1 << 7
                 return
-        self.font.customOpenTypeValues.append(OTValue("OS/2", "fsSelection", 7))
+        self.font.customOpenTypeValues.append(OTValue("OS/2", "fsSelection", 1 << 7))
 
     def _handle_CreationTime(self, value):
         self.font.customOpenTypeValues.append(
@@ -295,6 +311,16 @@ class FontForgeSFDIR(BaseConvertor):
         _old, unicode, gid = value.split()
         if unicode != "-1":
             self.current_glyph.codepoints.append(int(unicode))
+
+    def _handle_AltUni2(self, value):
+        for alternate in value.split():
+            codepoint, vs, _reserved = alternate.split(".")
+            if vs != "ffffffff":
+                log.warning(
+                    "Alternate codepoint with variation selector not current supported in %s",
+                    self.current_glyph.name,
+                )
+            self.current_glyph.codepoints.append(int(codepoint, 16))
 
     def _handle_Width(self, value):
         self.current_glyph.layers[0].width = int(value)
@@ -391,16 +417,22 @@ class FontForgeSFDIR(BaseConvertor):
             )
         )
 
+    def _handle_LangName(self, value: str):
+        names = shlex.split(value)
+        lang = names.pop(0)
+        for nameid, name in enumerate(names):
+            if name == "":
+                continue
+            field = OPENTYPE_NAMES[nameid]
+            getattr(self.font.names, field).set_default(name)
+
 
 class FontForgeSFD(FontForgeSFDIR):
     suffix = ".sfd"
 
     def _load(self):
-        font = self.font
+        self._setupfont()
         self.current_glyph = None
-        # I'm going to assume a single master font
-        font.masters = [Master(name="Regular", id=str(uuid.uuid4()), font=font)]
-        font.instances = [Instance(name="Regular", styleName="Regular", location={})]
 
         self.info = open(Path(self.filename)).read().splitlines()
         self.glyph_order = {}
