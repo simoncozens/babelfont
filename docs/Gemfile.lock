@@ -1,16 +1,24 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (6.1.2)
+    activesupport (7.1.3.2)
+      base64
+      bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
+      connection_pool (>= 2.2.5)
+      drb
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
+      mutex_m
       tzinfo (~> 2.0)
-      zeitwerk (~> 2.3)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
+    base64 (0.2.0)
+    bigdecimal (3.1.7)
     colorator (1.1.0)
-    concurrent-ruby (1.1.8)
+    concurrent-ruby (1.2.3)
+    connection_pool (2.4.1)
+    drb (2.2.1)
     em-websocket (0.5.2)
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0.6.0)
@@ -27,7 +35,7 @@ GEM
       activesupport (>= 2)
       nokogiri (>= 1.4)
     http_parser.rb (0.6.0)
-    i18n (1.8.8)
+    i18n (1.14.4)
       concurrent-ruby (~> 1.0)
     jekyll (4.2.0)
       addressable (~> 2.4)
@@ -76,8 +84,9 @@ GEM
       rb-inotify (~> 0.9, >= 0.9.10)
     mercenary (0.4.0)
     mini_portile2 (2.5.0)
-    minitest (5.14.3)
+    minitest (5.22.3)
     multipart-post (2.1.1)
+    mutex_m (0.2.0)
     nokogiri (1.11.1)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
@@ -104,10 +113,9 @@ GEM
       faraday (> 0.8, < 2.0)
     terminal-table (2.0.0)
       unicode-display_width (~> 1.1, >= 1.1.1)
-    tzinfo (2.0.4)
+    tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (1.7.0)
-    zeitwerk (2.4.2)
 
 PLATFORMS
   ruby
