@@ -9,6 +9,7 @@ from babelfont.BaseObject import OTValue
 from babelfont.convertors import BaseConvertor
 
 from babelfont import (
+    Anchor,
     Master,
     Instance,
     Glyph,
@@ -47,7 +48,7 @@ class FontForgeSFDIR(BaseConvertor):
         "Flags",
         "Lookup",
         "GlifName",
-        "AnchorPoint",  # XXX
+        "NameList",
     ]
 
     @classmethod
@@ -111,7 +112,7 @@ class FontForgeSFDIR(BaseConvertor):
             if hasattr(self, "_handle_" + key):
                 getattr(self, "_handle_" + key)(value)
             else:
-                # log.warn("Unknown info key %s", key)
+                log.debug("Unknown info key %s", key)
                 pass
 
     def _handle_FamilyName(self, value):
@@ -127,7 +128,6 @@ class FontForgeSFDIR(BaseConvertor):
         self.font.notes = value
 
     def _handle_Version(self, value):
-        self.font.names.version.set_default(value)
         self.font.version = [int(x) for x in value.split(".")]
 
     def _handle_Weight(self, value):
@@ -137,65 +137,86 @@ class FontForgeSFDIR(BaseConvertor):
         self.font.names.description.set_default(value)
 
     def _handle_ItalicAngle(self, value):
-        self.font.customOpenTypeValues.append(
-            OTValue("post", "italicAngle", float(value))
-        )
+        self.font.masters[0].metrics["italicAngle"] = float(value)
 
     def _handle_UnderlinePosition(self, value):
-        self.font.customOpenTypeValues.append(
-            OTValue("post", "underlinePosition", int(value))
-        )
+        self.font.masters[0].metrics["underlinePosition"] = int(value)
 
     def _handle_UnderlineWidth(self, value):
-        self.font.customOpenTypeValues.append(
-            OTValue("post", "underlineThickness", int(value))
-        )
+        self.font.masters[0].metrics["underlineThickness"] = int(value)
 
     def _handle_OS2TypoAscent(self, value):
-        self.font.customOpenTypeValues.append(
-            OTValue("OS/2", "sTypoAscender", int(value))
-        )
+        self.font.masters[0].metrics["typoAscender"] = int(value)
 
     def _handle_OS2TypoDescent(self, value):
-        self.font.customOpenTypeValues.append(
-            OTValue("OS/2", "sTypoDescender", int(value))
-        )
+        self.font.masters[0].metrics["typoDescender"] = int(value)
 
-    def _handle_OS2TypoLineGap(self, value):
-        self.font.customOpenTypeValues.append(
-            OTValue("OS/2", "sTypoLineGap", int(value))
-        )
+    def _handle_OS2TypoLinegap(self, value):
+        self.font.masters[0].metrics["typoLineGap"] = int(value)
 
     def _handle_OS2WinAscent(self, value):
-        self.font.customOpenTypeValues.append(
-            OTValue("OS/2", "usWinAscent", int(value))
-        )
+        self.font.masters[0].metrics["winAscent"] = int(value)
 
     def _handle_OS2WinDescent(self, value):
-        self.font.customOpenTypeValues.append(
-            OTValue("OS/2", "usWinDescent", int(value))
-        )
+        self.font.masters[0].metrics["winDescent"] = int(value)
 
     def _handle_OS2Vendor(self, value):
         value = value.replace("'", "")
         self.font.customOpenTypeValues.append(OTValue("OS/2", "achVendID", value))
 
-    def _handle_hheaAscent(self, value):
-        self.font.customOpenTypeValues.append(OTValue("hhea", "ascent", int(value)))
+    def _handle_HheadAscent(self, value):
+        self.font.masters[0].metrics["hheaAscender"] = int(value)
 
-    def _handle_hheaDescent(self, value):
-        self.font.customOpenTypeValues.append(OTValue("hhea", "descent", int(value)))
+    def _handle_HheadDescent(self, value):
+        self.font.masters[0].metrics["hheaDescender"] = int(value)
 
-    def _handle_OS2TypoLinegap(self, value):
-        self.font.customOpenTypeValues.append(
-            OTValue("OS/2", "sTypoLineGap", int(value))
-        )
+    def _handle_LineGap(self, value):
+        self.font.masters[0].metrics["hheaLineGap"] = int(value)
 
     def _handle_Ascent(self, value):
         self.font.masters[0].metrics["ascender"] = int(value)
 
     def _handle_Descent(self, value):
         self.font.masters[0].metrics["descender"] = -int(value)
+
+    def _handle_OS2SubXSize(self, value):
+        self.font.masters[0].metrics["subscriptXSize"] = int(value)
+
+    def _handle_OS2SubYSize(self, value):
+        self.font.masters[0].metrics["subscriptYSize"] = int(value)
+
+    def _handle_OS2SubXOff(self, value):
+        self.font.masters[0].metrics["subscriptXOffset"] = int(value)
+
+    def _handle_OS2SubYOff(self, value):
+        self.font.masters[0].metrics["subscriptYOffset"] = int(value)
+
+    def _handle_OS2SupXSize(self, value):
+        self.font.masters[0].metrics["superscriptXSize"] = int(value)
+
+    def _handle_OS2SupYSize(self, value):
+        self.font.masters[0].metrics["superscriptYSize"] = int(value)
+
+    def _handle_OS2SupXOff(self, value):
+        self.font.masters[0].metrics["superscriptXOffset"] = int(value)
+
+    def _handle_OS2SupYOff(self, value):
+        self.font.masters[0].metrics["superscriptYOffset"] = int(value)
+
+    def _handle_OS2StrikeYSize(self, value):
+        self.font.masters[0].metrics["strikeoutSize"] = int(value)
+
+    def _handle_OS2StrikeYPos(self, value):
+        self.font.masters[0].metrics["strikeoutPosition"] = int(value)
+
+    def _handle_OS2CapHeight(self, value):
+        self.font.masters[0].metrics["capHeight"] = int(value)
+
+    def _handle_OS2XHeight(self, value):
+        self.font.masters[0].metrics["xHeight"] = int(value)
+
+    def _handle_HheadAscent(self, value):
+        self.font.masters[0].metrics["hheaAscender"] = int(value)
 
     def _handle_LayerCount(self, value):
         # Ignore layers for now
@@ -219,7 +240,7 @@ class FontForgeSFDIR(BaseConvertor):
             return
         for otval in self.font.customOpenTypeValues:
             if otval.table == "OS/2" and otval.field == "fsSelection":
-                otval.value = otval.value | 7 << 1
+                otval.value = otval.value | 1 << 7
                 return
         self.font.customOpenTypeValues.append(OTValue("OS/2", "fsSelection", 7))
 
@@ -353,6 +374,22 @@ class FontForgeSFDIR(BaseConvertor):
         if paths:
             pen.closePath()
         return
+
+    def _handle_AnchorPoint(self, value: str):
+        name, x, y, typ, ligcomp = value.split()
+        name = name.replace('"', "")
+        if typ == "ligature":
+            name += "_%s" % ligcomp
+        if typ == "mark":
+            name = "_" + name
+        self.current_glyph.layers[0].anchors.append(
+            Anchor(
+                name=name,
+                x=float(x),
+                y=float(y),
+                _={"type": typ},
+            )
+        )
 
 
 class FontForgeSFD(FontForgeSFDIR):
