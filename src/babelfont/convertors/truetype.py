@@ -1,10 +1,10 @@
+from typing import Dict
 import uuid
 from datetime import datetime
 from itertools import chain
 
 from fontFeatures import Attachment
 from fontFeatures.ttLib import unparse
-from fontTools.cu2qu.ufo import glyphs_to_quadratic
 from fontTools.fontBuilder import FontBuilder
 from fontTools.misc.fixedTools import otRound
 from fontTools.misc.timeTools import epoch_diff, timestampSinceEpoch
@@ -12,11 +12,18 @@ from fontTools.pens.recordingPen import RecordingPen
 from fontTools.pens.ttGlyphPen import TTGlyphPen
 from fontTools.ttLib import TTFont
 from fontTools.ttLib.tables._g_l_y_f import GlyphCoordinates
+from fontTools.ttLib.ttGlyphSet import _TTGlyph
 from fontTools.ttLib.tables.TupleVariation import TupleVariation
 from fontTools.varLib.iup import iup_delta_optimize
 
 from babelfont.convertors import BaseConvertor
 from babelfont.fontFilters.featureWriters import build_all_features
+from babelfont.fontFilters import (
+    decompose_mixed_glyphs,
+    drop_unexported_glyphs,
+    cubic_to_quadratic,
+    rename_glyphs,
+)
 from babelfont import Master, Glyph, Layer, Anchor, Shape, Node, Axis, Instance
 
 
@@ -151,113 +158,53 @@ class TrueType(BaseConvertor):
         ttglyph.draw(layer.getPen())
         return [layer]
 
-    def _load_contour(self, ttglyph, index):
-        shape = Shape()
-        shape.nodes = []
-        endPt = ttglyph.endPtsOfContours[index]
-        if index > 0:
-            startPt = ttglyph.endPtsOfContours[index - 1] + 1
-        else:
-            startPt = 0
-        points = []
-        for j in range(startPt, endPt + 1):
-            coords = (ttglyph.coordinates[j][0], ttglyph.coordinates[j][1])
-            flags = ttglyph.flags[j] == 1
-            t = "o"
-            if flags == 1:
-                if (j == startPt and ttglyph.flags[endPt] == 1) or (
-                    j != startPt and points[-1].type != "o"
-                ):
-                    t = "l"
-                else:
-                    t = "q"
-            else:
-                if len(points) > 1 and points[-1].type == "o":
-                    # Double offcurve. Insert implicit oncurve.
-                    prevpoint = points[-1]
-                    intermediate = Node(
-                        x=(coords[0] + prevpoint.x) / 2,
-                        y=(coords[1] + prevpoint.y) / 2,
-                        type="q",
-                    )
-                    points.append(intermediate)
-            p = Node(x=coords[0], y=coords[1], type=t)
-            points.append(p)
-        shape.nodes = points
-        return shape
-
-    def _load_component(self, c):
-        baseGlyph, transformation = c.getComponentInfo()
-        component = Shape(ref=baseGlyph, transform=transformation)
-        return component
-
     def _save(self):
         f = self.font
+        rename_glyphs(f, {"production": True})
+        decompose_mixed_glyphs(f)
+        drop_unexported_glyphs(f)
+        cubic_to_quadratic(f)
         fb = FontBuilder(f.upm, isTTF=True)
 
         metrics = {}
         all_outlines = {}
 
-        # Find all exportable glyphs
-        exportable = [k for k, v in f.glyphs.items() if v.exported]
+        fb.setupGlyphOrder(list(f.glyphs.keys()))
+        fb.setupCharacterMap(f.unicode_map)
 
-        fb.setupGlyphOrder(exportable)
-        fb.setupCharacterMap(
-            {k: v for k, v in f.unicode_map.items() if v in exportable}
-        )
-
-        for g in exportable:
+        for g in f.glyphs.keys():
             all_outlines[g] = []
             layer = f.default_master.get_glyph_layer(g)
             metrics[g] = (layer.width, layer.lsb)
 
         fb.setupHorizontalMetrics(metrics)
 
-        for m in f.masters:
-            glyf = {}
-            m.ttglyphset = {}
+        ttglyphsets: Dict[str, Dict[str, _TTGlyph]] = {m.id: {} for m in f.masters}
+        # We need to do this in order of single components first
+        done = set()
 
-        done = {}
-
-        def do_a_glyph(g):
+        def convert_glyph(g):
             if g in done:
                 return
-            layer = f.default_master.get_glyph_layer(g)
-            self._decompose_mixed_layer(layer, exportable)
-            for c in layer.components:
-                do_a_glyph(c.ref)
-
             for m in f.masters:
                 layer = m.get_glyph_layer(g)
-                self._decompose_mixed_layer(layer, exportable)
-                all_outlines[g].append(layer)
-            try:
-                glyphs_to_quadratic(all_outlines[g], reverse_direction=True)
-                for ix, m in enumerate(f.masters):
-                    layer = m.get_glyph_layer(g)
-                    pen = TTGlyphPen(m.ttglyphset)
-                    layer.draw(pen)
+                for c in layer.components:
+                    convert_glyph(c.ref)
+                pen = TTGlyphPen(ttglyphsets[m.id])
+                layer.draw(pen)
 
-                    m.ttglyphset[g] = pen.glyph()
+                ttglyphsets[m.id][g] = pen.glyph()
+            done.add(g)
 
-            except Exception:
-                print(
-                    "Problem converting glyph %s to quadratic. (Probably incompatible) "
-                    % g
-                )
-                for m in f.masters:
-                    m.ttglyphset[g] = TTGlyphPen(m.ttglyphset).glyph()
-            done[g] = True
-
-        for g in exportable:
-            do_a_glyph(g)
+        for g in f.glyphs.keys():
+            convert_glyph(g)
 
         fb.updateHead(
             fontRevision=f.version[0] + f.version[1] / 10 ** len(str(f.version[1])),
             created=timestampSinceEpoch(f.date.timestamp()),
             lowestRecPPEM=10,
         )
-        fb.setupGlyf(f.default_master.ttglyphset)
+        fb.setupGlyf(ttglyphsets[f.default_master.id])
         fb.setupHorizontalHeader(
             ascent=int(f.default_master.ascender),
             descent=int(f.default_master.descender),
@@ -278,8 +225,8 @@ class TrueType(BaseConvertor):
             model = f.variation_model()
             axis_map = {}
             variations = {}
-            for g in exportable:
-                variations[g] = self.calculate_a_gvar(f, model, g, metrics[g][0])
+            for g in f.glyphs.keys():
+                variations[g] = self.calculate_a_gvar(f, model, g, ttglyphsets)
 
             for ax in f.axes:
                 ax.name = ax.name.as_fonttools_dict
@@ -307,26 +254,18 @@ class TrueType(BaseConvertor):
 
         fb.font.save(self.filename)
 
-        # Rename to production
-        rename_map = {g.name: g.production_name or g.name for g in f.glyphs}
-        if rename_map:
-            font = TTFont(self.filename)
-            font.setGlyphOrder([rename_map.get(n, n) for n in font.getGlyphOrder()])
-            if "post" in font and font["post"].formatType == 2.0:
-                font["post"].extraNames = []
-                font["post"].compile(font)
-            font.save(self.filename)
-
-    def calculate_a_gvar(self, f, model, g, default_width):
-        master_layer = f.default_master.get_glyph_layer(g)
-        if g not in f.default_master.ttglyphset:
+    def calculate_a_gvar(
+        self, f, model, g, ttglyphsets: Dict[str, Dict[str, _TTGlyph]]
+    ):
+        if g not in ttglyphsets[f.default_master.id]:
             return None
-        default_g = f.default_master.ttglyphset[g]
+        default_g = ttglyphsets[f.default_master.id][g]
         all_coords = []
         for m in f.masters:
             layer = m.get_glyph_layer(g)
-            basecoords = GlyphCoordinates(m.ttglyphset[g].coordinates)
-            if m.ttglyphset[g].isComposite():
+            masterglyph = ttglyphsets[m.id][g]
+            basecoords = GlyphCoordinates(masterglyph.coordinates)
+            if masterglyph.isComposite():
                 component_point = GlyphCoordinates(
                     [
                         (otRound(layer_comp.pos[0]), otRound(layer_comp.pos[1]))
