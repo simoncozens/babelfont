@@ -3,7 +3,7 @@ import logging
 import sys
 
 from babelfont.convertors import Convert
-from babelfont.fontFilters import FILTERS
+from babelfont.fontFilters import FILTERS, parse_filter
 
 
 def main():
@@ -38,10 +38,8 @@ def main():
         sys.exit(1)
 
     for filter in args.filter or []:
-        if filter not in FILTERS:
-            print("Unknown filter %s" % filter)
-            continue
-        FILTERS[filter](font)
+        fltr, filterargs = parse_filter(filter)
+        fltr(font, filterargs)
 
     try:
         Convert(args.output).save(font)

@@ -14,3 +14,15 @@ FILTERS = {
     "dropUnexportedGlyphs": drop_unexported_glyphs,
     "cubicToQuadratic": cubic_to_quadratic,
 }
+
+
+def parse_filter(input: str) -> [str, dict]:
+    if ":" in input:
+        filtername, args = input.split(":", 1)
+        args = dict([arg.split("=") for arg in args.split(",")])
+    else:
+        filtername = input
+        args = {}
+    if filtername not in FILTERS:
+        raise ValueError(f"Unknown filter {filtername}")
+    return FILTERS[filtername], args
