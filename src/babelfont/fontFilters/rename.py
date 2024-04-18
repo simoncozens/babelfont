@@ -1,15 +1,13 @@
-from io import StringIO
-
-from fontTools.feaLib.parser import Parser
 from fontTools.feaLib import ast
 from fontTools.misc.visitor import Visitor
 
 from babelfont.Font import Font
+from babelfont.Features import as_ast
 
 from babelfont.Glyph import GlyphList
 
 
-def rename_glyphs(font: Font, args: dict):
+def rename_glyphs(font: Font, args: dict = {}):
     if "mapping" in args:
         mapping = args["mapping"]
     elif "production" in args:
@@ -32,12 +30,17 @@ def rename_glyphs(font: Font, args: dict):
     # 1b) prefixes
     for prefix in font.features.prefixes.keys():
         font.features.prefixes[prefix] = _rename_fea(
-            font.features.prefixes[prefix], mapping
-        )
+            as_ast(font.features.prefixes[prefix], font.features), mapping
+        ).asFea()
     # 1c) features
     font.features.features = [
-        (feature, _rename_fea(code, mapping, wrap=feature))
-        for feature, code in font.features.features
+        (
+            featurename,
+            _drop_wrapper(
+                _rename_fea(as_ast(code, font.features, featurename), mapping)
+            ).asFea(),
+        )
+        for featurename, code in font.features.features
     ]
 
     for glyph in font.glyphs:
@@ -68,12 +71,12 @@ def visit(visitor, mcd, *args, **kwargs):
     return False
 
 
-def _rename_fea(code, mapping, wrap=None):
-    # Parse to AST
-    if wrap is not None and not code.startswith("feature"):
-        code = f"feature {wrap} {{\n{code}\n}} {wrap};"
-    parsed = Parser(StringIO(code), followIncludes=False).parse()
+def _rename_fea(parsed: ast.Block, mapping, wrap=None):
     FeaRenameVisitor(mapping).visit(parsed)
-    if wrap:
-        return "\n".join(st.asFea() for st in parsed.statements[0].statements)
-    return parsed.asFea()
+    return parsed
+
+
+def _drop_wrapper(parsed: ast.FeatureFile):
+    block = ast.Block()
+    block.statements = parsed.statements[0].statements
+    return block

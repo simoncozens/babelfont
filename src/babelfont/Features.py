@@ -77,3 +77,15 @@ class Features(BaseObject):
         for name, code in self.features:
             fea += f"feature {name} {{\n{code}}} {name};\n"
         return fea
+
+
+def as_ast(code, features, featurename=None):
+    if featurename is not None and not code.startswith("feature"):
+        code = f"feature {featurename} {{\n{code}\n}} {featurename};"
+    parser = Parser(StringIO(code), followIncludes=False)
+    # Set up classes
+    for classname, glyphs in features.classes.items():
+        glyphcls = ast.GlyphClass(glyphs=[ast.GlyphName(g) for g in glyphs])
+        glyphclass = ast.GlyphClassDefinition(classname, glyphcls)
+        parser.glyphclasses_.define(classname, glyphclass)
+    return parser.parse()

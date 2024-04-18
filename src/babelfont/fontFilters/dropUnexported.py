@@ -1,17 +1,16 @@
 from collections import defaultdict
-from io import StringIO
 import logging
 
-from fontTools.feaLib.parser import Parser
 from fontTools.feaLib import ast
 from fontTools.misc.visitor import Visitor
 
 from babelfont.Font import Font
+from babelfont.Features import as_ast
 
 logger = logging.getLogger(__name__)
 
 
-def drop_unexported_glyphs(font: Font):
+def drop_unexported_glyphs(font: Font, _args=None):
     unexported = set(glyph.name for glyph in font.glyphs if not glyph.exported)
     # Safety check one: look in components:
     appearances = defaultdict(set)
@@ -30,8 +29,7 @@ def drop_unexported_glyphs(font: Font):
         unexported -= set(appearances.keys())
     # Safety check two: look in features
     for featurename, code in font.features.features:
-        code = f"feature {featurename} {{\n{code}\n}} {featurename};"
-        parsed = Parser(StringIO(code), followIncludes=False).parse()
+        parsed = as_ast(code, font.features, featurename)
         visitor = FeaAppearsVisitor()
         visitor.visit(parsed)
         for glyph in visitor.appearances:
@@ -48,7 +46,7 @@ def drop_unexported_glyphs(font: Font):
                 )
                 unexported.remove(glyph)
     for prefix, code in font.features.prefixes.items():
-        parsed = Parser(StringIO(code), followIncludes=False).parse()
+        parsed = as_ast(code, font.features)
         visitor = FeaAppearsVisitor()
         visitor.visit(parsed)
         for glyph in visitor.appearances:
