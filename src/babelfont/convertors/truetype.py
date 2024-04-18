@@ -164,16 +164,13 @@ class TrueType(BaseConvertor):
         decompose_mixed_glyphs(f)
         drop_unexported_glyphs(f)
         cubic_to_quadratic(f)
+
         fb = FontBuilder(f.upm, isTTF=True)
-
-        metrics = {}
-        all_outlines = {}
-
         fb.setupGlyphOrder(list(f.glyphs.keys()))
         fb.setupCharacterMap(f.unicode_map)
 
+        metrics = {}
         for g in f.glyphs.keys():
-            all_outlines[g] = []
             layer = f.default_master.get_glyph_layer(g)
             metrics[g] = (layer.width, layer.lsb)
 
@@ -248,8 +245,7 @@ class TrueType(BaseConvertor):
         #     build_all_features(f, fb.font)
         fb.setupPost()
 
-        for otvalue in f.customOpenTypeValues:
-            table, field, value = otvalue.table, otvalue.field, otvalue.value
+        for (table, field), value in f.custom_opentype_values.items():
             setattr(fb.font[table], field, value)
 
         fb.font.save(self.filename)

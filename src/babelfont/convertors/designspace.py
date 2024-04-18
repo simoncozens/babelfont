@@ -22,7 +22,6 @@ from babelfont import (
     Axis,
     I18NDictionary,
 )
-from babelfont.BaseObject import OTValue
 from babelfont.convertors import BaseConvertor
 
 log = logging.getLogger(__name__)
@@ -62,7 +61,7 @@ metrics = {
 
 # Unicode ranges / code page ranges are special
 
-custom_opentype_values = {
+ufo_custom_opentype_values = {
     "openTypeGaspRangeRecords": ("GASP", "gaspRange"),
     # XX more gasp here
     "openTypeHeadCreated": ("head", "created"),
@@ -305,14 +304,12 @@ class Designspace(BaseConvertor):
             their_value = getattr(firstfontinfo, theirs)
             if their_value:
                 getattr(self.font.names, ours).set_default(their_value)
-        for ufofield, (table, field) in custom_opentype_values.items():
+        for ufofield, (table, field) in ufo_custom_opentype_values.items():
             if getattr(firstfontinfo, ufofield) is not None:
                 value = getattr(firstfontinfo, ufofield)
                 if (table, field) in BITARRAY:
                     value = bitarray_to_int(value)
-                self.font.customOpenTypeValues.append(
-                    OTValue(table=table, field=field, value=value)
-                )
+                self.font.custom_opentype_values[(table, field)] = value
 
         self.font.features = Features.from_fea(ufo.features.text)
         self._load_groups(ufo.groups)
@@ -466,22 +463,21 @@ class Designspace(BaseConvertor):
                     metric_value = -metric_value
                 setattr(ufo.info, their_metric, metric_value)
         if is_default:
-            for info_tag, (table, field) in custom_opentype_values.items():
-                for otv in self.font.customOpenTypeValues:
-                    if otv.table == table and otv.field == field:
-                        value = otv.value
-                        if (table, field) in BITARRAY:
-                            if info_tag == "openTypeOS2Selection":
-                                # "Bits 0 (italic), 5 (bold) and 6 (regular) must not be set here"
-                                value = value & 0b11111100
-                            value = int_to_bitarray(value)
-                        if info_tag == "openTypeHeadCreated":
-                            value = time.strftime(
-                                "%Y/%m/%d %H:%M:%S",
-                                time.gmtime(timeTools.epoch_diff + value),
-                            )
+            for info_tag, (table, field) in ufo_custom_opentype_values.items():
+                if (table, field) in self.font.custom_opentype_values:
+                    value = self.font.custom_opentype_values[(table, field)]
+                    if (table, field) in BITARRAY:
+                        if info_tag == "openTypeOS2Selection":
+                            # "Bits 0 (italic), 5 (bold) and 6 (regular) must not be set here"
+                            value = value & 0b11111100
+                        value = int_to_bitarray(value)
+                    if info_tag == "openTypeHeadCreated":
+                        value = time.strftime(
+                            "%Y/%m/%d %H:%M:%S",
+                            time.gmtime(timeTools.epoch_diff + value),
+                        )
 
-                        setattr(ufo.info, info_tag, value)
+                    setattr(ufo.info, info_tag, value)
         # Guides
         if master.guides:
             ufo.info.guidelines = []

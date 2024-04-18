@@ -8,7 +8,6 @@ from babelfont import (
     Anchor,
     Shape,
     Node,
-    OTValue,
     Axis,
     Instance,
 )
@@ -123,9 +122,9 @@ class GSObject(BaseConvertor):
         for k, v in zip(metric_types, gmaster.metrics()):
             master.metrics[_glyphs_metrics_to_ours(k)] = v.position
             if v.overshoot:
-                master.metrics[
-                    "%s overshoot" % _glyphs_metrics_to_ours(k)
-                ] = v.overshoot
+                master.metrics["%s overshoot" % _glyphs_metrics_to_ours(k)] = (
+                    v.overshoot
+                )
 
         master.location = {k.tag: v for k, v in zip(self.font.axes, location)}
         master.guides = [self._load_guide(x) for x in gmaster.guides]
@@ -323,9 +322,7 @@ class GSObject(BaseConvertor):
             ot_param = opentype_custom_parameters.get(param.name)
             if not ot_param:
                 continue
-            self.font.customOpenTypeValues.append(
-                OTValue(ot_param[0], ot_param[1], param.value)
-            )
+            self.font.custom_opentype_values[ot_param] = param.value
 
         self.font.note = self.gsfont.note
         self.font.date = self.gsfont.date

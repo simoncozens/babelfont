@@ -1,6 +1,6 @@
 from babelfont.Anchor import Anchor
 from babelfont.Axis import Axis
-from babelfont.BaseObject import Color, I18NDictionary, OTValue, Position
+from babelfont.BaseObject import Color, I18NDictionary, Position
 from babelfont.convertors import BaseConvertor, Convert
 from babelfont.Features import Features
 from babelfont.Font import Font
@@ -28,7 +28,6 @@ __all__ = [
     "Names",
     "Color",
     "Position",
-    "OTValue",
     "I18NDictionary",
     "Convert",
     "BaseConvertor",

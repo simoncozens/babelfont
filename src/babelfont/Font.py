@@ -2,13 +2,13 @@ import functools
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Dict, List
+from typing import Any, Dict, List, Tuple
 
 from fontTools.feaLib.variableScalar import VariableScalar
 from fontTools.varLib.models import VariationModel
 
 from .Axis import Axis
-from .BaseObject import BaseObject, IncompatibleMastersError, OTValue
+from .BaseObject import BaseObject, IncompatibleMastersError
 from .Features import Features
 from .Glyph import GlyphList
 from .Instance import Instance
@@ -90,8 +90,8 @@ to the current date/time*.""",
         },
     )
     names: Names = field(default_factory=Names, metadata={"skip_serialize": True})
-    customOpenTypeValues: [OTValue] = field(
-        default_factory=list,
+    custom_opentype_values: Dict[Tuple[str, str], Any] = field(
+        default_factory=dict,
         metadata={
             "description": "Any values to be placed in OpenType tables on export to override defaults; these must be font-wide. Metrics which may vary by master should be placed in the `metrics` field of a Master."
         },

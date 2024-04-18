@@ -6,7 +6,7 @@ import orjson
 from fontTools.misc.transform import Transform
 
 from babelfont import Axis, Glyph, Layer, Master, Node, Shape, Guide
-from babelfont.BaseObject import Color, I18NDictionary, OTValue
+from babelfont.BaseObject import Color, I18NDictionary
 from babelfont.convertors import BaseConvertor
 
 
@@ -298,9 +298,7 @@ class FontlabVFJ(BaseConvertor):
             setattr(self.font.names, tag, I18NDictionary.with_default(info.get(tag)))
         self.font.version = (info.get("versionMajor"), info.get("versionMinor"))
         if "vendor" in info:
-            self.font.customOpenTypeValues.append(
-                OTValue("OS/2", "achVendID", info["vendor"])
-            )
+            self.font.custom_opentype_values[("OS/2", "achVendID")] = info["vendor"]
         # Fontlab date format = "2020/08/28 15:33:36"
         if "date" in info:
             self.font.date = datetime.datetime.strptime(
@@ -308,10 +306,10 @@ class FontlabVFJ(BaseConvertor):
                 "%Y/%m/%d %H:%M:%S",
             )
         if "useTypoMetrics" in info:
-            self.font.customOpenTypeValues.append(OTValue("OS/2", "fsSelection", 0x7))
+            self.font.custom_opentype_values[("OS/2", "fsSelection")] = 0x7
         if "embedding" in info:
-            self.font.customOpenTypeValues.append(
-                OTValue("OS/2", "fsType", int(info["embedding"], 16))
+            self.font.custom_opentype_values[("OS/2", "fsType")] = int(
+                info["embedding"], 16
             )
         # codepageRange
         # unicodeRange

@@ -9,7 +9,7 @@ from fontTools.misc.transform import Transform
 
 from babelfont import Axis, Glyph, Layer, Master, Node, Shape, Guide
 from babelfont.Glyph import GlyphList
-from babelfont.BaseObject import Color, I18NDictionary, OTValue
+from babelfont.BaseObject import Color, I18NDictionary
 from babelfont.convertors import BaseConvertor
 
 tags = {
@@ -139,9 +139,7 @@ class FontlabVFB(BaseConvertor):
             elif name == "versionMinor":
                 self.font.version = (self.font.version[0], int(data))
             elif name == "vendorID":
-                self.font.customOpenTypeValues.append(
-                    OTValue("OS/2", "achVendID", data)
-                )
+                self.font.custom_opentype_values[("OS/2", "achVendID")] = data
             elif name == "Glyph":
                 self.current_glyph = Glyph(name=data["name"])
                 self.font.glyphs.append(self.current_glyph)

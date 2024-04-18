@@ -6,7 +6,6 @@ from pathlib import Path
 
 from fontTools.misc.timeTools import epoch_diff
 
-from babelfont.BaseObject import OTValue
 from babelfont.convertors import BaseConvertor
 from babelfont.Names import OPENTYPE_NAMES
 
@@ -167,7 +166,7 @@ class FontForgeSFDIR(BaseConvertor):
 
     def _handle_OS2Vendor(self, value):
         value = value.replace("'", "")
-        self.font.customOpenTypeValues.append(OTValue("OS/2", "achVendID", value))
+        self.font.custom_opentype_values[("OS/2", "achVendID")] = value
 
     def _handle_HheadAscent(self, value):
         self.font.masters[0].metrics["hheaAscender"] = int(value)
@@ -232,43 +231,34 @@ class FontForgeSFDIR(BaseConvertor):
         pass
 
     def _handle_FSType(self, value):
-        self.font.customOpenTypeValues.append(OTValue("OS/2", "fsType", int(value)))
+        self.font.custom_opentype_values[("OS/2", "fsType")] = int(value)
 
     def _handle_OS2_WeightWidthSlopeOnly(self, value):
         pass
 
     def _handle_TTFWeight(self, value):
-        self.font.customOpenTypeValues.append(
-            OTValue("OS/2", "usWeightClass", int(value))
-        )
+        self.font.custom_opentype_values[("OS/2", "usWeightClass")] = int(value)
 
     def _handle_TTFWidth(self, value):
-        self.font.customOpenTypeValues.append(
-            OTValue("OS/2", "usWidthClass", int(value))
-        )
+        self.font.custom_opentype_values[("OS/2", "usWidthClass")] = int(value)
 
     def _handle_Panose(self, value):
         bits = [int(v) for v in value.split()]
-        self.font.customOpenTypeValues.append(OTValue("OS/2", "bPanose", bits))
+        self.font.custom_opentype_values[("OS/2", "bPanose")] = bits
 
     def _handle_OS2_UseTypoMetrics(self, value):
         if not value:
             return
-        for otval in self.font.customOpenTypeValues:
-            if otval.table == "OS/2" and otval.field == "fsSelection":
-                otval.value = otval.value | 1 << 7
-                return
-        self.font.customOpenTypeValues.append(OTValue("OS/2", "fsSelection", 1 << 7))
+        if ("OS/2", "fsSelection") in self.font.custom_opentype_values:
+            self.font.custom_opentype_values[("OS/2", "fsSelection")] |= 1 << 7
+        else:
+            self.font.custom_opentype_values[("OS/2", "fsSelection")] = 1 << 7
 
     def _handle_CreationTime(self, value):
-        self.font.customOpenTypeValues.append(
-            OTValue("head", "created", int(value) - epoch_diff)
-        )
+        self.font.custom_opentype_values[("head", "created")] = int(value) - epoch_diff
 
     def _handle_ModificationTime(self, value):
-        self.font.customOpenTypeValues.append(
-            OTValue("head", "modified", int(value) - epoch_diff)
-        )
+        self.font.custom_opentype_values[("head", "modified")] = int(value) - epoch_diff
 
     def _handle_ShortTable(self, value):
         # Ignore short table for now

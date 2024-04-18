@@ -12,13 +12,6 @@ Color = namedtuple("Color", "r,g,b,a", defaults=[0, 0, 0, 0])
 Position = namedtuple("Position", "x,y,angle", defaults=[0, 0, 0])
 
 
-@dataclass
-class OTValue:
-    table: str
-    field: str
-    value: any
-
-
 class I18NDictionary(dict):
     @classmethod
     def with_default(cls, s):

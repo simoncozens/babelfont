@@ -677,8 +677,7 @@ class GlyphsThree(BaseConvertor):
     def save_custom_parameters(self, out):
         if "customParameters" not in out:
             out["customParameters"] = []
-        for otvalue in self.font.customOpenTypeValues:
-            table, field, value = otvalue.table, otvalue.field, otvalue.value
+        for (table, field), value in self.font.custom_opentype_values.items():
             if table == "OS/2" and field == "fsType":
                 out["customParameters"].append(
                     {"name": "fsType", "value": to_bitfield(int(value))}

@@ -17,7 +17,6 @@ from babelfont import (
     Shape,
     Transform,
 )
-from babelfont.BaseObject import OTValue
 from babelfont.convertors import BaseConvertor
 from babelfont.convertors.glyphs.utils import (
     _glyphs_metrics_to_ours,
