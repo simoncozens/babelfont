@@ -18,6 +18,7 @@ from fontTools.varLib.iup import iup_delta_optimize
 
 from babelfont.convertors import BaseConvertor
 from babelfont.fontFilters.featureWriters import build_all_features
+from babelfont.fontFilters.fillOpentype import fill_opentype_values
 from babelfont.fontFilters import (
     decompose_mixed_glyphs,
     drop_unexported_glyphs,
@@ -164,6 +165,7 @@ class TrueType(BaseConvertor):
         decompose_mixed_glyphs(f)
         drop_unexported_glyphs(f)
         cubic_to_quadratic(f)
+        fill_opentype_values(f)
 
         fb = FontBuilder(f.upm, isTTF=True)
         fb.setupGlyphOrder(list(f.glyphs.keys()))
@@ -196,27 +198,12 @@ class TrueType(BaseConvertor):
         for g in f.glyphs.keys():
             convert_glyph(g)
 
-        fb.updateHead(
-            fontRevision=f.version[0] + f.version[1] / 10 ** len(str(f.version[1])),
-            created=timestampSinceEpoch(f.date.timestamp()),
-            lowestRecPPEM=10,
-        )
         fb.setupGlyf(ttglyphsets[f.default_master.id])
-        fb.setupHorizontalHeader(
-            ascent=int(f.default_master.ascender),
-            descent=int(f.default_master.descender),
-        )
-
+        fb.setupHorizontalHeader()
         f.names.typographicSubfamily = f.default_master.name
         f.names.typographicFamily = f.names.familyName
         fb.setupNameTable(f.names.as_nametable_dict())
-
-        fb.setupOS2(
-            sTypoAscender=int(f.default_master.ascender),
-            sTypoDescender=int(f.default_master.descender),
-            sCapHeight=int(f.default_master.capHeight),
-            sxHeight=int(f.default_master.xHeight),
-        )
+        fb.setupOS2()
 
         if f.axes:
             model = f.variation_model()
