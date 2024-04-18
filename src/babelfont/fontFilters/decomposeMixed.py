@@ -1,11 +1,22 @@
+from babelfont import Glyph
 from babelfont.Font import Font
 
 
-def decompose_mixed_glyphs(font: Font):
+def decompose_mixed_glyphs(font: Font, _args=None):
     exportable = set(glyph.name for glyph in font.glyphs if glyph.exported)
+    done = set()
     for glyph in font.glyphs:
-        for layer in glyph.layers:
-            if (layer.paths and layer.components) or any(
-                c.ref not in exportable for c in layer.components
-            ):
-                layer.decompose()
+        decompose_a_glyph(font, glyph, exportable, done)
+
+
+def decompose_a_glyph(font: Font, glyph: Glyph, exportable, done):
+    if glyph.name in done:
+        return
+    for layer in glyph.layers:
+        for c in layer.components:
+            decompose_a_glyph(font, font.glyphs[c.ref], exportable, done)
+        if (layer.paths and layer.components) or any(
+            c.ref not in exportable for c in layer.components
+        ):
+            layer.decompose()
+    done.add(glyph.name)
