@@ -601,8 +601,10 @@ class GlyphsThree(BaseConvertor):
             glayer["anchors"] = [self.save_anchor(a) for a in layer.anchors]
         if layer.background:
             glayer["background"] = self.save_layer(layer._background_layer())
-            del glayer["background"]["width"]
-            del glayer["background"]["layerId"]
+            if "width" in glayer["background"]:
+                del glayer["background"]["width"]
+            if "layerId" in glayer["background"]:
+                del glayer["background"]["layerId"]
         return glayer
 
     def save_shape(self, shape):
