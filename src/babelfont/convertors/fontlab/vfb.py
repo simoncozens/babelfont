@@ -1,13 +1,12 @@
 from collections import defaultdict
-import datetime
 import re
-import math
+import json
 import uuid
 
 from vfbLib.vfb.vfb import Vfb
 from fontTools.misc.transform import Transform
 
-from babelfont import Axis, Glyph, Layer, Master, Node, Shape, Guide
+from babelfont import Anchor, Axis, Glyph, Layer, Master, Node, Shape, Guide
 from babelfont.Glyph import GlyphList
 from babelfont.BaseObject import Color, I18NDictionary
 from babelfont.convertors import BaseConvertor
@@ -78,6 +77,7 @@ class FontlabVFB(BaseConvertor):
         self.current_master = None
         scratch = defaultdict(list)
         self.glyph_names = []
+        self.metrics = {}
         # Quickly set up GID->name mapping
         for e in self.vfb.entries:
             if e.key == "Glyph":
@@ -123,6 +123,8 @@ class FontlabVFB(BaseConvertor):
                     data = data[10:]
             elif name == "Master Name":
                 self.current_master = Master(name=data, id=uuid.uuid1())
+                if self.metrics:
+                    self.current_master.metrics = self.metrics
                 self.font.masters.append(self.current_master)
             elif name == "Master Location":
                 _, location = data
@@ -140,10 +142,23 @@ class FontlabVFB(BaseConvertor):
                 self.font.version = (self.font.version[0], int(data))
             elif name == "vendorID":
                 self.font.custom_opentype_values[("OS/2", "achVendID")] = data
+            elif name == "hhea_line_gap":
+                self.metrics["hheaLineGap"] = int(data)
+            elif name == "hhea_ascender":
+                self.metrics["hheaAscender"] = int(data)
+            elif name == "hhea_descender":
+                self.metrics["hheaDescender"] = int(data)
             elif name == "Glyph":
                 self.current_glyph = Glyph(name=data["name"])
                 self.font.glyphs.append(self.current_glyph)
                 self._load_glyph(data)
+            elif name == "Glyph GDEF Data":
+                for anchor in data.get("anchors", []):
+                    self._load_anchor(anchor)
+            elif name == "Glyph Guide Properties":
+                pass
+            elif name == "TrueType Info":
+                self._handle_truetype_info(data)
             elif name == "Glyph Unicode":
                 self.current_glyph.codepoints = data
             elif name == "Italic Angle":
@@ -161,6 +176,12 @@ class FontlabVFB(BaseConvertor):
             newlist.append(g[1])
         self.font.glyphs = newlist
 
+        # Try and fill in metrics we don't have
+        for master in self.font.masters:
+            if "ascender" not in master.metrics and "hheaAscender" in master.metrics:
+                master.metrics["ascender"] = master.metrics["hheaAscender"]
+            if "descender" not in master.metrics and "hheaDescender" in master.metrics:
+                master.metrics["descender"] = master.metrics["hheaDescender"]
         return self.font
 
     def _load_glyph(self, data):
@@ -171,7 +192,6 @@ class FontlabVFB(BaseConvertor):
             for master, metric in zip(masters, metrics)
         ]
         pens = [layer.getPen() for layer in layers]
-        print(self.current_glyph.name)
         for node in data["nodes"]:
             for pen, point in zip(pens, node["points"]):
                 cmd = getattr(pen, node["type"] + "To")
@@ -197,3 +217,17 @@ class FontlabVFB(BaseConvertor):
                 )
         for layer in layers:
             self.current_glyph.layers.append(layer)
+
+    def _load_anchor(self, data):
+        layer = self.current_glyph.layers[-1]
+        layer.anchors.append(
+            Anchor(
+                name=data["name"],
+                x=data["x"],
+                y=data["y"],
+            )
+        )
+
+    def _handle_truetype_info(self, data):
+        for element in data:
+            pass
