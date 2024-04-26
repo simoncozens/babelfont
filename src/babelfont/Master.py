@@ -56,6 +56,13 @@ without the layers becoming lost.)"""
 in order to locate this master in the design space. The coordinates are in designspace units."""
         },
     )
+    sparse: bool = field(
+        default=False,
+        repr=False,
+        metadata={
+            "description": """If true, this master is sparse and may not have all glyphs"""
+        },
+    )
     guides: [Guide] = field(
         default_factory=list,
         repr=False,
