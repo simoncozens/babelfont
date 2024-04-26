@@ -17,14 +17,14 @@ from babelfont import (
     Shape,
     Transform,
 )
-from babelfont.convertors import BaseConvertor
+from babelfont.convertors.glyphs.glyphs3 import GlyphsThree
 from babelfont.convertors.glyphs.utils import (
     _glyphs_metrics_to_ours,
     _stash,
 )
 
 
-class Glyphs2(BaseConvertor):
+class Glyphs2(GlyphsThree):
     suffix = ".glyphs"
 
     @classmethod
@@ -79,7 +79,9 @@ class Glyphs2(BaseConvertor):
         self._fixup_axis_mappings()
 
         self._load_metadata()
-        self._load_features()
+        _stash(self.font, self.glyphs)
+
+        self.interpret_features()
         return self.font
 
     def _load_axes(self):
@@ -267,7 +269,7 @@ class Glyphs2(BaseConvertor):
 
         returns = [l]
         if "background" in layer:
-            (background,) = self._load_layer(layer["background"], width=l.width)
+            (background,) = self._load_layer(layer["background"], glyph, width=l.width)
             # If it doesn't have an ID, we need to generate one
             background.id = background.id or str(uuid.uuid1())
             background.isBackground = True
@@ -323,7 +325,7 @@ class Glyphs2(BaseConvertor):
                 )
             )
 
-        _maybesetformatspecific(i, ginstance, "customParameters")
+        _stash(i, ginstance, ["customParameters"])
         return i
 
     def _load_path(self, path):
@@ -337,7 +339,7 @@ class Glyphs2(BaseConvertor):
             n = Node(x=float(m[1]), y=float(m[2]), type=ntype)
             shape.nodes.append(n)
         shape.closed = bool(path["closed"])
-        _maybesetformatspecific(shape, path, "attr")
+        _stash(shape, path, ["attr"])
         return shape
 
     def _load_component(self, shape):
@@ -356,16 +358,19 @@ class Glyphs2(BaseConvertor):
             transform = translate.transform(scale).transform(rotation)
 
         c.transform = transform
-        for entry in [
-            "alignment",
-            "anchorTo",
-            "attr",
-            "locked",
-            "orientation",
-            "piece",
-            "userData",
-        ]:
-            _maybesetformatspecific(c, shape, entry)
+        _stash(
+            c,
+            shape,
+            [
+                "alignment",
+                "anchorTo",
+                "attr",
+                "locked",
+                "orientation",
+                "piece",
+                "userData",
+            ],
+        )
         return c
 
     def _load_kern_groups(self, glyphs):

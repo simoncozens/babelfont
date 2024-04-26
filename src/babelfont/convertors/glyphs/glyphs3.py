@@ -447,9 +447,8 @@ class GlyphsThree(BaseConvertor):
         for prefix in _g(self.font, "featurePrefixes", [], pop=True):
             self.font.features.prefixes[prefix["name"]] = code_with_notes(prefix)
         for feature in _g(self.font, "features", [], pop=True):
-            self.font.features.features.append(
-                (feature["tag"], code_with_notes(feature))
-            )
+            tag = feature.get("tag", feature.get("name"))
+            self.font.features.features.append((tag, code_with_notes(feature)))
 
     def _save(self):
         font = self.font
