@@ -1,16 +1,21 @@
+import logging
+
 from fontTools.feaLib import ast
 from fontTools.misc.visitor import Visitor
 
 from babelfont.Font import Font
 from babelfont.Features import as_ast
-
 from babelfont.Glyph import GlyphList
+
+logger = logging.getLogger(__name__)
 
 
 def rename_glyphs(font: Font, args: dict = {}):
+    msg = "Renaming glyphs"
     if "mapping" in args:
         mapping = args["mapping"]
     elif "production" in args:
+        msg += " to production names"
         mapping = {
             glyph.name: glyph.production_name
             for glyph in font.glyphs
@@ -20,6 +25,7 @@ def rename_glyphs(font: Font, args: dict = {}):
         raise ValueError(
             "rename_glyphs requires either a 'mapping' or 'production' argument"
         )
+    logger.info(msg)
 
     # Step 1: features
     # 1a) classes

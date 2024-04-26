@@ -5,6 +5,8 @@ import sys
 from babelfont.convertors import Convert
 from babelfont.fontFilters import FILTERS, parse_filter
 
+LOG_FORMAT = "%(message)s"
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -15,7 +17,7 @@ def main():
         "-l",
         help="Log level",
         choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
-        default="WARNING",
+        default="INFO",
     )
     parser.add_argument(
         "--filter",
@@ -28,7 +30,16 @@ def main():
     parser.add_argument("output", metavar="OUT", help="Output file")
     args = parser.parse_args()
 
-    logging.basicConfig(level=args.log_level)
+    try:
+        from rich.logging import RichHandler
+
+        handlers = [RichHandler()]
+    except ImportError:
+        handlers = [logging.StreamHandler()]
+
+    logging.basicConfig(
+        level=args.log_level, format=LOG_FORMAT, datefmt="[%X]", handlers=handlers
+    )
 
     try:
         font = Convert(args.input).load()

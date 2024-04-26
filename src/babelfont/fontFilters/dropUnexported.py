@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 def drop_unexported_glyphs(font: Font, _args=None):
+    logger.info("Dropping unexported glyphs")
     unexported = set(glyph.name for glyph in font.glyphs if not glyph.exported)
     # Safety check one: look in components:
     appearances = defaultdict(set)

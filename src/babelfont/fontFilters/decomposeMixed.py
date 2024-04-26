@@ -1,8 +1,14 @@
+import logging
+
 from babelfont import Glyph
 from babelfont.Font import Font
 
+logger = logging.getLogger(__name__)
+
 
 def decompose_mixed_glyphs(font: Font, _args=None):
+    logger.info("Decomposing mixed glyphs")
+
     exportable = set(glyph.name for glyph in font.glyphs if glyph.exported)
     done = set()
     for glyph in font.glyphs:

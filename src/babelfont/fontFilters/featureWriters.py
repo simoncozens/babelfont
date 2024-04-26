@@ -3,16 +3,19 @@ import logging
 from fontTools.feaLib.builder import addOpenTypeFeaturesFromString
 
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def build_all_features(font, ttFont):
+    logger.info("Generating opentype features")
+
     # build_cursive(font)
     # build_mark_mkmk(font)
     # build_mark_mkmk(font, "mkmk")
     # build_kern(font)
 
     features = font.features.to_fea()
+    logger.info("Compiling opentype features")
     addOpenTypeFeaturesFromString(ttFont, features)
 
 

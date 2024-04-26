@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 def cubic_to_quadratic(font: Font, args: dict = {}):
+    logger.info("Converting cubic curves to quadratic")
     reverse_direction = args.get("reverseDirection", True)
     for glyph in font.glyphs:
         master_layers = [l for l in glyph.layers if l._master]

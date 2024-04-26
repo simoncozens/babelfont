@@ -1,19 +1,26 @@
+import logging
+
 from babelfont.Font import Font
 from babelfont.Layer import Layer
 from babelfont.Anchor import Anchor
 
+logger = logging.getLogger(__name__)
+
+
 def propagate_anchors(font: Font):
+    logger.info("Propagating anchors")
     processed = set()
 
     for glyph in font.glyphs:
         for layer in glyph.layers:
             _propagate_anchors(layer, glyph.name, processed)
 
+
 def _propagate_anchors(layer: Layer, glyphname: str, processed: set):
     if layer.id in processed:
         return
     processed.add(layer.id)
-    
+
     base_components = []
     mark_components = []
     anchor_names = set()
@@ -28,7 +35,7 @@ def _propagate_anchors(layer: Layer, glyphname: str, processed: set):
         else:
             base_components.append(component)
             anchor_names |= {a.name for a in component_layer.anchors}
-    
+
     if mark_components and not base_components and _is_ligature_mark(layer):
         try:
             component = _component_closest_to_origin(mark_components)
@@ -53,7 +60,7 @@ def _propagate_anchors(layer: Layer, glyphname: str, processed: set):
 
     # we sort propagated anchors to append in a deterministic order
     for name, (x, y) in sorted(to_add.items()):
-        layer.anchors.append( Anchor(name=name, x=x, y=y))
+        layer.anchors.append(Anchor(name=name, x=x, y=y))
 
 
 def _is_ligature_mark(glyph):
