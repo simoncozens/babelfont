@@ -39,9 +39,11 @@ class Features(BaseObject):
     )
 
     @classmethod
-    def from_fea(cls, fea: str) -> "Features":
+    def from_fea(cls, fea: str, glyphNames=()) -> "Features":
         """Load features from a .fea file."""
-        parsed = Parser(StringIO(fea), followIncludes=False).parse()
+        parsed = Parser(
+            StringIO(fea), followIncludes=False, glyphNames=glyphNames
+        ).parse()
         features = Features()
         currentPrefix = "anonymous"
         for statement in parsed.statements:
@@ -79,10 +81,10 @@ class Features(BaseObject):
         return fea
 
 
-def as_ast(code, features, featurename=None):
+def as_ast(code, features, featurename=None, glyphNames=()):
     if featurename is not None and not code.startswith("feature"):
         code = f"feature {featurename} {{\n{code}\n}} {featurename};"
-    parser = Parser(StringIO(code), followIncludes=False)
+    parser = Parser(StringIO(code), followIncludes=False, glyphNames=glyphNames)
     # Set up classes
     for classname, glyphs in features.classes.items():
         glyphcls = ast.GlyphClass(glyphs=[ast.GlyphName(g) for g in glyphs])

@@ -29,7 +29,7 @@ def drop_unexported_glyphs(font: Font, _args=None):
         unexported -= set(appearances.keys())
     # Safety check two: look in features
     for featurename, code in font.features.features:
-        parsed = as_ast(code, font.features, featurename)
+        parsed = as_ast(code, font.features, featurename, glyphNames=font.glyphs.keys())
         visitor = FeaAppearsVisitor()
         visitor.visit(parsed)
         for glyph in visitor.appearances:
@@ -46,7 +46,7 @@ def drop_unexported_glyphs(font: Font, _args=None):
                 )
                 unexported.remove(glyph)
     for prefix, code in font.features.prefixes.items():
-        parsed = as_ast(code, font.features)
+        parsed = as_ast(code, font.features, glyphNames=font.glyphs.keys())
         visitor = FeaAppearsVisitor()
         visitor.visit(parsed)
         for glyph in visitor.appearances:

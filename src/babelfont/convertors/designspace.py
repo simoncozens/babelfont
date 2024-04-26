@@ -311,7 +311,7 @@ class Designspace(BaseConvertor):
                     value = bitarray_to_int(value)
                 self.font.custom_opentype_values[(table, field)] = value
 
-        self.font.features = Features.from_fea(ufo.features.text)
+        self.font.features = Features.from_fea(ufo.features.text, glyphNames=ufo.keys())
         self._load_groups(ufo.groups)
 
     def _save(self):

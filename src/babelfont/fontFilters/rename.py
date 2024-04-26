@@ -30,14 +30,24 @@ def rename_glyphs(font: Font, args: dict = {}):
     # 1b) prefixes
     for prefix in font.features.prefixes.keys():
         font.features.prefixes[prefix] = _rename_fea(
-            as_ast(font.features.prefixes[prefix], font.features), mapping
+            as_ast(
+                font.features.prefixes[prefix],
+                font.features,
+                glyphNames=font.glyphs.keys(),
+            ),
+            mapping,
         ).asFea()
     # 1c) features
     font.features.features = [
         (
             featurename,
             _drop_wrapper(
-                _rename_fea(as_ast(code, font.features, featurename), mapping)
+                _rename_fea(
+                    as_ast(
+                        code, font.features, featurename, glyphNames=font.glyphs.keys()
+                    ),
+                    mapping,
+                )
             ).asFea(),
         )
         for featurename, code in font.features.features
