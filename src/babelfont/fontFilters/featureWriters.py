@@ -1,6 +1,7 @@
 # from fontFeatures import Attachment, Routine, Positioning, ValueRecord
 import logging
 from fontTools.feaLib.builder import addOpenTypeFeaturesFromString
+from fontTools.ttLib import newTable
 
 
 logger = logging.getLogger(__name__)
@@ -17,6 +18,20 @@ def build_all_features(font, ttFont):
     features = font.features.to_fea()
     logger.info("Compiling opentype features")
     addOpenTypeFeaturesFromString(ttFont, features)
+    add_gdef_classdef(font, ttFont)
+
+
+CATMAP = {"base": 1, "ligature": 2, "mark": 3, "component": 4}
+
+
+def add_gdef_classdef(font, ttFont):
+    if not "GDEF" in ttFont:
+        ttFont["GDEF"] = newTable("GDEF")
+    classdeftable = ttFont["GDEF"].table.GlyphClassDef.classDefs
+    if not classdeftable:
+        for glyph in font.glyphs:
+            if glyph.category in CATMAP:
+                classdeftable[glyph.name] = CATMAP[glyph.category]
 
 
 def build_kern(font):
