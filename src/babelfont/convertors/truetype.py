@@ -18,13 +18,6 @@ from fontTools.varLib.iup import iup_delta_optimize
 
 from babelfont.convertors import BaseConvertor
 from babelfont.fontFilters.featureWriters import build_all_features
-from babelfont.fontFilters.fillOpentype import fill_opentype_values
-from babelfont.fontFilters import (
-    decompose_mixed_glyphs,
-    drop_unexported_glyphs,
-    cubic_to_quadratic,
-    rename_glyphs,
-)
 from babelfont import (
     Master,
     Glyph,
@@ -169,14 +162,16 @@ class TrueType(BaseConvertor):
         ttglyph.draw(layer.getPen())
         return [layer]
 
+    SAVE_FILTERS = [
+        "renameGlyphs:production=True",
+        "decomposeMixedGlyphs",
+        "dropUnexportedGlyphs",
+        "cubicToQuadratic",
+        "fillOpentypeValues",
+    ]
+
     def _save(self):
         f = self.font
-        rename_glyphs(f, {"production": True})
-        decompose_mixed_glyphs(f)
-        drop_unexported_glyphs(f)
-        cubic_to_quadratic(f)
-        fill_opentype_values(f)
-
         fb = FontBuilder(f.upm, isTTF=True)
         fb.setupGlyphOrder(list(f.glyphs.keys()))
         fb.setupCharacterMap(f.unicode_map)
@@ -184,7 +179,7 @@ class TrueType(BaseConvertor):
         metrics = {}
         for g in f.glyphs.keys():
             layer = f.default_master.get_glyph_layer(g)
-            metrics[g] = (layer.width, layer.lsb)
+            metrics[g] = (layer.width or 0, layer.lsb or 0)
 
         fb.setupHorizontalMetrics(metrics)
 
@@ -197,12 +192,13 @@ class TrueType(BaseConvertor):
                 return
             for m in f.masters:
                 layer = m.get_glyph_layer(g)
-                for c in layer.components:
-                    convert_glyph(c.ref)
-                pen = TTGlyphPen(ttglyphsets[m.id])
-                layer.draw(pen)
+                if layer:
+                    for c in layer.components:
+                        convert_glyph(c.ref)
+                    pen = TTGlyphPen(ttglyphsets[m.id])
+                    layer.draw(pen)
 
-                ttglyphsets[m.id][g] = pen.glyph()
+                    ttglyphsets[m.id][g] = pen.glyph()
             done.add(g)
 
         for g in f.glyphs.keys():

@@ -2,7 +2,7 @@
 import logging
 from fontTools.feaLib.builder import addOpenTypeFeaturesFromString
 from fontTools.ttLib import newTable
-
+from fontTools.ttLib.tables import otBase, otTables
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +27,14 @@ CATMAP = {"base": 1, "ligature": 2, "mark": 3, "component": 4}
 def add_gdef_classdef(font, ttFont):
     if not "GDEF" in ttFont:
         ttFont["GDEF"] = newTable("GDEF")
-    classdeftable = ttFont["GDEF"].table.GlyphClassDef.classDefs
+        gdef = otTables.GDEF()
+        gdef.GlyphClassDef = otTables.GlyphClassDef()
+        gdef.GlyphClassDef.classDefs = {}
+        gdef.Version = 0x00010000
+        ttFont["GDEF"].table = gdef
+    else:
+        gdef = ttFont["GDEF"].table
+    classdeftable = gdef.GlyphClassDef.classDefs
     if not classdeftable:
         for glyph in font.glyphs:
             if glyph.category in CATMAP:

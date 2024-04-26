@@ -41,6 +41,7 @@ from babelfont.Master import CORE_METRICS
 
 class GlyphsThree(BaseConvertor):
     suffix = ".glyphs"
+    LOAD_FILTERS = ["glyphData"]
 
     @classmethod
     def is_suitable_plist(cls, convertor):

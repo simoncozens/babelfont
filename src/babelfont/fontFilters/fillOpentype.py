@@ -7,7 +7,7 @@ def _default(font, table, key, value):
         font.custom_opentype_values[(table, key)] = value
 
 
-def fill_opentype_values(font: Font):
+def fill_opentype_values(font: Font, args=None):
     """Prepare a font for final compilation by moving values from
     font attributes to the customOpenTypeValues field."""
 

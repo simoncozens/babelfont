@@ -7,6 +7,8 @@ import logging
 
 from babelfont.Font import Font
 
+logger = logging.getLogger(__name__)
+
 
 class BaseConvertor:
     filename: str
@@ -15,6 +17,10 @@ class BaseConvertor:
     compile_only: bool
 
     suffix = ".XXX"
+
+    LOAD_FILTERS = []
+    COMPILE_FILTERS = []
+    SAVE_FILTERS = []
 
     def __init__(self):
         self.logger = logging.getLogger(self.__class__.__name__)
@@ -82,14 +88,26 @@ class Convert:
         self.filename = filename
         self.scratch = {}
 
-    def load(self, **kwargs):
+    def load_convertor(self, **kwargs):
         for c in self.convertors:
             if c.can_load(self, **kwargs):
-                return c.load(self, **kwargs)
-        raise NotImplementedError
+                return c
 
-    def save(self, obj, **kwargs):
+    def save_convertor(self, **kwargs):
         for c in self.convertors:
             if c.can_save(self, **kwargs):
-                return c.save(obj, self, **kwargs)
-        raise NotImplementedError
+                return c
+
+    def load(self, **kwargs):
+        c = self.load_convertor(**kwargs)
+        if not c:
+            logger.error("Could not find a convertor from %s", self.filename)
+            raise NotImplementedError
+        return c.load(self, **kwargs)
+
+    def save(self, obj, **kwargs):
+        c = self.save_convertor(**kwargs)
+        if not c:
+            logger.error("Could not find a convertor to %s", self.filename)
+            raise NotImplementedError
+        return c.save(obj, self, **kwargs)
