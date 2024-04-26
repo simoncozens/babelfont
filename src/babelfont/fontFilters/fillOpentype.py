@@ -13,7 +13,10 @@ def fill_opentype_values(font: Font):
 
     def _fallback_metric(*metrics):
         for metric in metrics:
-            if metric in font.default_master.metrics:
+            if (
+                metric in font.default_master.metrics
+                and font.default_master.metrics[metric] is not None
+            ):
                 return int(font.default_master.metrics[metric])
         return 0
 
@@ -28,6 +31,11 @@ def fill_opentype_values(font: Font):
     _default(font, "hhea", "lineGap", _fallback_metric("hheaLineGap"))
     _default(font, "OS/2", "usWinAscent", _fallback_metric("winAscent", "ascender"))
     _default(font, "OS/2", "usWinDescent", _fallback_metric("winDescent", "descender"))
+    # WinDescent should be positive
+    if ("OS/2", "usWinDescent") in font.custom_opentype_values:
+        font.custom_opentype_values[("OS/2", "usWinDescent")] = abs(
+            font.custom_opentype_values[("OS/2", "usWinDescent")]
+        )
     _default(
         font, "OS/2", "sTypoAscender", _fallback_metric("typoAscender", "ascender")
     )
