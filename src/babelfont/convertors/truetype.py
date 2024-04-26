@@ -239,12 +239,11 @@ class TrueType(BaseConvertor):
         #         if g.exported:
         #             f.features.classes[g.name] = g.category
 
-        #     build_all_features(f, fb.font)
+        build_all_features(f, fb.font)
         fb.setupPost()
 
         for (table, field), value in f.custom_opentype_values.items():
             setattr(fb.font[table], field, value)
-
         fb.font.save(self.filename)
 
     def calculate_a_gvar(

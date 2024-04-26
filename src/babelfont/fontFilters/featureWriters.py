@@ -1,17 +1,19 @@
-from fontFeatures import Attachment, Routine, Positioning, ValueRecord
+# from fontFeatures import Attachment, Routine, Positioning, ValueRecord
 import logging
+from fontTools.feaLib.builder import addOpenTypeFeaturesFromString
 
 
 log = logging.getLogger(__name__)
 
 
 def build_all_features(font, ttFont):
-    build_cursive(font)
-    build_mark_mkmk(font)
-    build_mark_mkmk(font, "mkmk")
-    build_kern(font)
+    # build_cursive(font)
+    # build_mark_mkmk(font)
+    # build_mark_mkmk(font, "mkmk")
+    # build_kern(font)
 
-    font.features.buildBinaryFeatures(ttFont, font.axes)
+    features = font.features.to_fea()
+    addOpenTypeFeaturesFromString(ttFont, features)
 
 
 def build_kern(font):
