@@ -334,10 +334,10 @@ class TrueType(BaseConvertor):
 class OpenType(TrueType):
     suffix = ".otf"
 
-    def _load_layers(self, g):
+    def _load_layers(self, g, _glyph):
         ttglyph = self.tt.getGlyphSet()[g]
         width = self.tt["hmtx"][g][0]
-        layer = Layer(width=width, id=str(uuid.uuid1()))
+        layer = Layer(width=width, id=self.font.masters[0].id)
         layer._master = self.font.masters[0].id
         layer._font = self.font
         pen = RecordingPen()
