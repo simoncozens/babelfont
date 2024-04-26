@@ -64,6 +64,12 @@ def visit(visitor, gn, *args, **kwargs):
     return False
 
 
+@FeaRenameVisitor.register(ast.GlyphClass)
+def visit(visitor, gcd, *args, **kwargs):
+    gcd.glyphs = [visitor.mapping.get(glyph, glyph) for glyph in gcd.glyphs]
+    return False
+
+
 @FeaRenameVisitor.register(ast.MarkClassDefinition)
 def visit(visitor, mcd, *args, **kwargs):
     visitor.visitAttr(mcd, "anchor", mcd.anchor, *args, **kwargs)
