@@ -25,7 +25,17 @@ from babelfont.fontFilters import (
     cubic_to_quadratic,
     rename_glyphs,
 )
-from babelfont import Master, Glyph, Layer, Anchor, Shape, Node, Axis, Instance
+from babelfont import (
+    Master,
+    Glyph,
+    Layer,
+    Anchor,
+    Shape,
+    Node,
+    Axis,
+    Instance,
+    Features,
+)
 
 
 def _categorize_glyph(font, glyphname):
@@ -289,15 +299,24 @@ class TrueType(BaseConvertor):
         return gvar_entry
 
     def _load_features(self):
-        self.font.features = unparse(self.tt)
+        features = unparse(self.tt)
         # Load anchors
-        for routine in self.font.features.routines:
+        for routine in features.routines:
             for rule in routine.rules:
                 if isinstance(rule, Attachment):
                     for glyphname, pos in rule.bases.items():
                         self._add_anchor(glyphname, pos, rule.base_name)
                     for glyphname, pos in rule.marks.items():
                         self._add_anchor(glyphname, pos, rule.mark_name)
+
+        self.font.features = Features()
+        for feature, routines in features.features.items():
+            self.font.features.features.append(
+                (str(feature), "\n".join(x.asFea() for x in routines))
+            )
+        for routine in features.routines:
+            self.font.features.prefixes[routine.name] = routine.asFea()
+        self.font.features.classes = features.namedClasses
 
     def _add_anchor(self, glyphname, pos, name):
         # Would be nice if this was variable.
