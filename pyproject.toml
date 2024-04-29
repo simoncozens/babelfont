@@ -22,7 +22,7 @@ dependencies = [
     "fonttools >=4.40.0",
     "ufoLib2 >=0.11.1",
     "openstep-plist >=0.2.2",
-    "glyphsLib >=5.3.2",
+    "glyphsLib >=6.7.1",
     "fontfeatures >= 1.8.0",
 ]
 
