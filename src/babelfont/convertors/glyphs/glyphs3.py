@@ -127,8 +127,14 @@ class GlyphsThree(BaseConvertor):
         if props:
             interestingProps = {
                 "copyrights": "copyright",
-                "designer": "designer",
+                "designers": "designer",
                 "designerURL": "designerURL",
+                "trademarks": "trademark",
+                "descriptions": "description",
+                "licenses": "license",
+                "licenseURL": "licenseURL",
+                "manufacturers": "manufacturer",
+                "manufacturerURL": "manufacturerURL",
             }  # Etc
             for glyphsname, attrname in interestingProps.items():
                 thing = props.get(glyphsname, "")
@@ -137,6 +143,10 @@ class GlyphsThree(BaseConvertor):
                 else:
                     getattr(self.font.names, attrname).set_default(thing)
             # Do other properties here
+            if "vendorID" in props:
+                self.font.custom_opentype_values[("OS/2", "achVendID")] = props[
+                    "vendorID"
+                ]
 
         self.font.note = glyphs.pop("note", "")
         self.font.date = datetime.datetime.strptime(
