@@ -204,7 +204,14 @@ class TrueType(BaseConvertor):
         for g in f.glyphs.keys():
             convert_glyph(g)
 
-        fb.setupGlyf(ttglyphsets[f.default_master.id])
+        try:
+            fb.setupGlyf(ttglyphsets[f.default_master.id])
+        except ValueError:
+            fb.font["head"].glyphDataFormat = 1
+            self.logger.warning(
+                "Using Boring Expansion, eh? Setting glyf data format to 1"
+            )
+            fb.setupGlyf(ttglyphsets[f.default_master.id])
         fb.setupHorizontalHeader()
         f.names.typographicSubfamily = f.default_master.name
         f.names.typographicFamily = f.names.familyName
@@ -229,12 +236,6 @@ class TrueType(BaseConvertor):
 
             fb.setupGvar(variations)
             fb.setupAvar(f.axes)
-        # Move glyph categories to fontfeatures
-        # if f.features:
-        #     for g in f.glyphs.values():
-        #         if g.exported:
-        #             f.features.classes[g.name] = g.category
-
         build_all_features(f, fb.font)
         fb.setupPost()
 
