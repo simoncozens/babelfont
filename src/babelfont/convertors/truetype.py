@@ -166,6 +166,7 @@ class TrueType(BaseConvertor):
         "renameGlyphs:production=True",
         "decomposeMixedGlyphs",
         "dropUnexportedGlyphs",
+        "zeroMarkWidths",
         "cubicToQuadratic",
         "fillOpentypeValues",
     ]
