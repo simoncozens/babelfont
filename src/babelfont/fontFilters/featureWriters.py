@@ -28,12 +28,13 @@ def add_gdef_classdef(font, ttFont):
     if not "GDEF" in ttFont:
         ttFont["GDEF"] = newTable("GDEF")
         gdef = otTables.GDEF()
-        gdef.GlyphClassDef = otTables.GlyphClassDef()
-        gdef.GlyphClassDef.classDefs = {}
         gdef.Version = 0x00010000
         ttFont["GDEF"].table = gdef
     else:
         gdef = ttFont["GDEF"].table
+    if not gdef.GlyphClassDef:
+        gdef.GlyphClassDef = otTables.GlyphClassDef()
+        gdef.GlyphClassDef.classDefs = {}
     classdeftable = gdef.GlyphClassDef.classDefs
     if not classdeftable:
         for glyph in font.glyphs:
