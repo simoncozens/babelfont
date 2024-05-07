@@ -4,7 +4,6 @@ from fontTools.feaLib import ast
 from fontTools.misc.visitor import Visitor
 
 from babelfont.Font import Font
-from babelfont.Features import as_ast
 from babelfont.Glyph import GlyphList
 
 logger = logging.getLogger(__name__)
@@ -34,31 +33,20 @@ def rename_glyphs(font: Font, args: dict = {}):
             mapping.get(glyph, glyph) for glyph in font.features.classes[cls]
         ]
     # 1b) prefixes
+    parsed_features = font.features.as_ast(font)
     for prefix in font.features.prefixes.keys():
         font.features.prefixes[prefix] = _rename_fea(
-            as_ast(
-                font.features.prefixes[prefix],
-                font.features,
-                glyphNames=font.glyphs.keys(),
-            ),
+            parsed_features["prefixes"][prefix],
             mapping,
         ).asFea()
     # 1c) features
     font.features.features = [
         (
             featurename,
-            _drop_wrapper(
-                _rename_fea(
-                    as_ast(
-                        code, font.features, featurename, glyphNames=font.glyphs.keys()
-                    ),
-                    mapping,
-                )
-            ).asFea(),
+            _drop_wrapper(_rename_fea(parsed_ast, mapping)).asFea(),
         )
-        for featurename, code in font.features.features
+        for featurename, parsed_ast in parsed_features["features"]
     ]
-
     for glyph in font.glyphs:
         # Step 2: components
         for layer in glyph.layers:
@@ -84,6 +72,21 @@ def visit(visitor, gn, *args, **kwargs):
 def visit(visitor, gcd, *args, **kwargs):
     gcd.glyphs = [visitor.mapping.get(glyph, glyph) for glyph in gcd.glyphs]
     return False
+
+
+@FeaRenameVisitor.register(ast.LigatureSubstStatement)
+def visit(visitor, ligature, *args, **kwargs):
+    ligature.replacement = visitor.mapping.get(
+        ligature.replacement, ligature.replacement
+    )
+    return True
+
+
+@FeaRenameVisitor.register(ast.SinglePosStatement)
+def visit(visitor, ccp, *args, **kwargs):
+    for glyphclass, _valuerecord in ccp.pos:
+        visitor.visit(glyphclass)
+    return True
 
 
 @FeaRenameVisitor.register(ast.MarkClassDefinition)

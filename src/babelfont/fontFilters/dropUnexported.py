@@ -5,7 +5,6 @@ from fontTools.feaLib import ast
 from fontTools.misc.visitor import Visitor
 
 from babelfont.Font import Font
-from babelfont.Features import as_ast
 
 logger = logging.getLogger(__name__)
 
@@ -29,8 +28,9 @@ def drop_unexported_glyphs(font: Font, _args=None):
         logger.warning("Will not drop these glyphs.")
         unexported -= set(appearances.keys())
     # Safety check two: look in features
-    for featurename, code in font.features.features:
-        parsed = as_ast(code, font.features, featurename, glyphNames=font.glyphs.keys())
+    parsed_features = font.features.as_ast(font)
+
+    for featurename, parsed in parsed_features["features"]:
         visitor = FeaAppearsVisitor()
         visitor.visit(parsed)
         for glyph in visitor.appearances:
@@ -46,8 +46,7 @@ def drop_unexported_glyphs(font: Font, _args=None):
                     f"Unexported glyph {glyph} is used in class @{classname}, will not drop it."
                 )
                 unexported.remove(glyph)
-    for prefix, code in font.features.prefixes.items():
-        parsed = as_ast(code, font.features, glyphNames=font.glyphs.keys())
+    for prefix, parsed in parsed_features["prefixes"].items():
         visitor = FeaAppearsVisitor()
         visitor.visit(parsed)
         for glyph in visitor.appearances:

@@ -1,10 +1,11 @@
 from io import StringIO
 import re
 from dataclasses import dataclass, field
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Tuple
 
+from babelfont import Font
 from fontTools.feaLib import ast
-from fontTools.feaLib.parser import Parser
+from fontTools.feaLib.parser import Parser, SymbolTable
 
 from .BaseObject import BaseObject
 
@@ -77,17 +78,42 @@ class Features(BaseObject):
                 fea += f"# Prefix: {prefix}\n"
             fea += code + "\n"
         for name, code in self.features:
-            fea += f"feature {name} {{\n{code}}} {name};\n"
+            fea += f"feature {name} {{\n{code}\n}} {name};\n"
         return fea
 
+    def as_ast(self, font: Font) -> Dict[str, Any]:
+        rv = {
+            "prefixes": {},
+            "features": [],
+        }
+        glyphnames = font.glyphs.keys()
+        lookups = SymbolTable()
+        glyphclasses = SymbolTable()
+        for name, glyphs in self.classes.items():
+            glyphcls = ast.GlyphClass(glyphs=[ast.GlyphName(g) for g in glyphs])
+            glyphclass = ast.GlyphClassDefinition(name, glyphcls)
+            glyphclasses.define(name, glyphclass)
 
-def as_ast(code, features, featurename=None, glyphNames=()):
-    if featurename is not None and not code.startswith("feature"):
-        code = f"feature {featurename} {{\n{code}\n}} {featurename};"
-    parser = Parser(StringIO(code), followIncludes=False, glyphNames=glyphNames)
-    # Set up classes
-    for classname, glyphs in features.classes.items():
-        glyphcls = ast.GlyphClass(glyphs=[ast.GlyphName(g) for g in glyphs])
-        glyphclass = ast.GlyphClassDefinition(classname, glyphcls)
-        parser.glyphclasses_.define(classname, glyphclass)
-    return parser.parse()
+        for prefix, code in self.prefixes.items():
+            parser = Parser(StringIO(code), followIncludes=False, glyphNames=glyphnames)
+            parser.lookups_ = lookups
+            parser.glyphclasses_ = glyphclasses
+            try:
+                file = parser.parse()
+            except Exception as e:
+                raise ValueError(f"Error parsing feature code: {e}\n\nCode was: {code}")
+            rv["prefixes"][prefix] = file
+
+        for name, code in self.features:
+            if name is not None and not code.startswith("feature " + name):
+                code = f"feature {name} {{\n{code}\n}} {name};"
+            parser = Parser(StringIO(code), followIncludes=False, glyphNames=glyphnames)
+            parser.lookups_ = lookups
+            parser.glyphclasses_ = glyphclasses
+            try:
+                file = parser.parse()
+            except Exception as e:
+                raise ValueError(f"Error parsing feature code: {e}\n\nCode was: {code}")
+            rv["features"].append((name, file))
+
+        return rv
