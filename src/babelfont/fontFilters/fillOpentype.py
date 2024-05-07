@@ -7,9 +7,9 @@ from fontTools.misc.fixedTools import otRound
 logger = logging.getLogger(__name__)
 
 
-def _default(font, table, key, value):
+def _default(font, table, key, value, round=otRound):
     if (table, key) not in font.custom_opentype_values:
-        font.custom_opentype_values[(table, key)] = value
+        font.custom_opentype_values[(table, key)] = round(value)
 
 
 def fallback_ascender(font):
@@ -33,11 +33,11 @@ def fallback_linegap(font):
 
 
 def fallback_underline_position(font):
-    return otRound(font.upm * -0.075)
+    return font.upm * -0.075
 
 
 def fallback_underline_thickness(font):
-    return otRound(font.upm * 0.05)
+    return font.upm * 0.05
 
 
 def fill_opentype_values(font: Font, args=None):
