@@ -1,6 +1,10 @@
+import logging
+
 from babelfont.Font import Font
 from fontTools.misc.timeTools import timestampSinceEpoch
 from fontTools.misc.fixedTools import otRound
+
+logger = logging.getLogger(__name__)
 
 
 def _default(font, table, key, value):
@@ -39,6 +43,7 @@ def fallback_underline_thickness(font):
 def fill_opentype_values(font: Font, args=None):
     """Prepare a font for final compilation by moving values from
     font attributes to the customOpenTypeValues field."""
+    logger.info("Filling in OpenType values")
 
     def _fallback_metric(*metrics):
         for metric in metrics:
