@@ -223,6 +223,7 @@ class TrueType(BaseConvertor):
             model = f.variation_model()
             axis_map = {}
             variations = {}
+            self.logger.info("Calculating gvar table")
             for g in f.glyphs.keys():
                 variations[g] = self.calculate_a_gvar(f, model, g, ttglyphsets)
 

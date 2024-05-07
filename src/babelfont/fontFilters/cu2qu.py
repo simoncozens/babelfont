@@ -17,7 +17,9 @@ def cubic_to_quadratic(font: Font, args: dict = {}):
             continue
         try:
             glyphs_to_quadratic(master_layers, reverse_direction=reverse_direction)
-        except Exception:
+        except Exception as e:
             logger.warning(
-                "Problem converting glyph %s to quadratic. (Probably incompatible) " % g
+                "Problem converting glyph %s to quadratic (probably incompatible) ",
+                glyph.name,
+                # e,
             )

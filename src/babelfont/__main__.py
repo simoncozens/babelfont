@@ -56,6 +56,7 @@ def main():
         sys.exit(1)
 
     try:
+        logger.info("Reading %s", args.input)
         font = convertor_in.load(input_job)
     except Exception as e:
         logger.error("Couldn't read %s: %s", args.input, e)
@@ -79,6 +80,7 @@ def main():
         fltr(font, filterargs)
 
     try:
+        logger.info("Saving %s", args.output)
         convertor_out.save(font, output_job)
     except Exception as e:
         logger.error("Couldn't write %s: %s", args.output, e)
