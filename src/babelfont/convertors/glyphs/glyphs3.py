@@ -369,6 +369,10 @@ class GlyphsThree(BaseConvertor):
         metrics = _g(self.font, "metrics", [])  # Keep stashed
         metric_types = [_metrics_dict_to_name(k) for k in metrics]
         for master in self.font.masters:
+            # Glyphs has these values as defaults:
+            master.metrics["underlinePosition"] = -100
+            master.metrics["underlineThickness"] = 50
+
             metric_values = _g(master, "metricValues", [], pop=True)
             master.metrics["italicAngle"] = 0
             for k, v in zip(metric_types, metric_values):
