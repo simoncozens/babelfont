@@ -106,7 +106,8 @@ class GlyphsThree(BaseConvertor):
         self.interpret_linked_kerning()
         assert self.font.default_master
         self.interpret_kern_groups()
-        self.interpret_metric_custom_parameters()
+        self.interpret_master_custom_parameters()
+        self.interpret_font_custom_parameters()
         self.interpret_features()
         return font
 
@@ -431,7 +432,7 @@ class GlyphsThree(BaseConvertor):
                     )
                 )
 
-    def interpret_metric_custom_parameters(self):
+    def interpret_master_custom_parameters(self):
         for master in self.font.masters:
             cps = _g(master, "customParameters", [])
             new_cps = []
@@ -441,6 +442,24 @@ class GlyphsThree(BaseConvertor):
                 else:
                     new_cps.append(param)
             _stash(master, {"customParameters": new_cps})
+
+    def interpret_font_custom_parameters(self):
+        cps = _g(self.font, "customParameters", [])
+        new_cps = []
+        for param in cps:
+            if param["name"] == "panose":
+                self.font.custom_opentype_values[("OS/2", "panose")] = param["value"]
+            # elif param["name"] == "fsType":
+            #     self.font.custom_opentype_values[("OS/2", "fsType")] = int(
+            #         param["value"]
+            #     )
+            elif param["name"] == "fsSelection":
+                self.font.custom_opentype_values[("OS/2", "fsSelection")] = int(
+                    param["value"]
+                )
+            else:
+                new_cps.append(param)
+        _stash(self.font, {"customParameters": new_cps})
 
     def interpret_features(self):
         self.font.features = Features()
