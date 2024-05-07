@@ -1,7 +1,7 @@
-from typing import Dict
 import uuid
 from datetime import datetime
 from itertools import chain
+from typing import Dict
 
 from fontFeatures import Attachment
 from fontFeatures.ttLib import unparse
@@ -12,23 +12,24 @@ from fontTools.pens.recordingPen import RecordingPen
 from fontTools.pens.ttGlyphPen import TTGlyphPen
 from fontTools.ttLib import TTFont
 from fontTools.ttLib.tables._g_l_y_f import GlyphCoordinates
-from fontTools.ttLib.ttGlyphSet import _TTGlyph
+from fontTools.ttLib.tables.O_S_2f_2 import Panose
 from fontTools.ttLib.tables.TupleVariation import TupleVariation
+from fontTools.ttLib.ttGlyphSet import _TTGlyph
 from fontTools.varLib.iup import iup_delta_optimize
 
+from babelfont import (
+    Anchor,
+    Axis,
+    Features,
+    Glyph,
+    Instance,
+    Layer,
+    Master,
+    Node,
+    Shape,
+)
 from babelfont.convertors import BaseConvertor
 from babelfont.fontFilters.featureWriters import build_all_features
-from babelfont import (
-    Master,
-    Glyph,
-    Layer,
-    Anchor,
-    Shape,
-    Node,
-    Axis,
-    Instance,
-    Features,
-)
 
 
 def _categorize_glyph(font, glyphname):
@@ -47,6 +48,21 @@ def _categorize_glyph(font, glyphname):
         return "mark"
     if classdefs[glyphname] == 4:
         return "component"
+
+
+def compile_panose(data):
+    panose = Panose()
+    panose.bFamilyType = data[0]
+    panose.bSerifStyle = data[1]
+    panose.bWeight = data[2]
+    panose.bProportion = data[3]
+    panose.bContrast = data[4]
+    panose.bStrokeVariation = data[5]
+    panose.bArmStyle = data[6]
+    panose.bLetterForm = data[7]
+    panose.bMidline = data[8]
+    panose.bXHeight = data[9]
+    return panose
 
 
 class TrueType(BaseConvertor):
@@ -240,9 +256,14 @@ class TrueType(BaseConvertor):
             fb.setupAvar(f.axes)
         build_all_features(f, fb.font)
         fb.setupPost()
+        # Set OS/2 version to 4 for ufo2ft compatibility
+        fb.font["OS/2"].version = 4
 
         for (table, field), value in f.custom_opentype_values.items():
+            if field == "panose":
+                value = compile_panose(value)
             setattr(fb.font[table], field, value)
+            self.logger.debug("Setting %s.%s to %s", table, field, value)
         fb.font.save(self.filename)
 
     def calculate_a_gvar(
