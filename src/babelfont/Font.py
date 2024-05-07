@@ -166,10 +166,8 @@ class Font(_FontFields, BaseObject):
     def unicode_map(self):
         unicodes = {}
         for g in self.glyphs:
-            if not g.codepoints:
-                continue
             for u in g.codepoints:
-                if u:
+                if u is not None:
                     unicodes[u] = g.name
         return unicodes
 

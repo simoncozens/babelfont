@@ -323,8 +323,8 @@ class GlyphsThree(BaseConvertor):
         return shape
 
     def get_codepoint(self, gglyph):
-        cp = gglyph.get("unicode")
-        if cp and not isinstance(cp, list):
+        cp = gglyph.get("unicode", None)
+        if cp is not None and not isinstance(cp, list):
             cp = [cp]
         if cp:
             return [int(x) for x in cp]
