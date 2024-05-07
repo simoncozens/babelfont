@@ -216,7 +216,7 @@ class TrueType(BaseConvertor):
         fb.setupHorizontalHeader()
         f.names.typographicSubfamily = f.default_master.name
         f.names.typographicFamily = f.names.familyName
-        fb.setupNameTable(f.names.as_nametable_dict())
+        fb.setupNameTable(f.names.as_nametable_dict(), mac=False)
         fb.setupOS2()
 
         if f.axes:
