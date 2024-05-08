@@ -258,6 +258,7 @@ class TrueType(BaseConvertor):
         fb.setupPost()
         # Set OS/2 version to 4 for ufo2ft compatibility
         fb.font["OS/2"].version = 4
+        fb.font["maxp"].maxZones = 1
 
         for (table, field), value in f.custom_opentype_values.items():
             if field == "panose":
