@@ -1,8 +1,11 @@
-from typing import Optional, Dict, Tuple
-from .BaseObject import BaseObject, I18NDictionary
+from typing import List, Optional, Dict, Tuple
+from .BaseObject import BaseObject, I18NDictionary, Number
 from dataclasses import dataclass, field
 import uuid
-from fontTools.varLib.models import normalizeValue
+from fontTools.varLib.models import normalizeValue, piecewiseLinearMap
+
+
+Tag = str
 
 
 @dataclass
@@ -10,7 +13,7 @@ class _AxisFields:
     name: I18NDictionary = field(
         metadata={"description": "The display name for this axis."}
     )
-    tag: str = field(metadata={"description": "The four-letter axis tag."})
+    tag: Tag = field(metadata={"description": "The four-letter axis tag."})
     id: str = field(
         default_factory=lambda: str(uuid.uuid1()),
         repr=False,
@@ -42,7 +45,7 @@ they are returned as `None` in the Python object, and should be computed from th
 master locations on export."""
         },
     )
-    map: [(int, int)] = field(
+    map: List[Tuple[int, int]] = field(
         default=None,
         metadata={
             "description": """The mapping between userspace and designspace coordinates."""
@@ -70,17 +73,20 @@ class Axis(BaseObject, _AxisFields):
             self.name = I18NDictionary.with_default(self.name)
         super().__post_init__()
 
-    def normalize_value(self, value):
+    def normalize_value(self, value: Number) -> float:
+        """Return a normalized co-ordinate (-1.0 to 1.0) for the given value.
+        The value provided is expected to be in userspace coordinates."""
         return normalizeValue(
-            self.map_forward(value),
+            self.userspace_to_designspace(value),
             (
-                self.map_forward(self.min),
-                self.map_forward(self.default),
-                self.map_forward(self.max),
+                self.userspace_to_designspace(self.min),
+                self.userspace_to_designspace(self.default),
+                self.userspace_to_designspace(self.max),
             ),
         )
 
-    def denormalize_value(self, value):
+    def denormalize_value(self, value: float) -> Number:
+        """Return a userspace coordinate for the given normalized value."""
         if value == 0:
             return self.default
         elif value > 0:
@@ -116,29 +122,30 @@ class Axis(BaseObject, _AxisFields):
 
     @property
     def inverted_map(self) -> Optional[Tuple[float, float]]:
+        """Return the axis map as a list of tuples, where the first value is the
+        designspace coordinate and the second value is the userspace coordinate."""
         if not self.map:
             return None
         return [(v, k) for k, v in self.map]
 
     # Stolen from fontTools.designspaceLib
-
-    def map_forward(self, v):
-        from fontTools.varLib.models import piecewiseLinearMap
-
+    def map_forward(self, v: Number) -> Number:
+        """Map a location on this axis from userspace to designspace."""
         if not self.map:
             return v
         return piecewiseLinearMap(v, dict(self.map))
 
-    def map_backward(self, v):
-        from fontTools.varLib.models import piecewiseLinearMap
-
+    def map_backward(self, v: Number) -> Number:
+        """Map a location on this axis from designspace to userspace."""
         if not self.map:
             return v
         return piecewiseLinearMap(v, {v: k for k, v in self.map})
 
     # These are just better names
-    def userspace_to_designspace(self, v):
+    def userspace_to_designspace(self, v: Number) -> Number:
+        """Map a location on this axis from userspace to designspace."""
         return self.map_forward(v)
 
-    def designspace_to_userspace(self, v):
+    def designspace_to_userspace(self, v: Number) -> Number:
+        """Map a location on this axis from designspace to userspace."""
         return self.map_backward(v)

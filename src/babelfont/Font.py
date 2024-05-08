@@ -2,13 +2,13 @@ import functools
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from fontTools.feaLib.variableScalar import VariableScalar
 from fontTools.varLib.models import VariationModel
 
-from .Axis import Axis
-from .BaseObject import BaseObject, IncompatibleMastersError
+from .Axis import Axis, Tag
+from .BaseObject import BaseObject, IncompatibleMastersError, Number
 from .Features import Features
 from .Glyph import GlyphList
 from .Instance import Instance
@@ -21,28 +21,28 @@ log = logging.getLogger(__name__)
 @dataclass
 class _FontFields:
     upm: int = field(default=1000, metadata={"description": "The font's units per em."})
-    version: (int, int) = field(
+    version: Tuple[int, int] = field(
         default=(1, 0),
         metadata={
             "description": "Font version number as a tuple of integers (major, minor).",
             "json_type": "[int,int]",
         },
     )
-    axes: [Axis] = field(
+    axes: List[Axis] = field(
         default_factory=list,
         metadata={
             "separate_items": True,
             "description": "A list of axes, in the case of variable/multiple master font. May be empty.",
         },
     )
-    instances: [Instance] = field(
+    instances: List[Instance] = field(
         default_factory=list,
         metadata={
             "separate_items": True,
             "description": "A list of named/static instances.",
         },
     )
-    masters: [Master] = field(
+    masters: List[Master] = field(
         default_factory=list,
         metadata={
             "separate_items": True,
@@ -126,36 +126,47 @@ class Font(_FontFields, BaseObject):
             len(self.masters),
         )
 
-    def save(self, filename, **kwargs):
+    def save(self, filename: str, **kwargs):
+        """Save the font to a file. The file type is determined by the extension.
+        Any additional keyword arguments are passed to the save method of the
+        appropriate converter."""
         from .convertors import Convert
 
         return Convert(filename).save(self, **kwargs)
 
-    def master(self, mid):
+    def master(self, mid: str) -> Optional[Master]:
+        """Locates a master by its ID. Returns `None` if not found."""
         return self._master_map[mid]
 
-    def map_forward(self, location):
+    def map_forward(self, location: dict[Tag, Number]) -> dict[Tag, Number]:
+        """Map a location from user space to design space."""
         location2 = dict(location)
         for a in self.axes:
             if a.tag in location2:
                 location2[a.tag] = a.map_forward(location2[a.tag])
         return location2
 
-    def map_backward(self, location):
+    def map_backward(self, location: dict[Tag, Number]) -> dict[Tag, Number]:
+        """Map a location from design space to user space."""
         location2 = dict(location)
         for a in self.axes:
             if a.tag in location2:
                 location2[a.tag] = a.map_backward(location2[a.tag])
         return location2
 
-    def userspace_to_designspace(self, v):
+    def userspace_to_designspace(self, v: dict[Tag, Number]) -> dict[Tag, Number]:
+        """Map a location from user space to design space."""
         return self.map_forward(v)
 
-    def designspace_to_userspace(self, v):
+    def designspace_to_userspace(self, v: dict[Tag, Number]) -> dict[Tag, Number]:
+        """Map a location from design space to user space."""
         return self.map_backward(v)
 
     @functools.cached_property
-    def default_master(self):
+    def default_master(self) -> Master:
+        """Return the default master. If there is only one master, return it.
+        If there are multiple masters, return the one with the default location.
+        If there is no default location, raise an error."""
         default_loc = {a.tag: a.userspace_to_designspace(a.default) for a in self.axes}
         for m in self.masters:
             if m.location == default_loc:
@@ -169,7 +180,8 @@ class Font(_FontFields, BaseObject):
         return {m.id: m for m in self.masters}
 
     @functools.cached_property
-    def unicode_map(self):
+    def unicode_map(self) -> Dict[int, str]:
+        """Return a dictionary mapping Unicode codepoints to glyph names."""
         unicodes = {}
         for g in self.glyphs:
             for u in g.codepoints:
@@ -177,7 +189,9 @@ class Font(_FontFields, BaseObject):
                     unicodes[u] = g.name
         return unicodes
 
-    def variation_model(self):
+    def variation_model(self) -> VariationModel:
+        """Return a `fontTools.varLib.models.VariationModel` object representing
+        the font's axes and masters. This is used for generating variable fonts."""
         return VariationModel(
             [m.normalized_location for m in self.masters],
             axisOrder=[a.tag for a in self.axes],
@@ -221,7 +235,13 @@ class Font(_FontFields, BaseObject):
                 _all_anchors_dict[a][g] = self.get_variable_anchor(g, a)
         return _all_anchors_dict
 
-    def get_variable_anchor(self, glyph, anchorname):
+    def get_variable_anchor(
+        self, glyph, anchorname
+    ) -> Tuple[VariableScalar, VariableScalar]:
+        """Return a tuple of `VariableScalar` objects representing the x and y
+        coordinates of the anchor on the given glyph. The `VariableScalar` objects
+        are indexed by master location. If the anchor is not found on some master,
+        raise an `IncompatibleMastersError`."""
         x_vs = VariableScalar()
         x_vs.axes = self.axes
         y_vs = VariableScalar()
@@ -238,5 +258,6 @@ class Font(_FontFields, BaseObject):
             y_vs.add_value(self.map_forward(m.location), anchor.y)
         return (x_vs, y_vs)
 
-    def exportedGlyphs(self):
+    def exported_glyphs(self) -> List[str]:
+        """Return a list of glyph names that are marked for export."""
         return [g.name for g in self.glyphs if g.exported]
