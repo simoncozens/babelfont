@@ -1,4 +1,5 @@
 from dataclasses import dataclass, fields, field
+from typing import Union
 import orjson
 from collections import namedtuple
 import datetime
@@ -10,6 +11,7 @@ class IncompatibleMastersError(ValueError):
 
 Color = namedtuple("Color", "r,g,b,a", defaults=[0, 0, 0, 0])
 Position = namedtuple("Position", "x,y,angle", defaults=[0, 0, 0])
+Number = Union[int, float]
 
 
 class I18NDictionary(dict):
