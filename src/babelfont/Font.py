@@ -139,7 +139,7 @@ class Font(_FontFields, BaseObject):
         return self._master_map[mid]
 
     def map_forward(self, location: dict[Tag, Number]) -> dict[Tag, Number]:
-        """Map a location from user space to design space."""
+        """Map a location (dictionary of `tag: number`) from userspace to designspace."""
         location2 = dict(location)
         for a in self.axes:
             if a.tag in location2:
@@ -147,7 +147,7 @@ class Font(_FontFields, BaseObject):
         return location2
 
     def map_backward(self, location: dict[Tag, Number]) -> dict[Tag, Number]:
-        """Map a location from design space to user space."""
+        """Map a location (dictionary of `tag: number`) from designspace to userspace."""
         location2 = dict(location)
         for a in self.axes:
             if a.tag in location2:
@@ -155,11 +155,11 @@ class Font(_FontFields, BaseObject):
         return location2
 
     def userspace_to_designspace(self, v: dict[Tag, Number]) -> dict[Tag, Number]:
-        """Map a location from user space to design space."""
+        """Map a location (dictionary of `tag: number`) from userspace to designspace."""
         return self.map_forward(v)
 
     def designspace_to_userspace(self, v: dict[Tag, Number]) -> dict[Tag, Number]:
-        """Map a location from design space to user space."""
+        """Map a location (dictionary of `tag: number`) from designspace to userspace."""
         return self.map_backward(v)
 
     @functools.cached_property
