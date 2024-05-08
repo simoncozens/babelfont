@@ -24,7 +24,7 @@ dependencies = [
     "openstep-plist >=0.2.2",
     "glyphsLib >=6.7.1",
     "fontfeatures >= 1.8.0",
-    "vfbLib >= 0.6.4",
+    "vfbLib >=0.6.5",
 ]
 
 [project.optional-dependencies]
