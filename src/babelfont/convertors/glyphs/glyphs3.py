@@ -415,20 +415,35 @@ class GlyphsThree(BaseConvertor):
             return
 
         for instance in self.font.instances:
+            # instance.location is in designspace
+            # The Axis Location custom parameter is in userspace, use
+            # this to make the map
             c = (
                 _custom_parameter(
                     instance._formatspecific.get("com.glyphsapp", {}), "Axis Location"
                 )
                 or []
             )
+            # If there isn't an Axis Location, use the weightclass and widthclass
+            if not c:
+                weightclass = instance._formatspecific.get("com.glyphsapp", {}).get(
+                    "weightClass"
+                )
+                if weightclass is not None:
+                    c.append({"Axis": "Weight", "Location": weightclass})
+                widthclass = instance._formatspecific.get("com.glyphsapp", {}).get(
+                    "widthClass"
+                )
+                if widthclass is not None:
+                    c.append({"Axis": "Width", "Location": widthclass})
             for loc in c:
                 ax = axes_by_name[loc["Axis"]]
                 if not ax.map:
                     ax.map = []
                 ax.map.append(
                     (
+                        int(loc["Location"]),  # The instances location in user space
                         instance.location[ax.tag],
-                        int(loc["Location"]),
                     )
                 )
 
