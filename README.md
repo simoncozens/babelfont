@@ -8,17 +8,20 @@ making it possible to convert between font formats.
 
 Here are the formats which are currently supported:
 
-| Format         | Read    | Write |
-|----------------|---------|-------|
-| Glyphs 2       | *       | *     |
-| Glyphs 3       | *       | *     |
-| .glyphspackage | *       |       |
-| UFO            | *       |       |
-| Designspace    | *       |       |
-| Fontlab VFJ    | partial |       |
-| TTF            | partial | *     |
-| OTF            | partial |       |
-| Babelfont      | *       | *     |
+| Format          | Read    | Write |
+|-----------------|---------|-------|
+| Glyphs 2        | partial |       |
+| Glyphs 3        | *       | *     |
+| .glyphspackage  | *       |       |
+| UFO             | *       |       |
+| Designspace     | *       |       |
+| Fontlab VFJ     | partial |       |
+| Fontlab VFB     | partial |       |
+| TTF             | partial | *     |
+| OTF             | partial |       |
+| Fontforge SFD   | partial | *     |
+| Fontforge SFDir | partial | *     |
+| Babelfont       | *       | *     |
 
 Babelfont converts all of the above font formats into a intermediary
 set of objects, whose object hierarchy can be seen [here](https://simoncozens.github.io/babelfont). The allows
