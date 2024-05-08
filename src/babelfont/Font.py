@@ -148,6 +148,12 @@ class Font(_FontFields, BaseObject):
                 location2[a.tag] = a.map_backward(location2[a.tag])
         return location2
 
+    def userspace_to_designspace(self, v):
+        return self.map_forward(v)
+
+    def designspace_to_userspace(self, v):
+        return self.map_backward(v)
+
     @functools.cached_property
     def default_master(self):
         default_loc = {a.tag: a.userspace_to_designspace(a.default) for a in self.axes}
