@@ -1,0 +1,201 @@
+{
+.appVersion = "3243";
+.formatVersion = 3;
+axes = (
+{
+name = Weight;
+tag = wght;
+}
+);
+date = "2024-05-08 05:56:55 +0000";
+familyName = DesignspaceTest;
+fontMaster = (
+{
+axesValues = (
+1
+);
+customParameters = (
+{
+name = "Axis Location";
+value = (
+{
+Axis = Weight;
+Location = 100;
+}
+);
+}
+);
+id = m01;
+metricValues = (
+{
+over = 16;
+pos = 800;
+},
+{
+over = 16;
+pos = 700;
+},
+{
+over = 16;
+pos = 500;
+},
+{
+over = -16;
+},
+{
+over = -16;
+pos = -200;
+},
+{
+}
+);
+name = Thin;
+},
+{
+axesValues = (
+199
+);
+customParameters = (
+{
+name = "Axis Location";
+value = (
+{
+Axis = Weight;
+Location = 600;
+}
+);
+}
+);
+id = "24FD6942-D883-4640-B01C-A93DC3C2FEFD";
+metricValues = (
+{
+over = 16;
+pos = 800;
+},
+{
+over = 16;
+pos = 700;
+},
+{
+over = 16;
+pos = 500;
+},
+{
+over = -16;
+},
+{
+over = -16;
+pos = -200;
+},
+{
+}
+);
+name = Semibold;
+}
+);
+glyphs = (
+{
+glyphname = A;
+lastChange = "2024-05-08 05:57:36 +0000";
+layers = (
+{
+layerId = m01;
+width = 600;
+},
+{
+layerId = "24FD6942-D883-4640-B01C-A93DC3C2FEFD";
+width = 600;
+}
+);
+unicode = 65;
+}
+);
+instances = (
+{
+axesValues = (
+1
+);
+instanceInterpolations = {
+m01 = 1;
+};
+name = Thin;
+weightClass = 100;
+},
+{
+axesValues = (
+7
+);
+instanceInterpolations = {
+"24FD6942-D883-4640-B01C-A93DC3C2FEFD" = 0.0303;
+m01 = 0.9697;
+};
+name = Extralight;
+weightClass = 200;
+},
+{
+axesValues = (
+23
+);
+instanceInterpolations = {
+"24FD6942-D883-4640-B01C-A93DC3C2FEFD" = 0.11111;
+m01 = 0.88889;
+};
+name = Light;
+weightClass = 300;
+},
+{
+axesValues = (
+53
+);
+instanceInterpolations = {
+"24FD6942-D883-4640-B01C-A93DC3C2FEFD" = 0.26263;
+m01 = 0.73737;
+};
+name = Regular;
+},
+{
+axesValues = (
+105
+);
+instanceInterpolations = {
+"24FD6942-D883-4640-B01C-A93DC3C2FEFD" = 0.52525;
+m01 = 0.47475;
+};
+name = Medium;
+weightClass = 500;
+},
+{
+axesValues = (
+199
+);
+instanceInterpolations = {
+"24FD6942-D883-4640-B01C-A93DC3C2FEFD" = 1;
+};
+name = Semibold;
+weightClass = 600;
+}
+);
+metrics = (
+{
+type = ascender;
+},
+{
+type = "cap height";
+},
+{
+type = "x-height";
+},
+{
+type = baseline;
+},
+{
+type = descender;
+},
+{
+type = "italic angle";
+}
+);
+unitsPerEm = 1000;
+versionMajor = 1;
+versionMinor = 0;
+}
