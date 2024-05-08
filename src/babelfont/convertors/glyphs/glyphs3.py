@@ -427,17 +427,21 @@ class GlyphsThree(BaseConvertor):
             # If there isn't an Axis Location, use the weightclass and widthclass
             if not c:
                 weightclass = instance._formatspecific.get("com.glyphsapp", {}).get(
-                    "weightClass"
+                    "weightClass", 400
                 )
                 if weightclass is not None:
                     c.append({"Axis": "Weight", "Location": weightclass})
                 widthclass = instance._formatspecific.get("com.glyphsapp", {}).get(
-                    "widthClass"
+                    "widthClass", 5
                 )
                 if widthclass is not None:
                     c.append({"Axis": "Width", "Location": widthclass})
             for loc in c:
-                ax = axes_by_name[loc["Axis"]]
+                ax = axes_by_name.get(loc["Axis"])
+                if not ax:
+                    # Maybe we don't have a weight or width but we don't have
+                    # an axis location either so we synthesised those locations
+                    continue
                 if not ax.map:
                     ax.map = []
                 ax.map.append(
