@@ -1,12 +1,14 @@
 from typing import Tuple
-from .background import zero_background_width, decompose_backgrounds
+
+from .background import decompose_backgrounds, zero_background_width
+from .cu2qu import cubic_to_quadratic
+from .decomposeMixed import decompose_mixed_glyphs
+from .dropUnexported import drop_unexported_glyphs
+from .fillOpentype import fill_opentype_values
+from .glyphDataXML import bake_in_glyphdata
+from .glyphs3fea import translate_glyphs3_fea
 from .marks import zero_mark_widths
 from .rename import rename_glyphs
-from .dropUnexported import drop_unexported_glyphs
-from .decomposeMixed import decompose_mixed_glyphs
-from .cu2qu import cubic_to_quadratic
-from .glyphDataXML import bake_in_glyphdata
-from .fillOpentype import fill_opentype_values
 
 FILTERS = {
     "zeroBackgroundWidths": zero_background_width,
@@ -18,6 +20,7 @@ FILTERS = {
     "cubicToQuadratic": cubic_to_quadratic,
     "glyphData": bake_in_glyphdata,
     "fillOpentypeValues": fill_opentype_values,
+    "glyphsVariableFeatures": translate_glyphs3_fea,
 }
 
 
