@@ -6,6 +6,7 @@ import importlib
 import logging
 
 from babelfont.Font import Font
+from babelfont.fontFilters import parse_filter
 
 logger = logging.getLogger(__name__)
 
@@ -34,15 +35,20 @@ class BaseConvertor:
         return other.filename.endswith(cls.suffix)
 
     @classmethod
-    def load(cls, convertor, compile_only=False):
+    def load(cls, convertor, compile_only=False, filters=True):
         self = cls()
         self.font = Font()
         # Pass on information to child
         self.filename = convertor.filename
         self.scratch = convertor.scratch
         self.compile_only = compile_only
+        loaded = self._load()
+        if filters:
+            for f in cls.LOAD_FILTERS:
+                fltr, filterargs = parse_filter(f)
+                fltr(loaded, filterargs)
 
-        return self._load()
+        return loaded
 
     @classmethod
     def save(cls, obj, convertor, **kwargs):

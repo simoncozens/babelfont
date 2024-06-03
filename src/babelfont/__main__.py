@@ -57,7 +57,7 @@ def main():
 
     try:
         logger.info("Reading %s", args.input)
-        font = convertor_in.load(input_job)
+        font = convertor_in.load(input_job, filters=False)
     except Exception as e:
         logger.error("Couldn't read %s: %s", args.input, e)
         sys.exit(1)
