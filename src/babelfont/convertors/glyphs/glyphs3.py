@@ -184,12 +184,11 @@ class GlyphsThree(BaseConvertor):
         name = gglyph["glyphname"]
         c = gglyph.get("category")
         sc = gglyph.get("subCategory")
+        category = None
         if sc == "Ligature":
             category = "ligature"
-        if c == "Mark":
+        if c == "Mark" and sc == "Nonspacing":
             category = "mark"
-        else:
-            category = "base"
         cp = self.get_codepoint(gglyph)
         exported = True
         if "export" in gglyph and gglyph.pop("export") == 0:
