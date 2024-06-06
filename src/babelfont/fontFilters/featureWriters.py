@@ -32,7 +32,7 @@ def add_gdef_classdef(font, ttFont):
         ttFont["GDEF"].table = gdef
     else:
         gdef = ttFont["GDEF"].table
-    if not gdef.GlyphClassDef:
+    if not hasattr(gdef, "GlyphClassDef"):
         gdef.GlyphClassDef = otTables.GlyphClassDef()
         gdef.GlyphClassDef.classDefs = {}
     classdeftable = gdef.GlyphClassDef.classDefs
