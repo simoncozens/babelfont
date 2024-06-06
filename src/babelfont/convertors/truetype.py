@@ -274,8 +274,12 @@ class TrueType(BaseConvertor):
             return None
         default_g = ttglyphsets[f.default_master.id][g]
         all_coords = []
+        layers = [m.get_glyph_layer(g) for m in f.masters]
+        submodel, _ = model.getSubModel(layers)
         for m in f.masters:
             layer = m.get_glyph_layer(g)
+            if not layer:
+                continue
             masterglyph = ttglyphsets[m.id][g]
             basecoords = GlyphCoordinates(masterglyph.coordinates)
             if masterglyph.isComposite():
@@ -298,14 +302,14 @@ class TrueType(BaseConvertor):
                 all_ok = False
             if not all_ok:
                 return []
-        deltas = model.getDeltas(all_coords)
+        deltas = submodel.getDeltas(all_coords)
         gvar_entry = []
         if default_g.isComposite():
             endPts = list(range(len(default_g.components)))
         else:
             endPts = default_g.endPtsOfContours
 
-        for delta, sup in zip(deltas, model.supports):
+        for delta, sup in zip(deltas, submodel.supports):
             if not sup:
                 continue
             var = TupleVariation(sup, round(delta))
