@@ -7,6 +7,7 @@ from .dropUnexported import drop_unexported_glyphs
 from .fillOpentype import fill_opentype_values
 from .glyphDataXML import bake_in_glyphdata
 from .glyphs3fea import translate_glyphs3_fea
+from .intermediateLayer import promote_intermediate_layers
 from .marks import zero_mark_widths
 from .rename import rename_glyphs
 
@@ -20,6 +21,7 @@ FILTERS = {
     "cubicToQuadratic": cubic_to_quadratic,
     "glyphData": bake_in_glyphdata,
     "fillOpentypeValues": fill_opentype_values,
+    "intermediateLayers": promote_intermediate_layers,
     "glyphsVariableFeatures": translate_glyphs3_fea,
 }
 
