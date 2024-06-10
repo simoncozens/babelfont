@@ -12,7 +12,6 @@ from babelfont import (
     Instance,
 )
 import uuid
-from glyphsLib.glyphdata import get_glyph
 
 
 opentype_custom_parameters = {
@@ -164,7 +163,7 @@ class GSObject(BaseConvertor):
             category=category,
             exported=gglyph.export,
         )
-        g.production_name = gglyph.productionName or get_glyph(name).production_name
+        g.production_name = gglyph.productionName 
         for entry in [
             "case",
             "category",

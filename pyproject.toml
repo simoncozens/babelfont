@@ -22,8 +22,6 @@ dependencies = [
     "fonttools >=4.40.0",
     "ufoLib2 >=0.16.0",
     "openstep-plist >=0.2.2",
-    "glyphsLib >=6.7.1",
-    "fontfeatures >= 1.8.0",
     "vfbLib >=0.6.5",
 ]
 
@@ -31,6 +29,9 @@ dependencies = [
 dev = [
     "pytest",
     "defcon"
+]
+read-ttf = [
+    "fontfeatures >= 1.8.0",
 ]
 
 [project.scripts]
