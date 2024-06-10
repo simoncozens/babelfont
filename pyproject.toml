@@ -22,7 +22,6 @@ dependencies = [
     "fonttools >=4.40.0",
     "ufoLib2 >=0.16.0",
     "openstep-plist >=0.2.2",
-    "vfbLib >=0.6.5",
 ]
 
 [project.optional-dependencies]
@@ -32,6 +31,9 @@ dev = [
 ]
 read-ttf = [
     "fontfeatures >= 1.8.0",
+]
+vfb = [
+    "vfbLib >=0.6.5",
 ]
 
 [project.scripts]
