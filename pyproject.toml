@@ -21,7 +21,7 @@ dependencies = [
     "orjson >= 3.5.1",
     "fonttools >=4.40.0",
     "ufoLib2 >=0.16.0",
-    "openstep-plist >=0.2.2",
+    "openstep-plist >=0.3.1",
 ]
 
 [project.optional-dependencies]
