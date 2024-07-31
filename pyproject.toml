@@ -33,7 +33,7 @@ read-ttf = [
     "fontfeatures >= 1.8.0",
 ]
 vfb = [
-    "vfbLib >=0.6.5",
+    "vfbLib >=0.7.1",
 ]
 
 [project.scripts]
