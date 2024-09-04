@@ -734,11 +734,11 @@ class GlyphsThree(BaseConvertor):
                     {"name": "fsType", "value": to_bitfield(int(value))}
                 )
             if table == "OS/2" and field == "fsSelection":
-                if value & 0x7:
+                if value & (1 << 7):
                     out["customParameters"].append(
                         {"name": "Use Typo Metrics", "value": 1}
                     )
-                if value & 0x8:
+                if value & (1 << 8):
                     out["customParameters"].append(
                         {"name": "Has WWS Names", "value": 1}
                     )
