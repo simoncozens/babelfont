@@ -20,6 +20,8 @@ from babelfont import (
 )
 
 NUMBER = r"(-?\d+(?:\.\d+)?(?:e-?\d+)?)"
+QUOTED_STRING = r'"([^"]+)"'
+UNQUOTED_STRING = r"(\S+)"
 MOVE_RE = re.compile(rf"^\s*{NUMBER}\s+{NUMBER}\s+m")
 CURVE_RE = re.compile(
     rf"^\s*{NUMBER}\s+{NUMBER}\s+{NUMBER}\s+{NUMBER}\s+{NUMBER}\s+{NUMBER} c"
@@ -132,7 +134,13 @@ class FontForgeSFDIR(BaseConvertor):
         self.font.notes = value
 
     def _handle_Version(self, value):
-        self.font.version = [int(x) for x in value.split(".")]
+        version = [int(x) for x in value.split(".")]
+        if len(version) == 2:
+            self.font.version = tuple(version)
+        elif len(version) == 1:
+            self.font.version = (version[0], 0)
+        else:
+            self.font.version = (version[0], version[1] * 1000 + version[2])
 
     def _handle_Weight(self, value):
         self.font.names.typographicSubfamily.set_default(value)
@@ -392,7 +400,10 @@ class FontForgeSFDIR(BaseConvertor):
         return
 
     def _handle_AnchorPoint(self, value: str):
-        name, x, y, typ, ligcomp = value.split()
+        name, x, y, typ, ligcomp = re.match(
+            rf"^\s*{QUOTED_STRING}\s+{NUMBER}\s+{NUMBER}\s+{UNQUOTED_STRING}\s+{NUMBER}",
+            value,
+        ).groups()
         name = name.replace('"', "")
         if typ == "ligature":
             name += "_%s" % ligcomp
