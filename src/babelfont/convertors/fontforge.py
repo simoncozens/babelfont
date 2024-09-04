@@ -11,6 +11,7 @@ from babelfont.Names import OPENTYPE_NAMES
 
 from babelfont import (
     Anchor,
+    Axis,
     Master,
     Instance,
     Glyph,
@@ -62,8 +63,15 @@ class FontForgeSFDIR(BaseConvertor):
         font = self.font
         font.upm = 1024
         # I'm going to assume a single master font
-        font.masters = [Master(name="Regular", id=str(uuid.uuid4()), font=font)]
-        font.instances = [Instance(name="Regular", styleName="Regular", location={})]
+        font.masters = [
+            Master(
+                name="Regular", id=str(uuid.uuid4()), font=font, location={"wght": 400}
+            )
+        ]
+        font.axes = [Axis(name="Weight", tag="wght", min=400, max=400, default=400)]
+        font.instances = [
+            Instance(name="Regular", styleName="Regular", location={"wght": 400})
+        ]
 
     def _load(self):
         self._setupfont()
