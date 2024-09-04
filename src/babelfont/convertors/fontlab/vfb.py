@@ -3,7 +3,6 @@ import re
 import json
 import uuid
 
-from vfbLib.vfb.vfb import Vfb
 from fontTools.misc.transform import Transform
 
 from babelfont import Anchor, Axis, Glyph, Layer, Master, Node, Shape, Guide
@@ -71,6 +70,13 @@ class FontlabVFB(BaseConvertor):
     suffix = ".vfb"
 
     def _load(self):
+        try:
+            from vfbLib.vfb.vfb import Vfb
+        except ImportError:
+            raise ImportError(
+                "This convertor requires the vfbLib package. Install it with `pip install vfbLib`"
+            )
+
         self.vfb = Vfb(self.filename)
         self.vfb.decompile()
         self.current_glyph = None
