@@ -407,7 +407,7 @@ class FontForgeSFDIR(BaseConvertor):
             rf"^\s*{QUOTED_STRING}\s+{NUMBER}\s+{NUMBER}\s+{UNQUOTED_STRING}\s+{NUMBER}",
             value,
         ).groups()
-        name = name.replace('"', "")
+        name = name.replace(" ", "")
         if typ == "ligature":
             name += "_%s" % ligcomp
         if typ == "mark":
