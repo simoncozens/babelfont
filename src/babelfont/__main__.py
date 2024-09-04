@@ -59,6 +59,8 @@ def main():
         logger.info("Reading %s", args.input)
         font = convertor_in.load(input_job, filters=False)
     except Exception as e:
+        if args.log_level == "DEBUG":
+            raise e
         logger.error("Couldn't read %s: %s", args.input, e)
         sys.exit(1)
 
@@ -84,6 +86,9 @@ def main():
         convertor_out.save(font, output_job)
     except Exception as e:
         logger.error("Couldn't write %s: %s", args.output, e)
+        if args.log_level == "DEBUG":
+            raise e
+
         sys.exit(1)
 
     sys.exit(0)
