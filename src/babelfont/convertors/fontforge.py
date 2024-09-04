@@ -140,7 +140,10 @@ class FontForgeSFDIR(BaseConvertor):
         elif len(version) == 1:
             self.font.version = (version[0], 0)
         else:
-            self.font.version = (version[0], version[1] * 1000 + version[2])
+            version2 = version[1] * 100 + version[2]
+            while version2 > 999:
+                version2 /= 10
+            self.font.version = (version[0], version2)
 
     def _handle_Weight(self, value):
         self.font.names.typographicSubfamily.set_default(value)
