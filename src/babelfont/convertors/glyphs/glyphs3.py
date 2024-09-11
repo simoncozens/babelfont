@@ -722,6 +722,13 @@ class GlyphsThree(BaseConvertor):
                     "values": glyphs_i18ndict(self.font.names.designerURL),
                 }
             )
+        if self.font.custom_opentype_values.get(("OS/2", "achVendID")):
+            props.append(
+                {
+                    "key": "vendorID",
+                    "value": self.font.custom_opentype_values[("OS/2", "achVendID")],
+                }
+            )
         if not props:
             del out["properties"]
 
