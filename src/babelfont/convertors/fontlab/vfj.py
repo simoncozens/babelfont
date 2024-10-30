@@ -121,6 +121,10 @@ class FontlabVFJ(BaseConvertor):
                         _=shape["component"],
                     )
                 )
+            elif "elementData" not in shape or not isinstance(
+                shape["elementData"], dict
+            ):
+                self.logger.warning("Ack, I don't support elements in %s", shape)
             else:
                 for flcontour in shape["elementData"].get("contours", []):
                     contour = Shape(nodes=[])
@@ -139,7 +143,7 @@ class FontlabVFJ(BaseConvertor):
         guides = []
         for guide in flguides:
             if "horizontal" in guide:
-                y = guide["position"]
+                y = guide.get("position", 0)
                 x = 0
                 angle = 0
             elif "vertical" in guide:
@@ -147,8 +151,10 @@ class FontlabVFJ(BaseConvertor):
                 y = 0
                 angle = 90
             else:
-                x, y = [float(v) for v in guide["center"].split(" ")]
-                vector_x, vector_y = [float(v) for v in guide["vector"].split(" ")]
+                x, y = [float(v) for v in guide.get("center", "0 0").split(" ")]
+                vector_x, vector_y = [
+                    float(v) for v in guide.get("vector", "0 0").split(" ")
+                ]
                 angle = math.degrees(math.atan2(vector_y - y, vector_x - x))
             guides.append(Guide(pos=(x, y, angle)))
         return guides
