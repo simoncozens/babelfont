@@ -41,11 +41,15 @@ def _renameGlyphs(font: Font, value: List[str]):
     logger.info(f"Renaming glyphs")
     for mapping in value:
         oldname, newname = mapping.split("=", 1)
-        if newname in font.glyphs:
-            # Save any unicode mappings
-            font.glyphs[oldname].codepoints = font.glyphs[newname].codepoints
-        font.glyphs[oldname].name = newname
-    font.glyphs = GlyphList({glyph.name: glyph for glyph in font.glyphs})
+        if newname in font.glyphs and oldname in font.glyphs:
+            # Swap any unicode mappings
+            (font.glyphs[oldname].codepoints, font.glyphs[newname].codepoints) = (
+                font.glyphs[newname].codepoints,
+                font.glyphs[oldname].codepoints,
+            )
+            font.glyphs[newname].name = oldname
+            font.glyphs[oldname].name = newname
+            font.glyphs = GlyphList({glyph.name: glyph for glyph in font.glyphs})
 
 
 CUSTOM_PARAMETER_APPLIER = {
