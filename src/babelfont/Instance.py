@@ -14,6 +14,10 @@ class _InstanceFields:
         default_factory=I18NDictionary,
         metadata={"description": "The style name of this instance."},
     )
+    familyName: I18NDictionary = field(
+        default_factory=I18NDictionary,
+        metadata={"description": "The family name of this instance."},
+    )
 
 
 @dataclass
@@ -28,6 +32,8 @@ class Instance(BaseObject, _InstanceFields):
             self.name = I18NDictionary.with_default(self.name)
         if isinstance(self.styleName, str):
             self.styleName = I18NDictionary.with_default(self.styleName)
+        if isinstance(self.familyName, str):
+            self.familyName = I18NDictionary.with_default(self.familyName)
         super().__post_init__()
 
     @property

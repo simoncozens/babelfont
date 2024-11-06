@@ -2,6 +2,7 @@ from typing import Tuple
 
 from .background import decompose_backgrounds, zero_background_width
 from .cu2qu import cubic_to_quadratic
+from .customParameters import apply_custom_parameters
 from .decomposeMixed import decompose_mixed_glyphs
 from .dropUnexported import drop_unexported_glyphs
 from .fillOpentype import fill_opentype_values
@@ -23,6 +24,7 @@ FILTERS = {
     "fillOpentypeValues": fill_opentype_values,
     "intermediateLayers": promote_intermediate_layers,
     "glyphsVariableFeatures": translate_glyphs3_fea,
+    "applyCustomParameters": apply_custom_parameters,
 }
 
 

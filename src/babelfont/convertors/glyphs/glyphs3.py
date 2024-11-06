@@ -309,6 +309,12 @@ class GlyphsThree(BaseConvertor):
             styleName=name,
             location=instance_location,
         )
+        props = ginstance.pop("properties", [])
+        for prop in props:
+            if prop["key"] == "familyNames":
+                for value in prop["values"]:
+                    i.familyName[value["language"]] = value["value"]
+
         _stash(i, ginstance)
         return i
 

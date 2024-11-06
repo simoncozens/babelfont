@@ -27,7 +27,7 @@ def main():
         "-f",
         help="Filter to apply",
         action="append",
-        choices=FILTERS.keys(),
+        # choices=FILTERS.keys(),
     )
     parser.add_argument(
         "--disable-filter",
