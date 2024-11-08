@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from functools import cached_property
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from fontTools.ufoLib.pointPen import (
     PointToSegmentPen,
@@ -82,7 +82,7 @@ class Layer(BaseObject, _LayerFields):
             if layer.id == self.background:
                 return layer
 
-    def _nested_component_dict(self) -> dict[str, "Layer"]:
+    def _nested_component_dict(self) -> Dict[str, "Layer"]:
         result = {}
         todo = [x.ref for x in self.components]
         while todo:
