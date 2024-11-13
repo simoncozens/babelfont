@@ -103,5 +103,10 @@ def _rename_fea(parsed: ast.Block, mapping, wrap=None):
 
 def _drop_wrapper(parsed: ast.FeatureFile):
     block = ast.Block()
-    block.statements = parsed.statements[0].statements
+    block.statements = []
+    for statement in parsed.statements:
+        if isinstance(statement, ast.FeatureBlock):
+            block.statements.extend(statement.statements)
+        else:
+            block.statements.append(statement)
     return block
