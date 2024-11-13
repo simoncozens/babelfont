@@ -1,5 +1,7 @@
 from dataclasses import dataclass, field
+
 from .BaseObject import BaseObject, I18NDictionary
+from .Names import Names
 
 
 @dataclass
@@ -10,13 +12,15 @@ class _InstanceFields:
             "description": """A dictionary mapping axis tags to coordinates in order to locate this instance in the design space."""
         }
     )
-    styleName: I18NDictionary = field(
-        default_factory=I18NDictionary,
-        metadata={"description": "The style name of this instance."},
+    variable: bool = field(
+        default=False,
+        metadata={
+            "description": """A boolean indicating whether this instance is variable or static."""
+        },
     )
-    familyName: I18NDictionary = field(
-        default_factory=I18NDictionary,
-        metadata={"description": "The family name of this instance."},
+    customNames: Names = field(
+        default_factory=Names,
+        metadata={"description": """A dictionary of custom names for this instance."""},
     )
 
 
@@ -30,16 +34,14 @@ class Instance(BaseObject, _InstanceFields):
         # If they smacked my name with a bare string, replace with I18NDict
         if isinstance(self.name, str):
             self.name = I18NDictionary.with_default(self.name)
-        if isinstance(self.styleName, str):
-            self.styleName = I18NDictionary.with_default(self.styleName)
-        if isinstance(self.familyName, str):
-            self.familyName = I18NDictionary.with_default(self.familyName)
         super().__post_init__()
 
     @property
     def localisedStyleName(self):
-        return self.styleName.as_fonttools_dict or self.name.as_fonttools_dict
+        return (
+            self.customNames.styleName.as_fonttools_dict or self.name.as_fonttools_dict
+        )
 
     @property
     def postScriptFontName(self):
-        return None
+        return self.customNames.postscriptName.as_fonttools_dict

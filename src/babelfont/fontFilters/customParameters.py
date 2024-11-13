@@ -67,7 +67,9 @@ def apply_custom_parameters(font: Font, args=None):
         for instance in font.instances:
             short_instance_name = instance.name.get_default()
             long_instance_name = (
-                instance.familyName.get_default() + " " + short_instance_name
+                instance.customNames.familyName.get_default()
+                + " "
+                + short_instance_name
             )
             if args["instance"] in (short_instance_name, long_instance_name):
                 root = instance._formatspecific.get("com.glyphsapp", {})

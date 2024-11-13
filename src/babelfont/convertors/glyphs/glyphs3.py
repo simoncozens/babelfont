@@ -26,6 +26,7 @@ from babelfont.convertors.glyphs.utils import (
     _custom_parameter,
     _g,
     _glyphs_metrics_to_ours,
+    _glyphs_instance_names_to_ours,
     _metrics_dict_to_name,
     _metrics_name_to_dict,
     _moveformatspecific,
@@ -37,6 +38,7 @@ from babelfont.convertors.glyphs.utils import (
     custom_parameter_metrics,
 )
 from babelfont.Master import CORE_METRICS
+from babelfont.BaseObject import I18NDictionary
 
 
 class GlyphsThree(BaseConvertor):
@@ -289,8 +291,7 @@ class GlyphsThree(BaseConvertor):
             return self.load_component(shape)
 
     def load_instance(self, ginstance):
-        if ginstance.get("type") == "variable":
-            return
+        variable = ginstance.get("type") == "variable"
         if "axesValues" in ginstance:
             location = ginstance.pop("axesValues")
             instance_location = {k.tag: v for k, v in zip(self.font.axes, location)}
@@ -301,20 +302,25 @@ class GlyphsThree(BaseConvertor):
                 master_loc = self.font.master(mId).location
                 for k in self.font.axes:
                     instance_location[k.tag] += master_loc[k.tag] * factor
+        elif variable:
+            instance_location = None
         else:
             raise ValueError("Need to Synthesize location")
         name = ginstance.pop("name")
         i = Instance(
             name=name,
-            styleName=name,
+            variable=variable,
             location=instance_location,
         )
+        # The instance name is also the style name, unless a custom prop is set
+        i.customNames.styleName.set_default(name)
         props = ginstance.pop("properties", [])
-        for prop in props:
-            if prop["key"] == "familyNames":
-                for value in prop["values"]:
-                    i.familyName[value["language"]] = value["value"]
-
+        props_dict = {p["key"]: p["values"] for p in props}
+        for glyphs_prop, our_name in _glyphs_instance_names_to_ours.items():
+            if glyphs_prop in props_dict:
+                for value in props_dict[glyphs_prop]:
+                    name_entry: I18NDictionary = getattr(i.customNames, our_name)
+                    name_entry[value["language"]] = value["value"]
         _stash(i, ginstance)
         return i
 
@@ -691,7 +697,22 @@ class GlyphsThree(BaseConvertor):
     def save_instance(self, instance):
         ginstance = _moveformatspecific(instance)
         ginstance["name"] = instance.name.get_default()
-        ginstance["axesValues"] = [instance.location[ax.tag] for ax in self.font.axes]
+        if instance.variable:
+            ginstance["type"] = "variable"
+        else:
+            ginstance["axesValues"] = [
+                instance.location[ax.tag] for ax in self.font.axes
+            ]
+        for glyphs, ours in _glyphs_instance_names_to_ours.items():
+            if getattr(instance.customNames, ours).get_default():
+                if "properties" not in ginstance:
+                    ginstance["properties"] = []
+                ginstance["properties"].append(
+                    {
+                        "key": glyphs,
+                        "values": glyphs_i18ndict(getattr(instance.customNames, ours)),
+                    }
+                )
 
         return ginstance
 

@@ -54,6 +54,14 @@ def _copyattrs(src, dst, attrs, convertor=lambda x: x):
             dst[a] = convertor(v)
 
 
+_glyphs_instance_names_to_ours = {
+    "familyNames": "familyName",
+    "preferredFamilyNames": "typographicFamily",
+    "preferredSubfamilyNames": "typographicSubfamily",
+    "styleMapFamilyNames": "styleMapFamilyName",
+    "styleMapStyleNames": "styleMapStyleName",
+    "styleNames": "styleName",
+}
 # These are things which are core metrics both for us and glyphs; other
 # metrics which we believe to be metrics are stored by Glyphs as custom
 # parameters

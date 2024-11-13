@@ -293,7 +293,8 @@ class Designspace(BaseConvertor):
         "trademark": "trademark",
         "styleName": "styleName",
         "styleMapStyleName": "styleMapStyleName",
-        "preferredSubfamilyName": "openTypeNamePreferredSubfamilyName",
+        "typographicSubfamily": "openTypeNamePreferredSubfamilyName",
+        "typographicFamily": "openTypeNamePreferredFamilyName",
     }
 
     def _load_metadata(self, ufo):
@@ -395,6 +396,8 @@ class Designspace(BaseConvertor):
 
     def save_instances(self):
         for instance in self.font.instances:
+            if instance.variable:
+                continue  # Sort out later
             instanceDescriptor = designspaceLib.InstanceDescriptor()
             instanceDescriptor.name = (
                 self.font.names.familyName.get_default()
@@ -423,6 +426,15 @@ class Designspace(BaseConvertor):
             else:
                 instanceDescriptor.location = {"Weight": 400}
             self.ds.addInstance(instanceDescriptor)
+        for instance in self.font.instances:
+            if not instance.variable:
+                continue
+            vfDescriptor = designspaceLib.VariableFontDescriptor(
+                name=self.font.names.familyName.get_default()
+                + " "
+                + instance.name.get_default()
+            )
+            self.ds.addVariableFont(vfDescriptor)
 
     def save_master_to_ufo(self, master: Master, filename, is_default=False):
         ufo = ufoLib2.Font()
