@@ -15,17 +15,17 @@ def _replaceFeature(font: Font, value: str):
     ]
 
 
-def _removeFeatures(font: Font, value: List[str]):
-    logger.info(f"Removing features '{', '.join(value)}'")
+def _removeFeatures(font: Font, to_remove: List[str]):
+    logger.info(f"Removing features '{', '.join(to_remove)}'")
     font.features.features = [
-        (key, value) for key, value in font.features.features if key not in value
+        (key, value) for key, value in font.features.features if key not in to_remove
     ]
 
 
 def _removeGlyphs(font: Font, value: List[str]):
-    logger.info(f"Removing glyphs")
-    # for glyph in value:
-    #     font.glyphs.pop(glyph)
+    logger.info("Removing glyphs")
+    for glyph in value:
+        font.glyphs[glyph].exported = False
 
 
 def _decomposeGlyphs(font: Font, value: List[str]):
