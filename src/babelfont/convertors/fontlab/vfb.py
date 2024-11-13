@@ -1,13 +1,12 @@
 from collections import defaultdict
 import re
-import json
 import uuid
 
 from fontTools.misc.transform import Transform
 
-from babelfont import Anchor, Axis, Glyph, Layer, Master, Node, Shape, Guide
+from babelfont import Anchor, Axis, Glyph, Layer, Master
 from babelfont.Glyph import GlyphList
-from babelfont.BaseObject import Color, I18NDictionary
+from babelfont.BaseObject import I18NDictionary
 from babelfont.convertors import BaseConvertor
 
 tags = {

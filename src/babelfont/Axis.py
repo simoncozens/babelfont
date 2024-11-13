@@ -1,4 +1,4 @@
-from typing import List, Optional, Dict, Tuple
+from typing import List, Optional, Tuple
 from .BaseObject import BaseObject, I18NDictionary, Number
 from dataclasses import dataclass, field
 import uuid

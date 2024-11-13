@@ -29,7 +29,7 @@ def _removeGlyphs(font: Font, value: List[str]):
 
 
 def _decomposeGlyphs(font: Font, value: List[str]):
-    logger.info(f"Decomposing glyphs")
+    logger.info("Decomposing glyphs")
     for glyph in font.glyphs:
         if glyph.name in value:
             # logger.info(f"Decomposing " + glyph.name)
@@ -38,7 +38,7 @@ def _decomposeGlyphs(font: Font, value: List[str]):
 
 
 def _renameGlyphs(font: Font, value: List[str]):
-    logger.info(f"Renaming glyphs")
+    logger.info("Renaming glyphs")
     for mapping in value:
         oldname, newname = mapping.split("=", 1)
         if newname in font.glyphs and oldname in font.glyphs:

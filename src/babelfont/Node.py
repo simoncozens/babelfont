@@ -1,5 +1,8 @@
 from dataclasses import dataclass
 
+TO_PEN_TYPE = {"o": None, "c": "curve", "l": "line", "q": "qcurve"}
+FROM_PEN_TYPE = {v: k for k, v in TO_PEN_TYPE.items()}
+
 
 @dataclass
 class Node:
@@ -8,10 +11,7 @@ class Node:
     type: str = "c"
     userdata: str = None
 
-    _to_pen_type = {"o": None, "c": "curve", "l": "line", "q": "qcurve"}
-    _from_pen_type = {v: k for k, v in _to_pen_type.items()}
-
-    def write(self, stream, indent):
+    def write(self, stream, _indent):
         if not self.userdata:
             stream.write(('[%i,%i,"%s"]' % (self.x, self.y, self.type)).encode())
         else:
@@ -27,4 +27,4 @@ class Node:
 
     @property
     def pen_type(self):
-        return self._to_pen_type[self.type[0]]
+        return TO_PEN_TYPE[self.type[0]]

@@ -7,7 +7,7 @@ from fontFeatures import Attachment
 from fontFeatures.ttLib import unparse
 from fontTools.fontBuilder import FontBuilder
 from fontTools.misc.fixedTools import otRound
-from fontTools.misc.timeTools import epoch_diff, timestampSinceEpoch
+from fontTools.misc.timeTools import epoch_diff
 from fontTools.pens.recordingPen import RecordingPen
 from fontTools.pens.ttGlyphPen import TTGlyphPen
 from fontTools.ttLib import TTFont

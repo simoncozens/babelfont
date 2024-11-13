@@ -100,7 +100,7 @@ class FontForgeSFDIR(BaseConvertor):
             if m := re.match(r"Encoding: (\d+) (-?\d+) (\d+)", line):
                 gid = int(m.group(3))
                 if not glyphname:
-                    raise ValueError(f"Bad file - no StartChar")
+                    raise ValueError("Bad file - no StartChar")
                 self.glyph_order[gid] = glyphname
 
     def _load_line(self, mode):

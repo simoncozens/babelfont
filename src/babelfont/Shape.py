@@ -1,18 +1,21 @@
 import math
 from dataclasses import dataclass
-from typing import Optional
+from typing import List, Optional, TYPE_CHECKING
 
 from fontTools.misc.transform import Transform
 
 from .BaseObject import BaseObject
 from .Node import Node
 
+if TYPE_CHECKING:
+    from .Layer import Layer
+
 
 @dataclass
 class _ShapeFields:
     ref: str = None
     transform: Transform = None
-    nodes: [Node] = None
+    nodes: List[Node] = None
     closed: bool = True
     direction: int = 1
 

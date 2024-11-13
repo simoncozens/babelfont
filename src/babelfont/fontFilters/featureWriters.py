@@ -2,7 +2,7 @@
 import logging
 from fontTools.feaLib.builder import addOpenTypeFeaturesFromString
 from fontTools.ttLib import newTable
-from fontTools.ttLib.tables import otBase, otTables
+from fontTools.ttLib.tables import otTables
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +25,7 @@ CATMAP = {"base": 1, "ligature": 2, "mark": 3, "component": 4}
 
 
 def add_gdef_classdef(font, ttFont):
-    if not "GDEF" in ttFont:
+    if "GDEF" not in ttFont:
         ttFont["GDEF"] = newTable("GDEF")
         gdef = otTables.GDEF()
         gdef.Version = 0x00010000

@@ -208,8 +208,10 @@ class Font(_FontFields, BaseObject):
                 thiskern = m.kerning.get((left, right), 0)
                 if (left, right) not in m.kerning:
                     log.debug(
-                        "Master %s did not define a kern pair for (%s, %s), using 0"
-                        % (m.name.get_default(), left, right)
+                        "Master %s did not define a kern pair for (%s, %s), using 0",
+                        m.name.get_default(),
+                        left,
+                        right,
                     )
                 kern.add_value(m.location, thiskern)
             kerndict[(left, right)] = kern
@@ -225,8 +227,10 @@ class Font(_FontFields, BaseObject):
                 if a[0] == "_":
                     if has_mark:
                         log.warning(
-                            "Glyph %s tried to be in two mark classes (%s, %s). The first one will win."
-                            % (g, has_mark, a)
+                            "Glyph %s tried to be in two mark classes (%s, %s). The first one will win.",
+                            g,
+                            has_mark,
+                            a,
                         )
                         continue
                     has_mark = a
@@ -246,12 +250,11 @@ class Font(_FontFields, BaseObject):
         x_vs.axes = self.axes
         y_vs = VariableScalar()
         y_vs.axes = self.axes
-        for ix, m in enumerate(self.masters):
+        for m in self.masters:
             layer = m.get_glyph_layer(glyph)
             if anchorname not in layer.anchors_dict:
                 raise IncompatibleMastersError(
-                    "Anchor %s not found on glyph %s in master %s"
-                    % (anchorname, glyph, m)
+                    f"Anchor {anchorname} not found on glyph {glyph} in master {m}"
                 )
             anchor = m.get_glyph_layer(glyph).anchors_dict[anchorname]
             x_vs.add_value(self.map_forward(m.location), anchor.x)

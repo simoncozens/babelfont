@@ -1,21 +1,25 @@
+import uuid
 from dataclasses import dataclass, field
 from functools import cached_property
-from typing import Dict, List, Optional
+from typing import TYPE_CHECKING, Dict, List, Optional
 
-from fontTools.ufoLib.pointPen import (
-    PointToSegmentPen,
-    SegmentToPointPen,
-    AbstractPointPen,
-)
 from fontTools.pens.boundsPen import BoundsPen
 from fontTools.pens.recordingPen import DecomposingRecordingPen
+from fontTools.ufoLib.pointPen import (
+    AbstractPointPen,
+    PointToSegmentPen,
+    SegmentToPointPen,
+)
 
+from .Anchor import Anchor
 from .BaseObject import BaseObject, Color
 from .Guide import Guide
-from .Anchor import Anchor
-from .Node import Node
+from .Node import Node, FROM_PEN_TYPE
 from .Shape import Shape
-import uuid
+
+if TYPE_CHECKING:
+    from .Font import Font
+    from .Glyph import Glyph
 
 
 @dataclass
@@ -83,7 +87,7 @@ class Layer(BaseObject, _LayerFields):
                 return layer
 
     def _nested_component_dict(self) -> Dict[str, "Layer"]:
-        result = {}
+        result: Dict[str, "Layer"] = {}
         todo = [x.ref for x in self.components]
         while todo:
             current = todo.pop()
@@ -102,6 +106,7 @@ class Layer(BaseObject, _LayerFields):
                     if master_layer:
                         master = master_layer._font.master(master_layer._master)
                         result[current] = master.get_glyph_layer(current)
+                        # pylint: disable=protected-access
                         if result[current] and result[current]._background_layer():
                             result[current] = result[current]._background_layer()
 
@@ -190,7 +195,7 @@ class LayerPen(AbstractPointPen):
     ):
         if segmentType == "move":
             return
-        ourtype = Node._from_pen_type[segmentType]
+        ourtype = FROM_PEN_TYPE[segmentType]
         if smooth:
             ourtype = ourtype + "s"
         self.curPath.append(Node(pt[0], pt[1], ourtype))

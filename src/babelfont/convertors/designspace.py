@@ -22,6 +22,7 @@ from babelfont import (
     Axis,
     I18NDictionary,
 )
+from babelfont.Node import FROM_PEN_TYPE
 from babelfont.convertors import BaseConvertor
 
 log = logging.getLogger(__name__)
@@ -260,7 +261,7 @@ class Designspace(BaseConvertor):
             segtype = p.segmentType
             if p.segmentType == "move":
                 segtype = "line"
-            ourtype = Node._from_pen_type[segtype]
+            ourtype = FROM_PEN_TYPE[segtype]
             if p.smooth:
                 ourtype = ourtype + "s"
             shape.nodes.append(Node(p.x, p.y, ourtype))
