@@ -3,6 +3,7 @@ from typing import List
 
 from babelfont.Font import Font
 from babelfont.Glyph import GlyphList
+from .anchorPropagation import _propagate_anchors
 
 logger = logging.getLogger(__name__)
 
@@ -30,10 +31,12 @@ def _removeGlyphs(font: Font, value: List[str]):
 
 def _decomposeGlyphs(font: Font, value: List[str]):
     logger.info("Decomposing glyphs")
+    processed = set()
     for glyph in font.glyphs:
         if glyph.name in value:
             # logger.info(f"Decomposing " + glyph.name)
             for layer in glyph.layers:
+                _propagate_anchors(layer, glyph.name, processed)
                 layer.decompose()
 
 
