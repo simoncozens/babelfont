@@ -259,11 +259,16 @@ class Glyphs2(GlyphsThree):
         ]
         l.shapes = []
         for shape in layer.get("shapes", []):
-            l.shapes.append(self._load_shape(shape))
+            babelfont_shape = self.load_shape(shape)
+            if babelfont_shape.is_component:
+                babelfont_shape._layer = layer
+            layer.shapes.append(babelfont_shape)
         for shape in layer.get("paths", []):
             l.shapes.append(self._load_path(shape))
         for shape in layer.get("components", []):
-            l.shapes.append(self._load_component(shape))
+            comp = self.load_component(shape)
+            comp._layer = l
+            l.shapes.append(comp)
         for anchor in layer.get("anchors", []):
             l.anchors.append(self._load_anchor(anchor))
 

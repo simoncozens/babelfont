@@ -223,11 +223,16 @@ class GlyphsThree(BaseConvertor):
         ]
         layer.shapes = []
         for shape in gslayer.pop("shapes", []):
-            layer.shapes.append(self.load_shape(shape))
+            babelfont_shape = self.load_shape(shape)
+            if babelfont_shape.is_component:
+                babelfont_shape._layer = layer
+            layer.shapes.append(babelfont_shape)
         for shape in gslayer.pop("paths", []):
             layer.shapes.append(self.load_path(shape))
         for shape in gslayer.pop("components", []):
-            layer.shapes.append(self.load_component(shape))
+            comp = self.load_component(shape)
+            comp._layer = layer
+            layer.shapes.append(comp)
         for anchor in gslayer.pop("anchors", []):
             layer.anchors.append(self.load_anchor(anchor))
 
