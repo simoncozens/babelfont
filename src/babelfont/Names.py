@@ -74,3 +74,52 @@ class Names(BaseObject):
                 continue
             rv[ft_names.get(k, k)] = v.default_or_dict()
         return rv
+
+    def __getitem__(self, key):
+        try:
+            key = int(key)
+        except ValueError as exc:
+            raise ValueError("Name ID must be an integer") from exc
+        if key == 0:
+            return self.copyright
+        if key == 1:
+            return self.styleMapFamilyName or self.familyName
+        if key == 2:
+            return self.styleMapStyleName
+        if key == 3:
+            return self.uniqueID
+        if key == 4:
+            return self.fullName
+        if key == 5:
+            return self.version
+        if key == 6:
+            return self.postscriptName
+        if key == 7:
+            return self.trademark
+        if key == 8:
+            return self.manufacturer
+        if key == 9:
+            return self.designer
+        if key == 10:
+            return self.description
+        if key == 11:
+            return self.manufacturerURL
+        if key == 12:
+            return self.designerURL
+        if key == 13:
+            return self.license
+        if key == 14:
+            return self.licenseURL
+        if key == 16:
+            return self.typographicFamily
+        if key == 17:
+            return self.typographicSubfamily or self.styleName
+        if key == 18:
+            return self.compatibleFullName
+        if key == 19:
+            return self.sampleText
+        if key == 21:
+            return self.WWSFamilyName
+        if key == 22:
+            return self.WWSSubfamilyName
+        return None
