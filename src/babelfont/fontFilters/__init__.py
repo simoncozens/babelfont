@@ -1,5 +1,6 @@
 from typing import Tuple
 
+from .anchorPropagation import propagate_anchors
 from .background import decompose_backgrounds, zero_background_width
 from .cu2qu import cubic_to_quadratic
 from .customParameters import apply_custom_parameters
@@ -25,6 +26,7 @@ FILTERS = {
     "intermediateLayers": promote_intermediate_layers,
     "glyphsVariableFeatures": translate_glyphs3_fea,
     "applyCustomParameters": apply_custom_parameters,
+    "propagateAnchors": propagate_anchors,
 }
 
 
