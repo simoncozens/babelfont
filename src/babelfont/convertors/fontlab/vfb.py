@@ -97,7 +97,7 @@ class FontlabVFB(BaseConvertor):
             if data is None:
                 continue
 
-            if name in ignore or re.match("^\d+$", name):
+            if name in ignore or re.match(r"^\d+$", name):
                 continue
             if name in store_in_scratch:
                 scratch[name].append(data)
