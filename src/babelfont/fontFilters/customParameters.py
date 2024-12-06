@@ -53,6 +53,23 @@ def _renameGlyphs(font: Font, value: List[str]):
             font.glyphs[newname].name = oldname
             font.glyphs[oldname].name = newname
             font.glyphs = GlyphList({glyph.name: glyph for glyph in font.glyphs})
+        swap = {
+            newname: oldname,
+            oldname: newname,
+        }
+        for master in font.masters:
+            master.kerning = {
+                (swap.get(left, left), swap.get(right, right)): kern
+                for (left, right), kern in master.kerning.items()
+            }
+        for group, members in font.first_kern_groups.items():
+            font.first_kern_groups[group] = [
+                swap.get(member, member) for member in members
+            ]
+        for group, members in font.second_kern_groups.items():
+            font.second_kern_groups[group] = [
+                swap.get(member, member) for member in members
+            ]
 
 
 CUSTOM_PARAMETER_APPLIER = {
