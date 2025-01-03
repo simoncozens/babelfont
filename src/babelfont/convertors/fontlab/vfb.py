@@ -17,20 +17,20 @@ tags = {
 }
 
 ignore = [
-    "Encoding Mac",
     "Encoding",
+    "Encoding Default",
     "Master Count",
-    "Default Weight Vector",
-    "Type 1 Unique ID",
-    "Menu Name",
-    "FOND Name",
-    "weight_name",  # Do something with this?
-    "width_name",  # Do something with this?
-    "weight",  # Do something if single master
+    "weight_vector",
+    "unique_id",
+    "menu_name",
+    "apple_name",
+    "weight",  # Do something with this?
+    "width",  # Do something with this?
+    "weight_code",  # Do something if single master
     "trademark",
-    "Monospaced",
-    "Slant Angle",
-    "Background Bitmap",
+    "is_fixed_pitch",
+    "slant_angle",
+    "image",
     "Glyph Origin",
     "Glyph Anchors Supplemental",
     "Links",
@@ -40,23 +40,23 @@ store_in_scratch = [
     "Axis Mappings Count",
 ]
 names = {
-    "description": "description",
+    "notice": "description",
     "License": "license",
     "License URL": "licenseURL",
     "designer": "designer",
-    "designerURL": "designerURL",
-    "manufacturer": "manufacturer",
-    "manufacturerURL": "manufacturerURL",
+    "designer_url": "designerURL",
+    "source": "manufacturer",
+    "vendor_url": "manufacturerURL",
     "copyright": "copyright",
-    "sgn": "familyName",
-    "tfn": "familyName",
-    "versionFull": "version",
+    "pref_family_name": "familyName",
+    "family_name": "familyName",
+    "version": "version",
 }
 
 # hhea_line_gap
 # hhea_ascender
 # hhea_descender
-# openTypeFeatures
+# features
 # OpenType Class (names -> glyphs)
 
 
@@ -103,7 +103,7 @@ class FontlabVFB(BaseConvertor):
                 scratch[name].append(data)
                 continue
 
-            if name == "psn":
+            if name == "font_name":
                 # Postscript name, hey we don't have that.
                 pass
             elif name in names:
@@ -137,15 +137,15 @@ class FontlabVFB(BaseConvertor):
                 master.location = {}
                 for axis, value in zip(self.font.axes, location):
                     master.location[axis.tag] = value
-            elif name == "ffn":  # Full family name?
+            elif name == "full_name":
                 pass
             elif name == "upm":
                 self.font.upm = int(data)
-            elif name == "versionMajor":
+            elif name == "version_major":
                 self.font.version = (int(data), self.font.version[1])
-            elif name == "versionMinor":
+            elif name == "version_minor":
                 self.font.version = (self.font.version[0], int(data))
-            elif name == "vendorID":
+            elif name == "vendor":
                 self.font.custom_opentype_values[("OS/2", "achVendID")] = data
             elif name == "hhea_line_gap":
                 self.metrics["hheaLineGap"] = int(data)
@@ -164,9 +164,9 @@ class FontlabVFB(BaseConvertor):
                 pass
             elif name == "TrueType Info":
                 self._handle_truetype_info(data)
-            elif name == "Glyph Unicode":
+            elif name == "unicodes":
                 self.current_glyph.codepoints = data
-            elif name == "Italic Angle":
+            elif name == "italic_angle":
                 # Put in master
                 pass
             else:
