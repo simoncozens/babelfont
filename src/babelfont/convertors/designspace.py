@@ -561,7 +561,7 @@ class Designspace(BaseConvertor):
         for node in shape.nodes:
             pen.addPoint(
                 (node.x, node.y),
-                segmentType=Node._to_pen_type[node.type[0]],
+                segmentType=node.pen_type,
                 smooth=node.is_smooth,
             )
         pen.endPath()
