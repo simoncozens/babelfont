@@ -18,7 +18,7 @@ authors = [
 readme = "README.md"
 
 dependencies = [
-    "orjson >= 3.5.1",
+    "orjson >=3.10.18",
     "fonttools >=4.53.1",
     "ufoLib2 >=0.16.0",
     "openstep-plist >=0.2.2",
