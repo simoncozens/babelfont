@@ -22,7 +22,7 @@ dependencies = [
     "fonttools >=4.53.1",
     "ufoLib2 >=0.16.0",
     "openstep-plist >=0.2.2",
-    "ufomerge >= 1.8.0", # Feature code subsetting used in dropUnexported filter
+    "ufomerge >=1.9.3", # Feature code subsetting used in dropUnexported filter
 ]
 
 [project.optional-dependencies]
