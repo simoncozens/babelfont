@@ -19,6 +19,7 @@ Here are the formats which are currently supported:
 | Fontlab VFB     | partial |       |
 | TTF             | partial | *     |
 | OTF             | partial |       |
+| Glyphr Studio 2 | partial |       |
 | Fontforge SFD   | partial | *     |
 | Fontforge SFDir | partial | *     |
 | Babelfont       | *       | *     |
