@@ -166,8 +166,8 @@ class FontlabVFB(BaseConvertor):
                 pass
             elif eid == F.ttinfo:
                 self._handle_truetype_info(data)
-            elif eid == G.unicodes:
-                self.current_glyph.codepoints = data
+            elif eid in (G.unicodes, G.UnicodesNonBMP):
+                self.current_glyph.codepoints.extend(data)
             elif eid == F.italic_angle:
                 # Put in master
                 pass
