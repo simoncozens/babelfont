@@ -70,6 +70,7 @@ class FontlabVFB(BaseConvertor):
 
     def _load(self):
         try:
+            from vfbLib.enum import F, G, M, T
             from vfbLib.vfb.vfb import Vfb
         except ImportError:
             raise ImportError(
@@ -85,15 +86,16 @@ class FontlabVFB(BaseConvertor):
         self.metrics = {}
         # Quickly set up GID->name mapping
         for e in self.vfb.entries:
-            if e.key == "Glyph":
+            if e.id == G.Glyph:
                 self.glyph_names.append(e.decompiled["name"])
 
         # Now parse the whole thing
         for e in self.vfb.entries:
             name = e.key
+            eid = e.id
             if name is None:
                 raise TypeError
-            data = e.decompiled
+            data = e.data
             if data is None:
                 continue
 
@@ -103,7 +105,7 @@ class FontlabVFB(BaseConvertor):
                 scratch[name].append(data)
                 continue
 
-            if name == "font_name":
+            if eid == F.font_name:
                 # Postscript name, hey we don't have that.
                 pass
             elif name in names:
@@ -112,10 +114,10 @@ class FontlabVFB(BaseConvertor):
                         self.font.names, names[name], I18NDictionary.with_default(data)
                     )
             # Axes
-            elif name == "Axis Name":
+            elif eid == F.AxisName:
                 axis = Axis(name, tags.get(name, name.upper()[:4]))  # Fix up tag!
                 self.font.axes.append(axis)
-            elif name == "Axis Mappings":
+            elif eid == F.AxisMappings:
                 counts = scratch["Axis Mappings Count"][0]
                 for axis, count in zip(self.font.axes, counts):
                     if count > 0:
@@ -126,47 +128,47 @@ class FontlabVFB(BaseConvertor):
                         axis.default = axis.minimum
                         axis.max = max(user_coords, default=1000)
                     data = data[10:]
-            elif name == "Master Name":
+            elif eid == M.MasterName:
                 self.current_master = Master(name=data, id=uuid.uuid1())
                 if self.metrics:
                     self.current_master.metrics = self.metrics
                 self.font.masters.append(self.current_master)
-            elif name == "Master Location":
+            elif eid == M.MasterLocation:
                 _, location = data
                 master = self.current_master
                 master.location = {}
                 for axis, value in zip(self.font.axes, location):
                     master.location[axis.tag] = value
-            elif name == "full_name":
+            elif eid == F.full_name:
                 pass
-            elif name == "upm":
+            elif eid == F.upm:
                 self.font.upm = int(data)
-            elif name == "version_major":
+            elif eid == F.version_major:
                 self.font.version = (int(data), self.font.version[1])
-            elif name == "version_minor":
+            elif eid == F.version_minor:
                 self.font.version = (self.font.version[0], int(data))
-            elif name == "vendor":
+            elif eid == F.vendor:
                 self.font.custom_opentype_values[("OS/2", "achVendID")] = data
-            elif name == "hhea_line_gap":
+            elif eid == T.hhea_line_gap:
                 self.metrics["hheaLineGap"] = int(data)
-            elif name == "hhea_ascender":
+            elif eid == T.hhea_ascender:
                 self.metrics["hheaAscender"] = int(data)
-            elif name == "hhea_descender":
+            elif eid == T.hhea_descender:
                 self.metrics["hheaDescender"] = int(data)
-            elif name == "Glyph":
+            elif eid == G.Glyph:
                 self.current_glyph = Glyph(name=data["name"])
                 self.font.glyphs.append(self.current_glyph)
                 self._load_glyph(data)
-            elif name == "Glyph GDEF Data":
+            elif eid == G.GDEFData:
                 for anchor in data.get("anchors", []):
                     self._load_anchor(anchor)
-            elif name == "Glyph Guide Properties":
+            elif eid == G.GuideProperties:
                 pass
-            elif name == "TrueType Info":
+            elif eid == F.ttinfo:
                 self._handle_truetype_info(data)
-            elif name == "unicodes":
+            elif eid == G.unicodes:
                 self.current_glyph.codepoints = data
-            elif name == "italic_angle":
+            elif eid == F.italic_angle:
                 # Put in master
                 pass
             else:
