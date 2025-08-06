@@ -115,7 +115,7 @@ class FontlabVFB(BaseConvertor):
                     )
             # Axes
             elif eid == F.AxisName:
-                axis = Axis(name, tags.get(name, name.upper()[:4]))  # Fix up tag!
+                axis = Axis(data, tags.get(data, data.upper()[:4]))  # Fix up tag!
                 self.font.axes.append(axis)
             elif eid == F.AxisMappings:
                 counts = scratch["Axis Mappings Count"][0]
