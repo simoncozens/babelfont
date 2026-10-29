@@ -81,7 +81,13 @@ class Convert:
         for loader, module_name, is_pkg in loaders:
             spec = loader.find_spec(module_name)
             _module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(_module)
+            try:
+                spec.loader.exec_module(_module)
+            except ImportError as e:
+                # Convertors needing an optional dependency which is not
+                # installed (e.g. fontFeatures, vfbLib) are skipped
+                logger.debug("Skipping convertor %s: %s", module_name, e)
+                continue
             classes = [
                 x[1]
                 for x in inspect.getmembers(_module, inspect.isclass)
