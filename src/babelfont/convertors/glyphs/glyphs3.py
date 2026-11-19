@@ -23,7 +23,6 @@ from babelfont import (
 from babelfont.convertors import BaseConvertor
 from babelfont.convertors.glyphs.utils import (
     _copyattrs,
-    _custom_parameter,
     _g,
     _glyphs_metrics_to_ours,
     _glyphs_instance_names_to_ours,
@@ -99,11 +98,6 @@ class GlyphsThree(BaseConvertor):
         self.interpret_metrics()
         self.interpret_axes()
         self.interpret_axis_mappings()
-        # Oops, we put the axes in designspace coordinates
-        for axis in self.font.axes:
-            axis.default = axis.designspace_to_userspace(axis.default)
-            axis.min = axis.designspace_to_userspace(axis.min)
-            axis.max = axis.designspace_to_userspace(axis.max)
 
         self.interpret_linked_kerning()
         assert self.font.default_master
@@ -327,6 +321,10 @@ class GlyphsThree(BaseConvertor):
                     name_entry: I18NDictionary = getattr(i.customNames, our_name)
                     name_entry[value["language"]] = value["value"]
         _stash(i, ginstance)
+        if "exports" in ginstance:
+            i._formatspecific.setdefault("com.glyphsapp", {})["exports"] = ginstance[
+                "exports"
+            ]
         return i
 
     def load_path(self, path):
@@ -418,54 +416,107 @@ class GlyphsThree(BaseConvertor):
                     axis.max = thisLoc
 
     def interpret_axis_mappings(self):
-        # There may be a "Axis Mappings" custom parameter, if so use that
-        axes_by_name = {a.name.get_default(): a for a in self.font.axes}
+        def enabled_parameter(obj, name):
+            for param in _g(obj, "customParameters", []):
+                if param["name"] == name and not param.get("disabled"):
+                    return param["value"]
+            return None
 
-        if mapping := _stashed_cp(self.font, "Axis Mappings"):
-            axes_by_tag = {a.tag: a for a in self.font.axes}
-            for axistag, axismap in mapping.items():
-                ax = axes_by_tag[axistag]
-                ax.map = []
-                for designspace, userspace in axismap.items():
-                    ax.map.append((userspace, float(designspace)))
-            return
+        def axis_location(obj, axis):
+            value = enabled_parameter(obj, "Axis Location")
+            name = axis.name.get_default()
+            if isinstance(value, dict):
+                value = value.get(name, value.get(axis.tag))
+            elif value is not None:
+                value = next(
+                    (entry["Location"] for entry in value if entry["Axis"] == name),
+                    None,
+                )
+            return float(value) if value is not None else None
 
-        for instance in self.font.instances:
-            # instance.location is in designspace
-            # The Axis Location custom parameter is in userspace, use
-            # this to make the map
-            c = (
-                _custom_parameter(
-                    instance._formatspecific.get("com.glyphsapp", {}), "Axis Location"
-                )
-                or []
-            )
-            # If there isn't an Axis Location, use the weightclass and widthclass
-            if not c:
-                weightclass = instance._formatspecific.get("com.glyphsapp", {}).get(
-                    "weightClass", 400
-                )
-                if weightclass is not None:
-                    c.append({"Axis": "Weight", "Location": weightclass})
-                widthclass = instance._formatspecific.get("com.glyphsapp", {}).get(
-                    "widthClass", 5
-                )
-                if widthclass is not None:
-                    c.append({"Axis": "Width", "Location": widthclass})
-            for loc in c:
-                ax = axes_by_name.get(loc["Axis"])
-                if not ax:
-                    # Maybe we don't have a weight or width but we don't have
-                    # an axis location either so we synthesised those locations
-                    continue
-                if not ax.map:
-                    ax.map = []
-                ax.map.append(
-                    (
-                        int(loc["Location"]),  # The instances location in user space
-                        instance.location[ax.tag],
+        explicit = enabled_parameter(self.font, "Axis Mappings")
+        use_master_locations = bool(self.font.masters) and all(
+            enabled_parameter(master, "Axis Location") is not None
+            for master in self.font.masters
+        )
+        instances = [
+            instance
+            for instance in self.font.instances
+            if not instance.variable and _g(instance, "exports", True)
+        ]
+        width_values = (50, 62.5, 75, 87.5, 100, 112.5, 125, 150, 200)
+
+        for axis in self.font.axes:
+            master_values = [master.location[axis.tag] for master in self.font.masters]
+            origin = axis.default
+            mapping = {}
+
+            def insert(user, design):
+                if user in mapping and mapping[user] != design:
+                    self.logger.warning(
+                        "Axis %s: redefining user location %s from %s to %s",
+                        axis.tag, user, mapping[user], design,
                     )
-                )
+                mapping[user] = design
+
+            if explicit is not None:
+                pairs = explicit.get(axis.tag, {})
+                if isinstance(pairs, dict):
+                    pairs = pairs.items()
+                for user, design in pairs:
+                    insert(float(user), float(design))
+                if not mapping:
+                    self.logger.warning(
+                        "Axis Mappings has no mapping for axis %s", axis.tag
+                    )
+            elif use_master_locations:
+                for master in self.font.masters:
+                    design = master.location[axis.tag]
+                    user = axis_location(master, axis)
+                    if user is None:
+                        user = 400 if axis.tag == "wght" else design
+                    insert(user, design)
+                for instance in instances:
+                    user = axis_location(instance, axis)
+                    if user is not None and axis.tag in instance.location:
+                        insert(user, instance.location[axis.tag])
+            else:
+                for instance in instances:
+                    if not instance.location or axis.tag not in instance.location:
+                        self.logger.warning(
+                            "Instance %s has no location for axis %s",
+                            instance.name.get_default(), axis.tag,
+                        )
+                        continue
+                    design = instance.location[axis.tag]
+                    user = 400 if axis.tag == "wght" else design
+                    if axis.tag == "wght":
+                        user = _g(instance, "weightClass", 400)
+                    elif axis.tag == "wdth":
+                        width_class = _g(instance, "widthClass")
+                        if width_class is not None:
+                            width_class = int(float(width_class) + 0.5)
+                            if 1 <= width_class <= len(width_values):
+                                user = width_values[width_class - 1]
+                            else:
+                                self.logger.warning("Invalid width class %s", width_class)
+                    location = axis_location(instance, axis)
+                    insert(location if location is not None else user, design)
+
+            if not mapping or (
+                explicit is None
+                and not use_master_locations
+                and all(user == design for user, design in mapping.items())
+            ):
+                mapping = {value: value for value in master_values}
+
+            pairs = sorted(mapping.items())
+            axis.map = None if all(user == design for user, design in pairs) else pairs
+            # Unlike the Rust Axis type, Python permits interpolated defaults;
+            # snapping would make Font.default_master select the wrong master.
+            axis.default = axis.designspace_to_userspace(origin)
+            axis.min = min(pairs[0][0], axis.default)
+            axis.max = max(pairs[-1][0], axis.default)
 
     def interpret_master_custom_parameters(self):
         for master in self.font.masters:
