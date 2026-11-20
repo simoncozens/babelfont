@@ -31,7 +31,7 @@ dev = [
     "defcon"
 ]
 read-ttf = [
-    "fontfeatures >= 1.8.0",
+    "fontfeatures >=1.10.2",
 ]
 vfb = [
     "vfbLib >=0.12.3",
