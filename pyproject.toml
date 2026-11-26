@@ -19,7 +19,7 @@ readme = "README.md"
 
 dependencies = [
     "orjson >=3.13.0",
-    "fonttools >=4.68.0",
+    "fonttools >=4.69.1",
     "ufoLib2 >=0.16.0",
     "openstep-plist >=0.5.2",
     "ufomerge >=1.9.8", # Feature code subsetting used in dropUnexported filter
